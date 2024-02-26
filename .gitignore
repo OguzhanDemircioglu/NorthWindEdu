@@ -1,2 +1,4 @@
 /.idea/
 /client/.idea/
+*.class
+/out/
