@@ -12,9 +12,9 @@ const Login = () => {
     const paswordRef = useRef();
 
     const submitForm = () => {
-        AuthService.login(paswordRef.current.value, usernameRef.current.value, (token) => {
+        AuthService.login(paswordRef.current.value, usernameRef.current.value, (token,role) => {
 
-            const returnVal = {username: usernameRef.current.value, token: token};
+            const returnVal = {username: usernameRef.current.value, token: token,role:role};
             dispatch(setCurrentUser(returnVal));
             if (token) {
                 new Promise(resolve => {

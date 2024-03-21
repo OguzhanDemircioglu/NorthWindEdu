@@ -1,6 +1,7 @@
 package com.server.app.config;
 
 import com.server.app.model.User;
+import com.server.app.enums.Role;
 import com.server.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -21,18 +22,21 @@ public class MyCommandLineRunner implements CommandLineRunner {
         User admin = User.builder().username("admin")
                 .password(new BCryptPasswordEncoder().encode("admin"))
                 .email("admin@admin.com")
+                .role(Role.ADMIN)
                 .createdAt(LocalDateTime.now()).build();
         userRepository.save(admin);
 
         User oguz = User.builder().username("oguz")
                 .password(new BCryptPasswordEncoder().encode("oguz"))
                 .email("ogz@gamil.com")
+                .role(Role.ADMIN)
                 .createdAt(LocalDateTime.now()).build();
         userRepository.save(oguz);
 
         User mila = User.builder().username("mila")
                 .password(new BCryptPasswordEncoder().encode("mila"))
                 .email("mila@yahoo.com")
+                .role(Role.USER)
                 .createdAt(LocalDateTime.now()).build();
         userRepository.save(mila);
 

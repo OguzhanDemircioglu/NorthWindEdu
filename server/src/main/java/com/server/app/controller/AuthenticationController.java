@@ -17,19 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final AuthenticationService service;
 
-    @PostMapping(value = "/signUp")
-    public ResponseEntity<?> signUp(@RequestBody UserRequestDto request) throws Exception {
+    @PostMapping(value = "/register")
+    public ResponseEntity<?> register(@RequestBody UserRequestDto request) throws Exception {
         try {
-            return ResponseEntity.ok(service.signUp(request));
+            return ResponseEntity.ok(service.register(request));
         } catch (Exception e) {
             throw new Exception("işlem geçersiz");
         }
     }
 
-    @PostMapping(value = "/signIn")
-    public ResponseEntity<JwtAuthResponse> signIn(@RequestBody UserRequestDto request) throws Exception {
+    @PostMapping(value = "/login")
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody UserRequestDto request) throws Exception {
         try {
-            return ResponseEntity.ok(service.signIn(request));
+            return ResponseEntity.ok(service.login(request));
         } catch (Exception e) {
             throw new Exception("işlem geçersiz");
         }

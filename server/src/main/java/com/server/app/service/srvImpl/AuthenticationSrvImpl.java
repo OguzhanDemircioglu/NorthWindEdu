@@ -3,6 +3,7 @@ package com.server.app.service.srvImpl;
 import com.server.app.dto.JwtAuthResponse;
 import com.server.app.dto.RefreshTokenRequest;
 import com.server.app.dto.UserRequestDto;
+import com.server.app.enums.Role;
 import com.server.app.model.User;
 import com.server.app.repository.UserRepository;
 import com.server.app.service.AuthenticationService;
@@ -19,26 +20,26 @@ import java.util.HashMap;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationSrvImpl implements AuthenticationService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
 
     @Override
-    public User signUp(UserRequestDto request) {
+    public User register(UserRequestDto request) {
         return userRepository.save(
                 User.builder()
                         .email(request.getEmail())
                         .username(request.getUsername())
                         .password(passwordEncoder.encode(request.getPassword()))
+                        .role(Role.USER)
                         .createdAt(LocalDateTime.now())
                         .build()
         );
     }
 
     @Override
-    public JwtAuthResponse signIn(UserRequestDto request) {
+    public JwtAuthResponse login(UserRequestDto request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(), request.getPassword()));
 
@@ -48,7 +49,7 @@ public class AuthenticationSrvImpl implements AuthenticationService {
         String jwt = jwtService.generateToken(user);
         String refreshJwt = jwtService.generateRefreshToken(new HashMap<>(), user);
 
-        return JwtAuthResponse.builder().token(jwt).refreshToken(refreshJwt).build();
+        return JwtAuthResponse.builder().token(jwt).refreshToken(refreshJwt).role(user.getRole().name()).build();
     }
 
     @Override

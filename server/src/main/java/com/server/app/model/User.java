@@ -1,5 +1,6 @@
 package com.server.app.model;
 
+import com.server.app.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +26,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", unique = true, updatable = false, nullable = false, columnDefinition = "VARCHAR(255)")
+    @Column(name = "id", unique = true, updatable = false, nullable = false)
     private String id;
 
     @Column(name = "username", unique = true, nullable = false)
@@ -43,15 +44,17 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Enumerated
+    @Column(name = "role")
+    private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() {return true;}
 
     @Override
     public boolean isAccountNonLocked() {

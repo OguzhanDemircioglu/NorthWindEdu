@@ -6,6 +6,7 @@ import React from "react";
 import Home from "./components/Home";
 import {useSelector} from "react-redux";
 import NextTopic from "./components/NextTopic";
+import AdminConsole from "./components/AdminConsole";
 
 function App() {
 
@@ -27,7 +28,8 @@ function App() {
                 ) : (
                     <>
                         <Route path="/nextTopic" element={<NextTopic/>}/>
-                        <Route path="/" element={<Home/>}/>
+                        <Route path="/adminConsole" element={<AdminConsole/>}/>
+                        <Route path="/*" element={<Home/>}/>
                     </>
                 )}
             </Routes>

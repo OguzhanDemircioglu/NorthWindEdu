@@ -3,7 +3,7 @@ import {BASE_URL} from "../store/Enums";
 class AuthService {
 
     register(email, password, username, callback) {
-        fetch(BASE_URL + '/auth/signUp', {
+        fetch(BASE_URL + '/auth/register', {
             method: 'POST', headers: {
                 'Content-Type': 'application/json'
             }, body: JSON.stringify({
@@ -23,7 +23,7 @@ class AuthService {
     }
 
     login(password, username, callback) {
-        fetch(BASE_URL + '/auth/signIn', {
+        fetch(BASE_URL + '/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -41,7 +41,7 @@ class AuthService {
             })
             .then(data => {
                 if (data && data.token) {
-                    callback(data.token);
+                    callback(data.token,data.role);
                 } else {
                     console.error("Giriş yapılamadı: Token alınamadı.");
                 }
