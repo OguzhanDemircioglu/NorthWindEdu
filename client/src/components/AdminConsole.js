@@ -1,56 +1,56 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Input} from "@mui/material";
-import Store from "../store";
 import "../App.css"
-import UserService from "../services/UserService";
+import {USER_ROLE} from "../store/Enums";
+import AuthService from "../services/AuthService";
 
 const AdminConsole = () => {
-    const currentUser = Store.getState().user;
 
     const [items, setItems] = useState(null);
     const [searchKey, setSearchKey] = useState(null);
-    const [deleteItem, setDeleteItem] = useState(null);
     const [editID, setEditID] = useState(null);
 
     const [formData, setFormData] = useState({
         id: '',
         username: '',
+        password:'',
         email: '',
         role: ''
     });
     const [formUpdateData, setFormUpdateData] = useState({
         id: '',
         username: '',
+        password:'',
         email: '',
         role: ''
     });
 
     useEffect(() => {
-        UserService.findAllUsers((responseData) => setItems(responseData))
+        AuthService.findAllUsers((responseData) => setItems(responseData))
     }, []);
 
-    function save(e) {
+    function insertUser(e) {
         e.preventDefault();
-        if (formData.number === '' ||
-            formData.name === '' ||
-            formData.amount === '') {
+        if (formData.username === '' ||
+            formData.password === '' ||
+            formData.role === '' ||
+            formData.email === '') {
             alert("Alanların hepsi dolu olmalı")
             return;
         }
-        /*AccountService.save(formData);*/
+        AuthService.insertUser(formData);
         window.location.reload();
     }
 
-    function deleteAccountByNumber(e) {
-        e.preventDefault();
-        /*AccountService.delete(deleteItem);*/
+    function deleteUserById(id) {
+        AuthService.deleteUserById(id);
+        window.location.reload();
     }
 
-    function updateAccount(e) {
- /*       e.preventDefault();
-        formUpdateData.accountId = editID;
+    function updateUser() {
+        formUpdateData.id = editID;
 
-        if (formUpdateData.number === '' || formUpdateData.name === '') {
+ /*       if (formUpdateData.number === '' || formUpdateData.name === '') {
             alert("AccountNumber ve AccountName Boş olmamalı");
             return;
         }
@@ -60,7 +60,8 @@ const AdminConsole = () => {
             return;
         }*/
 
-     /*   AccountService.updateAccount(formUpdateData);*/
+        AuthService.updateUser(formUpdateData);
+        window.location.reload();
     }
 
     const handleInsert = (e) => {
@@ -77,18 +78,19 @@ const AdminConsole = () => {
             ...prevState,
             [name]: value
         }));
-        console.log(formUpdateData)
     };
 
     return (
         <div className="example">
             <Input type="text" placeholder="SearchByUserName..."
-                   onChange={(e) => setSearchKey(e.target.value.toLowerCase())}/>
+                   onChange={(e) => setSearchKey(e.target.value.toLowerCase())}
+            />
             <table id="table1">
                 <thead>
                 <tr>
                     <th></th>
                     <th>username</th>
+                    <th>password</th>
                     <th>email</th>
                     <th>createdAt</th>
                     <th>updatedAt</th>
@@ -100,7 +102,7 @@ const AdminConsole = () => {
                 <tbody>
                 {items?.filter(i => !searchKey || i.username.includes(searchKey)).map((item, index) => {
                         return (
-                           /* editID === item.id ?
+                            editID === item.id ?
                                 <tr>
                                     <td>{index + 1}</td>
                                     <td>
@@ -109,7 +111,7 @@ const AdminConsole = () => {
                                             name="username"
                                             value={formUpdateData.username}
                                             onChange={handleUpdate}
-                                            placeholder="Name"
+                                            placeholder="Username"
                                         />
                                     </td>
 
@@ -119,7 +121,7 @@ const AdminConsole = () => {
                                             name="password"
                                             value={formUpdateData.password}
                                             onChange={handleUpdate}
-                                            placeholder="Number"
+                                            placeholder="Password"
                                         />
                                     </td>
 
@@ -129,17 +131,18 @@ const AdminConsole = () => {
                                             name="email"
                                             value={formUpdateData.email}
                                             onChange={handleUpdate}
-                                            placeholder="Balance"
+                                            placeholder="Email"
                                         />
                                     </td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            name="role"
-                                            value={formUpdateData.role}
-                                            onChange={handleUpdate}
-                                            placeholder="Balance"
-                                        />
+                                        <select name="role" value={formUpdateData.role}
+                                                onChange={handleUpdate}>
+                                            <option value="">Select Role</option>
+                                            {Object.keys(USER_ROLE).map(key => USER_ROLE[key]).map(role => (
+                                                <option key={role}
+                                                        value={role}>{role}</option>
+                                            ))}
+                                        </select>
                                     </td>
                                     {item.createdAt ?
                                         <td>{item.createdAt[2]}
@@ -159,13 +162,14 @@ const AdminConsole = () => {
                                         <Button onClick={() => setEditID(null)}>CANCEL</Button>
                                     </td>
                                     <td>
-                                        <Button onClick={updateAccount}>SUBMIT</Button>
+                                        <Button onClick={updateUser}>SUBMIT</Button>
                                     </td>
                                 </tr>
-                                :*/
+                                :
                                 <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>{item.username}</td>
+                                    <td/>
                                     <td>{item.email}</td>
                                     {item.createdAt ?
                                         <td>{item.createdAt[2]}
@@ -183,135 +187,63 @@ const AdminConsole = () => {
                                     }
                                     <td>{item.role}</td>
                                     <td>
-                                        <Button onMouseUp={() => setDeleteItem(item.number)}
-                                                onClick={deleteAccountByNumber}>DELETE</Button>
+                                        <Button onClick={() => deleteUserById(item.id)}>DELETE</Button>
                                     </td>
                                     <td>
-                                        <Button onClick={() => setEditID(item.accountId)}>APDATE</Button>
+                                        <Button onClick={() => setEditID(item.id)}>UPDATE</Button>
                                     </td>
                                 </tr>
                         )
                     })
                 }
-            {/*    <tr>
+                <tr>
                     <td>{!items ? 1 : items.length + 1}</td>
                     <td>
                         <input
-                            type="number"
-                            name="number"
-                            value={formData.number}
+                            type="text"
+                            name="username"
+                            value={formData.username}
                             onChange={handleInsert}
-                            placeholder="Number"
+                            placeholder="Username"
                         />
                     </td>
                     <td>
                         <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="password"
+                            value={formData.password}
                             onChange={handleInsert}
-                            placeholder="Name"
+                            placeholder="Password"
                         />
                     </td>
                     <td>
                         <input
-                            type="number"
-                            name="amount"
-                            value={formData.amount}
+                            type="text"
+                            name="email"
+                            value={formData.email}
                             onChange={handleInsert}
-                            placeholder="Balance"
+                            placeholder="Email"
                         />
                     </td>
                     <td/>
                     <td/>
                     <td>
-                        <Button type={"submit"} onClick={save}>ADD</Button>
+                        <select name="role" value={formData.role}
+                                onChange={handleInsert}>
+                            <option value="">Select Role</option>
+                            {Object.keys(USER_ROLE).map(key => USER_ROLE[key]).map(role => (
+                                <option key={role}
+                                        value={role}>{role}</option>
+                            ))}
+                        </select>
+                    </td>
+                    <td>
+                        <Button type={"submit"} onClick={insertUser}>ADD</Button>
                     </td>
                     <td/>
-                </tr>*/}
+                </tr>
                 </tbody>
-
             </table>
-
-        {/*    <form onSubmit={beginTransaction}>
-                <table id="table2">
-                    <thead>
-                    <tr>
-                        <th>operationType</th>
-                        <th>fromAccount</th>
-                        <th>toAccount</th>
-                        <th>amount</th>
-                        <th>Transaction</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <select name="operationType" value={formTransaction.operationType}
-                                    onChange={handleTransaction}>
-                                <option value="">Operayon Type</option>
-                                {Object.keys(Operation).map(key => Operation[key]).map(operationType => (
-                                    <option key={operationType}
-                                            value={operationType}>{operationType}</option>
-                                ))}
-                            </select>
-                        </td>
-
-                        <td>
-                            <select name="fromAccountNumber" value={formTransaction.fromAccountNumber}
-                                    onChange={handleTransaction}>
-                                <option>Select Account</option>
-                                {items?.filter(r => r.username.includes(currentUser?.username)).map(les => (
-                                    <option key={les.number}
-                                            value={les.number}>{les.username} - {les.number} - {les.name}</option>
-                                ))}
-                            </select>
-                        </td>
-
-                        {(formTransaction.operationType === '' ||
-                                formTransaction.operationType === "WITHDRAWAL" ||
-                                formTransaction.operationType === "DEPOSIT") &&
-                            <td/>}
-
-                        {formTransaction.operationType === "TRANSFER" &&
-                            <td>
-                                <select name="toAccountNumber" value={formTransaction.toAccountNumber}
-                                        onChange={handleTransaction}>
-                                    <option value="">Select Account</option>
-                                    {items?.filter(r => r.username.includes(currentUser?.username)).map(les => (
-                                        <option key={les.number}
-                                                value={les.number}>{les.username} - {les.number} - {les.name}</option>
-                                    ))}
-                                </select>
-                            </td>}
-
-                        {formTransaction.operationType === "PAYMENT" &&
-                            <td>
-                                <select name="toAccountNumber" value={formTransaction.toAccountNumber}
-                                        onChange={handleTransaction}>
-                                    <option value="">Select Account</option>
-                                    {items?.filter(r => !r.username.includes(currentUser?.username)).map(les => (
-                                        <option key={les.number}
-                                                value={les.number}>{les.username} - {les.number} - {les.name}</option>
-                                    ))}
-                                </select>
-                            </td>}
-                        <td>
-                            <input
-                                type="number"
-                                name="amount"
-                                value={formTransaction.amount}
-                                onChange={handleTransaction}
-                                placeholder="Amount"
-                            />
-                        </td>
-                        <td>
-                            <Button type="submit">Begin Transaction</Button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </form>*/}
         </div>
     );
 };

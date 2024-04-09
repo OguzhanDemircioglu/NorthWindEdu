@@ -6,7 +6,6 @@ import {faVideoSlash} from "@fortawesome/free-solid-svg-icons/faVideoSlash";
 import "../App.css";
 import {useDispatch, useSelector} from "react-redux";
 import {clearCurrentUser} from "../store/action/user";
-import AdminConsole from "./AdminConsole";
 
 export default function HorizontalMenu() {
 
@@ -25,7 +24,7 @@ export default function HorizontalMenu() {
                                       , marginLeft: "30px", marginRight: "40px"
                                   }}>
                         <FontAwesomeIcon icon={faVideoSlash}/>
-                        Banking App
+                        Starter App
                     </Navbar.Brand>
                     <Nav style={{flex: "max-content"}}>
                         <NavLink className="nav-link" href="/nextTopic">

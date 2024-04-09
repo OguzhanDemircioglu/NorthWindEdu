@@ -1,4 +1,8 @@
 import {BASE_URL} from "../store/Enums";
+import axios from "axios";
+import Store from "../store";
+
+const currentUser = Store.getState().user;
 
 class AuthService {
 
@@ -49,6 +53,58 @@ class AuthService {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
+    }
+
+    findAllUsers(callback) {
+        return axios.get(
+            BASE_URL + '/auth/findAll',
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: "Bearer " + currentUser?.token,
+                }
+            }
+        ).then(res => {
+            callback(res.data)
+        }).catch(err => console.log(err));
+    }
+
+    deleteUserById(id) {
+        return axios.delete(
+            BASE_URL + `/auth/deleteUserById/${id}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: "Bearer " + currentUser?.token,
+                }
+            }
+        )
+    }
+
+    insertUser(formData) {
+        return axios.post(
+            BASE_URL + '/auth/insertUser',
+            formData,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: "Bearer " + currentUser?.token,
+                }
+            }
+        )
+    }
+
+    updateUser(formUpdateData) {
+        return axios.put(
+            BASE_URL + '/auth/updateUser',
+            formUpdateData,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: "Bearer " + currentUser?.token,
+                }
+            }
+        )
     }
 }
 

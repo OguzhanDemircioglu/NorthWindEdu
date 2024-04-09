@@ -4,12 +4,12 @@ import com.server.app.dto.JwtAuthResponse;
 import com.server.app.dto.RefreshTokenRequest;
 import com.server.app.dto.UserRequestDto;
 import com.server.app.service.AuthenticationService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,6 +41,46 @@ public class AuthenticationController {
             return ResponseEntity.ok(service.refreshToken(request));
         } catch (Exception e) {
             throw new Exception("işlem geçersiz");
+        }
+    }
+
+    @GetMapping(value = "/findAll")
+    public ResponseEntity<?> findAll() {
+        try {
+            return ResponseEntity.ok().body(service.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("İşlem geçersiz");
+        }
+    }
+
+    @PostMapping(value = "/insertUser")
+    public ResponseEntity<?> insertUser(@RequestBody Map<String,String> map) {
+        try {
+            service.insertUser(map);
+            return ResponseEntity.ok().body("Kayıt Eklendi");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("İşlem geçersiz");
+        }
+    }
+
+    @Transactional
+    @DeleteMapping(value = "/deleteUserById/{id}")
+    public ResponseEntity<?> deleteUserByUsername(@PathVariable String id) {
+        try {
+            service.deleteUserById(id);
+            return ResponseEntity.ok().body("Kayıt Silindi");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("İşlem geçersiz");
+        }
+    }
+
+    @PutMapping(value = "/updateUser")
+    public ResponseEntity<?> updateUser(@RequestBody Map<String,String> map) {
+        try {
+            service.updateUser(map);
+            return ResponseEntity.ok().body("Kayıt Güncellendi");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("İşlem geçersiz");
         }
     }
 }
