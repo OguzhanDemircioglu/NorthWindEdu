@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,9 @@ public class UserSrvImpl implements UserService {
 
     @Override
     public List<User> findAll() {
-        return repository.findAll();
+        return repository.findAll().stream()
+                .peek(user -> user.setPassword(null))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -25,7 +25,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/findAll")
+    @PostMapping(value = "/findAll")
     public ResponseEntity<?> findAll() {
         try {
             return ResponseEntity.ok().body(service.findAll());
