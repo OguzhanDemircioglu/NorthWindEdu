@@ -6,7 +6,7 @@ import AuthService from "../services/AuthService";
 export default function Register() {
     const navigate = useNavigate();
     const usernameRef = useRef();
-    const paswordRef = useRef();
+    const passwordRef = useRef();
     const emailRef = useRef();
 
     const submitForm = () => {
@@ -17,7 +17,7 @@ export default function Register() {
             return;
         }
 
-        AuthService.register(emailRef.current.value, paswordRef.current.value, usernameRef.current.value, (callback) => {
+        AuthService.register(emailRef.current.value, passwordRef.current.value, usernameRef.current.value, (callback) => {
             if (callback) {
                 navigate('/login')
             }
@@ -45,7 +45,7 @@ export default function Register() {
                     <div className="form-group mt-3">
                         <label>Password:</label>
                         <input type="password" className="form-control" placeholder="Enter password"
-                               ref={paswordRef}
+                               ref={passwordRef}
                                id="pwd"/>
                     </div>
                     <button type="button" onClick={submitForm} className="btn btn-primary mt-4">Register</button>

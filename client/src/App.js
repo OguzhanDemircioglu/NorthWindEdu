@@ -1,27 +1,25 @@
-import Login from "./components/Login";
-import {Navigate, Route, Routes} from "react-router-dom";
-import Register from "./components/Register";
-import HorizontalMenu from "./components/HorizontalMenu";
 import React from "react";
-import Home from "./components/Home";
-import {useSelector} from "react-redux";
-import NextTopic from "./components/NextTopic";
-import AdminConsole from "./components/AdminConsole";
+import { useSelector } from "react-redux";
+import { Navigate, Route, Routes } from "react-router-dom";
+import AdminConsole from "./views/AdminConsole";
+import Home from "./views/Home";
+import HorizontalMenu from "./components/HorizontalMenu";
+import Login from "./views/Login";
+import NextTopic from "./views/NextTopic";
+import Register from "./views/Register";
 
 function App() {
 
     const currentUser = useSelector((state) => state.user);
-
     const isLoggedIn = currentUser?.token;
 
     return (
         <div className="App">
-            <HorizontalMenu/>
+            {isLoggedIn && <HorizontalMenu/>}
             <Routes>
                 {!isLoggedIn ? (
                     <>
                         <Route path="/" element={<Navigate to="/login"/>}/>
-                        <Route path="/nextTopic" element={<Navigate to="/login"/>}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
                     </>

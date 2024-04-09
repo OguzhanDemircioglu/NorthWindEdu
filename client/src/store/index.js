@@ -1,9 +1,10 @@
 import { combineReducers, createStore } from "redux";
-import userReducer from "./reducers/user";
+import userReducer from "./userMutations";
 
-const allReducers = combineReducers({
+const rootReducer = combineReducers({
   user: userReducer,
 });
 
-const store = createStore(allReducers);
+const store = createStore(rootReducer);
+
 export default store;

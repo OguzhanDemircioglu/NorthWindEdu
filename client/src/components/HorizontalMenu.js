@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faVideoSlash} from "@fortawesome/free-solid-svg-icons/faVideoSlash";
 import "../App.css";
 import {useDispatch, useSelector} from "react-redux";
-import {clearCurrentUser} from "../store/action/user";
+import {clearCurrentUser} from "../store/actions";
 
 export default function HorizontalMenu() {
 
