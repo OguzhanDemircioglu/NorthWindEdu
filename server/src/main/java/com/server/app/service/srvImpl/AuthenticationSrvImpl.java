@@ -11,8 +11,6 @@ import com.server.app.service.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -103,7 +101,7 @@ public class AuthenticationSrvImpl implements AuthenticationService {
             user.setUsername(map.get("username").isEmpty() ? user.getUsername() : map.get("username"));
             user.setEmail(map.get("email").isEmpty() ? user.getEmail() : map.get("email"));
 
-            if(!map.get("password").isEmpty())
+            if (!map.get("password").isEmpty())
                 user.setPassword(passwordEncoder.encode(map.get("password")));
 
             user.setRole(Role.valueOf(map.get("role").isEmpty() ? user.getRole().name() : map.get("role")));
