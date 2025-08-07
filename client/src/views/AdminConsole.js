@@ -50,16 +50,6 @@ const AdminConsole = () => {
     function updateUser() {
         formUpdateData.id = editID;
 
- /*       if (formUpdateData.number === '' || formUpdateData.name === '') {
-            alert("AccountNumber ve AccountName Boş olmamalı");
-            return;
-        }
-
-        if (items.filter(i => i.number === formUpdateData.number || i.name === formUpdateData.name).length > 0) {
-            alert("AccountNumber ve AccountName Öncekilerden farklı olmalı");
-            return;
-        }*/
-
         AuthService.updateUser(formUpdateData);
         window.location.reload();
     }

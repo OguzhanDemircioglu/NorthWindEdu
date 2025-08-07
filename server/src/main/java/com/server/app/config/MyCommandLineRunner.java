@@ -33,12 +33,11 @@ public class MyCommandLineRunner implements CommandLineRunner {
                 .createdAt(LocalDateTime.now()).build();
         userRepository.save(oguz);
 
-        User mila = User.builder().username("mila")
-                .password(new BCryptPasswordEncoder().encode("mila"))
-                .email("mila@yahoo.com")
+        User zagor = User.builder().username("zagor")
+                .password(new BCryptPasswordEncoder().encode("zagor"))
+                .email("zagor@yahoo.com")
                 .role(Role.USER)
                 .createdAt(LocalDateTime.now()).build();
-        userRepository.save(mila);
-
+        userRepository.save(zagor);
     }
 }
