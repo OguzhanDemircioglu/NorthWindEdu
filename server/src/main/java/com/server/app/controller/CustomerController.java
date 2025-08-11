@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/customers")
 @RequiredArgsConstructor
 
 public class CustomerController {
@@ -46,5 +47,11 @@ public class CustomerController {
         Optional<Customer> customer = customerService.findCustomerByContactName(name);
         return customer.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAllCustomers(){
+        List<Customer> customers = customerService.findAllCustomers();
+        return ResponseEntity.ok(customers);
     }
 }
