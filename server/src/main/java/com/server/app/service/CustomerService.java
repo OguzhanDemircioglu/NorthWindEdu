@@ -1,19 +1,20 @@
 package com.server.app.service;
 
-import com.server.app.model.Customer;
+import com.server.app.dto.CustomerDto;
+import com.server.app.dto.request.CustomerSaveRequest;
+import com.server.app.dto.request.CustomerUpdateRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CustomerService {
 
-    Customer findCustomerByCustomerId(String customerId);
+    String add(CustomerSaveRequest request);
 
-    Optional<Customer> findCustomerByContactName(String contactName);
+    CustomerDto update(CustomerUpdateRequest request);
 
-    List<Customer> findAllCustomers();
-
-    Customer saveCustomer(Customer customer);
+    CustomerDto findCustomerByCustomerId(String customerId);
 
     void deleteCustomerByCustomerId(String customerId);
+
+    List<CustomerDto> findAllCustomers();
 }
