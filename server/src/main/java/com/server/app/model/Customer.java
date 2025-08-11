@@ -13,12 +13,9 @@ import org.hibernate.annotations.GenericGenerator;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Customer {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "customer_id", columnDefinition = "bpchar", unique = true, updatable = false, nullable = false)
     private String customerId;
 
