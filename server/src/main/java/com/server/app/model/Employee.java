@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "employees")
+@Table(name = "employees") // tablo adı çoğul kalabilir, problem değil
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employees {
+public class Employee {
 
     @Id
-    @Column(name = "employee_id")
+    @Column(name = "employee_id", nullable = false)
     private Integer employeeId;
 
     @Column(name = "last_name", length = 20, nullable = false)
@@ -63,13 +63,13 @@ public class Employees {
     @Column(name = "photo")
     private byte[] photo;
 
-    @Column(name = "notes", columnDefinition = "text")
+    @Lob
+    @Column(name = "notes")
     private String notes;
 
     @Column(name = "reports_to")
-    private Short reportsTo;
+    private Integer reportsTo;
 
     @Column(name = "photo_path", length = 255)
     private String photoPath;
-
 }

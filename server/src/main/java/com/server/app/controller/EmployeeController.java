@@ -1,60 +1,50 @@
 package com.server.app.controller;
 
-import com.server.app.model.Employees;
+import com.server.app.dto.EmployeeDto;
+import com.server.app.dto.request.EmployeeSaveRequest;
+import com.server.app.dto.request.EmployeeUpdateRequest;
 import com.server.app.service.EmployeeService;
-import org.springframework.http.HttpStatus;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/employees")
+@RequiredArgsConstructor
 public class EmployeeController {
 
-    private final EmployeeService service;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService service) {
-        this.service = service;
-    }
-
-    // ADD
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody Employees employee) {
-        try {
-            Employees created = service.create(employee);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (IllegalStateException ex) { // zaten varsa
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+    public ResponseEntity<?> add(@RequestBody EmployeeSaveRequest request){
+        String resultMessage = employeeService.add(request);
+        return ResponseEntity.ok(resultMessage);
     }
 
-    // UPDATE
-    @PutMapping("/update/{firstName}/{lastName}")
-    public ResponseEntity<?> update(@PathVariable String firstName,
-                                    @PathVariable String lastName,
-                                    @RequestBody Employees employee) {
-        try {
-            Employees updated = service.update(firstName, lastName, employee);
-            return ResponseEntity.ok(updated);
-        } catch (IllegalArgumentException ex) { // bulunamadı
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+    @PutMapping("/update")
+    public ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeUpdateRequest request){
+        EmployeeDto updatedEmployee = employeeService.update(request);
+        return ResponseEntity.ok(updatedEmployee);
     }
 
-    // DELETE
-    @DeleteMapping("/delete/{firstName}/{lastName}")
-    public ResponseEntity<?> delete(@PathVariable String firstName,
-                                    @PathVariable String lastName) {
-        try {
-            service.delete(firstName, lastName);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException ex) { // bulunamadı
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeDto> findEmployeeByEmployeeId(@PathVariable Integer id){
+        EmployeeDto employee = employeeService.findEmployeeByEmployeeId(id);
+        return ResponseEntity.ok(employee);
+    }
+
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Integer id){
+        employeeService.deleteEmployeeByEmployeeId(id);
+        return ResponseEntity.ok("İşlem Başarılı");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EmployeeDto>> findAllEmployees(){
+        return ResponseEntity.ok(employeeService.findAllEmployees());
     }
 }

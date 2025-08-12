@@ -1,19 +1,20 @@
 package com.server.app.service;
 
-import com.server.app.model.Employees;
+import com.server.app.dto.EmployeeDto;
+import com.server.app.dto.request.EmployeeSaveRequest;
+import com.server.app.dto.request.EmployeeUpdateRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EmployeeService {
 
-    Optional<Employees> get(String firstName, String lastName);
+    String add(EmployeeSaveRequest request);
 
-    Employees create(Employees employee);
+    EmployeeDto update(EmployeeUpdateRequest request);
 
-    Employees update(String firstName, String lastName, Employees employee);
+    EmployeeDto findEmployeeByEmployeeId(Integer employeeId);
 
-    void delete(String firstName, String lastName);
+    void deleteEmployeeByEmployeeId(Integer employeeId);
 
-    List<Employees> list();
+    List<EmployeeDto> findAllEmployees();
 }
