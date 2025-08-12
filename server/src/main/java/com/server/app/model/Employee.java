@@ -63,7 +63,6 @@ public class Employee {
     @Column(name = "photo")
     private byte[] photo;
 
-    @Lob
     @Column(name = "notes")
     private String notes;
 
