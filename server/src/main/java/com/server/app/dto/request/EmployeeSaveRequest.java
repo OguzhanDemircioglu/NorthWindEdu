@@ -23,7 +23,7 @@ public class EmployeeSaveRequest {
     private String country;
     private String homePhone;
     private String extension;
-    private byte[] photo;
+    private String photo;
     private String notes;
     private Integer reportsTo;
     private String photoPath;
