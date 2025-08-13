@@ -17,6 +17,8 @@ import java.time.LocalDate;
 public class Employee {
 
     @Id
+    @SequenceGenerator(name = "employee_seq", sequenceName = "employee_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_seq")
     @Column(name = "employee_id", nullable = false)
     private Integer employeeId;
 
@@ -59,9 +61,8 @@ public class Employee {
     @Column(name = "extension", length = 4)
     private String extension;
 
-    @Lob
-    @Column(name = "photo")
-    private byte[] photo;
+    @Column(name = "photo", columnDefinition = "TEXT")
+    private String photo;
 
     @Column(name = "notes")
     private String notes;

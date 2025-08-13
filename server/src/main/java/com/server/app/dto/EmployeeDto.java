@@ -24,7 +24,7 @@ public class EmployeeDto {
     private String country;
     private String homePhone;
     private String extension;
-    private byte[] photo;          // Entity ile aynı tip
+    private String photo;          // Entity ile aynı tip
     private String notes;
     private Integer reportsTo;
     private String photoPath;
