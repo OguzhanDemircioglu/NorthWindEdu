@@ -11,5 +11,5 @@ public class CategoryUpdateRequest {
     private Short categoryId;
     private String categoryName;
     private String description;
-    private byte[] picture;
+    private String picture;
 }

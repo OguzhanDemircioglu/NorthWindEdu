@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class CategorySaveRequest {
     private String categoryName;
     private String description;
-    private byte[] picture;
+    private String picture;
 }

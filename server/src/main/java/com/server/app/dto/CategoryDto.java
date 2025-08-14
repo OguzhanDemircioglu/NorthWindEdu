@@ -12,5 +12,5 @@ public class CategoryDto {
     private Short categoryId;
     private String categoryName;
     private String description;
-    private byte[] picture;
+    private String picture;
 }

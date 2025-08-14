@@ -26,7 +26,7 @@ public class Category {
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
-    @Column(name = "picture", columnDefinition = "bytea")
-    private byte[] picture;
+    @Column(name = "picture", columnDefinition = "TEXT")
+    private String picture;
 
 }
