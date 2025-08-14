@@ -1,8 +1,8 @@
 package com.server.app.controller;
 
-import com.server.app.dto.EmployeeDto;
-import com.server.app.dto.request.EmployeeSaveRequest;
-import com.server.app.dto.request.EmployeeUpdateRequest;
+import com.server.app.dto.response.EmployeeDto;
+import com.server.app.dto.request.employee.EmployeeSaveRequest;
+import com.server.app.dto.request.employee.EmployeeUpdateRequest;
 import com.server.app.service.EmployeeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

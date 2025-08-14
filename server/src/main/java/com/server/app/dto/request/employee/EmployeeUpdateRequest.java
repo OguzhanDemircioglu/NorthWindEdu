@@ -1,4 +1,4 @@
-package com.server.app.dto;
+package com.server.app.dto.request.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,14 +9,14 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeDto {
+public class EmployeeUpdateRequest {
     private Integer employeeId;
     private String lastName;
     private String firstName;
     private String title;
     private String titleOfCourtesy;
-    private LocalDate birthDate;   // Entity ile aynı tip
-    private LocalDate hireDate;    // Entity ile aynı tip
+    private LocalDate birthDate;
+    private LocalDate hireDate;
     private String address;
     private String city;
     private String region;
@@ -24,7 +24,7 @@ public class EmployeeDto {
     private String country;
     private String homePhone;
     private String extension;
-    private String photo;          // Entity ile aynı tip
+    private String photo;
     private String notes;
     private Integer reportsTo;
     private String photoPath;
