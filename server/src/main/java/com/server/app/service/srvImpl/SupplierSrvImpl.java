@@ -9,9 +9,9 @@ import com.server.app.service.SupplierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,75 +37,42 @@ public class SupplierSrvImpl implements SupplierService {
                             .homepage(request.getHomepage())
                             .build()
             );
+            return "İşlem Başarılı";
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // prod'da log.error(...) tercih edilir
             return "İşlem Başarısız";
         }
-        return "İşlem Başarılı";
     }
 
     @Override
     public SupplierDto update(SupplierUpdateRequest request) {
-        SupplierDto result = new SupplierDto();
-
-        Optional<Supplier> supplier = repository.findSupplierBySupplierId(request.getSupplierId());
-        if (supplier.isEmpty()) {
+        Optional<Supplier> supplierOpt = repository.findSupplierBySupplierId(request.getSupplierId());
+        if (supplierOpt.isEmpty()) {
             throw new RuntimeException("Update Edilecek Kayıt bulunamadı");
         }
 
-        supplier.get().setCompanyName(request.getCompanyName());
-        supplier.get().setContactName(request.getContactName());
-        supplier.get().setContactTitle(request.getContactTitle());
-        supplier.get().setAddress(request.getAddress());
-        supplier.get().setCity(request.getCity());
-        supplier.get().setRegion(request.getRegion());
-        supplier.get().setPostalCode(request.getPostalCode());
-        supplier.get().setCountry(request.getCountry());
-        supplier.get().setPhone(request.getPhone());
-        supplier.get().setFax(request.getFax());
-        supplier.get().setHomepage(request.getHomepage());
+        Supplier s = supplierOpt.get();
+        s.setCompanyName(request.getCompanyName());
+        s.setContactName(request.getContactName());
+        s.setContactTitle(request.getContactTitle());
+        s.setAddress(request.getAddress());
+        s.setCity(request.getCity());
+        s.setRegion(request.getRegion());
+        s.setPostalCode(request.getPostalCode());
+        s.setCountry(request.getCountry());
+        s.setPhone(request.getPhone());
+        s.setFax(request.getFax());
+        s.setHomepage(request.getHomepage());
 
-        // DTO map
-        result.setSupplierId(supplier.get().getSupplierId());
-        result.setCompanyName(supplier.get().getCompanyName());
-        result.setContactName(supplier.get().getContactName());
-        result.setContactTitle(supplier.get().getContactTitle());
-        result.setAddress(supplier.get().getAddress());
-        result.setCity(supplier.get().getCity());
-        result.setRegion(supplier.get().getRegion());
-        result.setPostalCode(supplier.get().getPostalCode());
-        result.setCountry(supplier.get().getCountry());
-        result.setPhone(supplier.get().getPhone());
-        result.setFax(supplier.get().getFax());
-        result.setHomepage(supplier.get().getHomepage());
-
-        repository.save(supplier.get());
-        return result;
+        repository.save(s);
+        return toDto(s);
     }
 
     @Override
     public SupplierDto findSupplierBySupplierId(Short supplierId) {
-        SupplierDto result = new SupplierDto();
-
-        Optional<Supplier> supplier = repository.findSupplierBySupplierId(supplierId);
-        if (supplier.isEmpty()) {
-            throw new RuntimeException("Kayıt bulunamadı");
-        }
-
-        result.setSupplierId(supplier.get().getSupplierId());
-        result.setCompanyName(supplier.get().getCompanyName());
-        result.setContactName(supplier.get().getContactName());
-        result.setContactTitle(supplier.get().getContactTitle());
-        result.setAddress(supplier.get().getAddress());
-        result.setCity(supplier.get().getCity());
-        result.setRegion(supplier.get().getRegion());
-        result.setPostalCode(supplier.get().getPostalCode());
-        result.setCountry(supplier.get().getCountry());
-        result.setPhone(supplier.get().getPhone());
-        result.setFax(supplier.get().getFax());
-        result.setHomepage(supplier.get().getHomepage());
-
-        return result;
+        return repository.findSupplierBySupplierId(supplierId)
+                .map(this::toDto)
+                .orElseThrow(() -> new RuntimeException("Kayıt bulunamadı"));
     }
 
     @Override
@@ -115,25 +82,28 @@ public class SupplierSrvImpl implements SupplierService {
 
     @Override
     public List<SupplierDto> findAllSuppliers() {
-        List<Supplier> list = repository.findAll();
-        List<SupplierDto> result = new ArrayList<>();
+        return repository.findAll()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
 
-        for (Supplier s : list) {
-            SupplierDto dto = new SupplierDto();
-            dto.setSupplierId(s.getSupplierId());
-            dto.setCompanyName(s.getCompanyName());
-            dto.setContactName(s.getContactName());
-            dto.setContactTitle(s.getContactTitle());
-            dto.setAddress(s.getAddress());
-            dto.setRegion(s.getRegion());
-            dto.setPostalCode(s.getPostalCode());
-            dto.setCountry(s.getCountry());
-            dto.setPhone(s.getPhone());
-            dto.setFax(s.getFax());
-            dto.setHomepage(s.getHomepage());
-            result.add(dto);
-        }
 
-        return result;
+    private SupplierDto toDto(Supplier s) {
+        if (s == null) return null;
+        SupplierDto dto = new SupplierDto();
+        dto.setSupplierId(s.getSupplierId());
+        dto.setCompanyName(s.getCompanyName());
+        dto.setContactName(s.getContactName());
+        dto.setContactTitle(s.getContactTitle());
+        dto.setAddress(s.getAddress());
+        dto.setCity(s.getCity());
+        dto.setRegion(s.getRegion());
+        dto.setPostalCode(s.getPostalCode());
+        dto.setCountry(s.getCountry());
+        dto.setPhone(s.getPhone());
+        dto.setFax(s.getFax());
+        dto.setHomepage(s.getHomepage());
+        return dto;
     }
 }
