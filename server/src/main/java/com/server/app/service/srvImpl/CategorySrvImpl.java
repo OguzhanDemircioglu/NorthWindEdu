@@ -85,7 +85,7 @@ public class CategorySrvImpl implements CategoryService {
 
     @Override
     public Category getCategory(Short categoryId) {
-        return repository.findCategoryByCategoryId(categoryId).orElse(null);
+        return repository.getReferenceById(categoryId);
     }
 
     @Override

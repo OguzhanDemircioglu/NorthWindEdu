@@ -90,7 +90,7 @@ public class SupplierSrvImpl implements SupplierService {
 
     @Override
     public Supplier getSupplier(Short supplierId) {
-        return repository.findSupplierBySupplierId(supplierId).orElse(null);
+        return repository.getReferenceById(supplierId);
     }
 
     @Override
