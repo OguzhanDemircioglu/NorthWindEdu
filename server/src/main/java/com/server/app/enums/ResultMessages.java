@@ -11,4 +11,7 @@ public class ResultMessages {
     public static final String EMPTY_SURNAME = "Soyisim alanı boş olamaz";
     public static final String INVALID_BIRTHDATE = "Doğum tarihi gelecekte olamaz";
     public static final String HIRINGDATE_BEFORE_BIRTHDAY = "İşe alım tarihi doğum tarihinden önce olamaz";
+    public static final String EMPTY_PRODUCT_STATUS = "Ürünün satış durumu boş olamaz";
+    public static final String P_NAME_OUT_OF_RANGE = "Ürün adı 40 karakterden uzun olamaz";
+    public static final String QUANTITY_OUT_OF_RANGE = "Ürün miktar bilgisi 20 karakterden uzun olamaz";
 }
