@@ -83,6 +83,16 @@ public class CategorySrvImpl implements CategoryService {
         return result;
     }
 
+    @Override
+    public Category getCategory(Short categoryId) {
+        return repository.findCategoryByCategoryId(categoryId).orElse(null);
+    }
+
+    @Override
+    public boolean existsCategoryById(Short categoryId) {
+        return repository.existsById(categoryId);
+    }
+
     private CategoryDto categoryToCategoryDtoMapper(Category c) {
         if (c == null) {
             return null;

@@ -88,6 +88,16 @@ public class SupplierSrvImpl implements SupplierService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Supplier getSupplier(Short supplierId) {
+        return repository.findSupplierBySupplierId(supplierId).orElse(null);
+    }
+
+    @Override
+    public boolean existsSupplierById(Short supplierId) {
+        return repository.existsById(supplierId);
+    }
+
 
     private SupplierDto toDto(Supplier s) {
         if (s == null) return null;

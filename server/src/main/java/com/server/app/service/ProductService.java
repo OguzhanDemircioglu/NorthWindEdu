@@ -17,4 +17,8 @@ public interface ProductService {
     void deleteProductByProductId(Short productId);
 
     List<ProductDto> findAllProducts();
+
+    boolean checkCategory(Short categoryId);
+
+    boolean checkSupplier(Short supplierId);
 }

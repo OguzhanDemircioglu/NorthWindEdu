@@ -8,12 +8,15 @@ import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.helper.BusinessRules;
 import com.server.app.mapper.ProductMapper;
+import com.server.app.model.Category;
 import com.server.app.model.Product;
+import com.server.app.model.Supplier;
 import com.server.app.repository.ProductRepository;
+import com.server.app.service.CategoryService;
 import com.server.app.service.ProductService;
+import com.server.app.service.SupplierService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,13 +28,24 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductSrvImpl implements ProductService {
 
-    private final ProductRepository repository;
+    private final ProductRepository productRepository;
+    private final SupplierService supplierService;
+    private final CategoryService categoryService;
     private final ProductMapper mapper;
 
     @Override
     public String add(ProductSaveRequest request) {
         try {
-            Product product = mapper.saveEntityFromRequest(request);
+            Supplier supplier = null;
+            if(checkSupplier(request.getSupplierId())) {
+                supplier = supplierService.getSupplier(request.getSupplierId());
+            }
+            Category category = null;
+            if(checkCategory(request.getCategoryId())) {
+                category = categoryService.getCategory(request.getCategoryId());
+            }
+            Product product = mapper.saveEntityFromRequest(request, supplier, category);
+
 
             BusinessRules.validate(
                     checkProductForGeneralValidations(product),
@@ -39,7 +53,7 @@ public class ProductSrvImpl implements ProductService {
                     checkQuantityValidation(product.getQuantityPerUnit())
             );
 
-            repository.save(product);
+            productRepository.save(product);
         } catch (BusinessException e) {
             log.error("Business validation failed for product add: {}", request.getProductName(), e);
             throw e;
@@ -52,7 +66,15 @@ public class ProductSrvImpl implements ProductService {
     @Override
     public ProductDto update(ProductUpdateRequest request) {
         try {
-            Product product = mapper.toEntity(request);
+            Supplier supplier = null;
+            if(checkSupplier(request.getSupplierId())) {
+                supplier = supplierService.getSupplier(request.getSupplierId());
+            }
+            Category category = null;
+            if(checkCategory(request.getCategoryId())) {
+                category = categoryService.getCategory(request.getCategoryId());
+            }
+            Product product = mapper.toEntity(request, supplier, category);
 
             BusinessRules.validate(
                     checkProductForGeneralValidations(product),
@@ -60,11 +82,11 @@ public class ProductSrvImpl implements ProductService {
                     checkQuantityValidation(product.getQuantityPerUnit())
             );
 
-            Product updatedProduct = repository.save(product);
+            Product updatedProduct = productRepository.save(product);
 
             return mapper.toDto(updatedProduct);
         }catch (BusinessException e) {
-            log.error("Business validation failed for product update: {}", request.getProductName(), e);
+            log.error("Business validation failed for product update: {}", request.getProductId() +" "+request.getProductName(), e);
             throw e;
         }catch (Exception e) {
             log.error("Product update failed for ID: {}", request.getProductId(), e);
@@ -74,7 +96,7 @@ public class ProductSrvImpl implements ProductService {
 
     @Override
     public ProductDto findProductByProductId(Short productId) {
-        Optional<Product> product = repository.findProductByProductId(productId);
+        Optional<Product> product = productRepository.findProductByProductId(productId);
         if (product.isEmpty()) {
             throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
         }
@@ -82,11 +104,11 @@ public class ProductSrvImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductByProductId(Short productId) { repository.deleteProductByProductId(productId); }
+    public void deleteProductByProductId(Short productId) { productRepository.deleteProductByProductId(productId); }
 
     @Override
     public List<ProductDto> findAllProducts() {
-        List<Product> products = repository.findAll();
+        List<Product> products = productRepository.findAll();
         List<ProductDto> result = new ArrayList<>();
 
         for (Product p : products) {
@@ -94,6 +116,24 @@ public class ProductSrvImpl implements ProductService {
             result.add(dto);
         }
         return result;
+    }
+
+    @Override
+    public boolean checkCategory(Short categoryId) {
+        if(!categoryService.existsCategoryById(categoryId)) {
+            log.warn(ResultMessages.CATEGORY_NOT_FOUND);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkSupplier(Short supplierId) {
+        if(!supplierService.existsSupplierById(supplierId)) {
+            log.warn(ResultMessages.SUPPLIER_NOT_FOUND);
+            return false;
+        }
+        return true;
     }
 
     private String checkNameValidation(String name) {
@@ -121,4 +161,6 @@ public class ProductSrvImpl implements ProductService {
         }
         return null;
     }
+
+
 }
