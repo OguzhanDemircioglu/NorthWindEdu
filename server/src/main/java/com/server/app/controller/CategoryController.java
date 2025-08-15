@@ -1,7 +1,6 @@
 package com.server.app.controller;
 
 import com.server.app.dto.CategoryDto;
-import com.server.app.dto.EmployeeDto;
 import com.server.app.dto.request.CategorySaveRequest;
 import com.server.app.dto.request.CategoryUpdateRequest;
 import com.server.app.service.CategoryService;

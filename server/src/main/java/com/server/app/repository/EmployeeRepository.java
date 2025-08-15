@@ -12,4 +12,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     Optional<Employee> findEmployeeByEmployeeId(Integer employeeId);
 
     void deleteEmployeeByEmployeeId(Integer employeeId);
+
+    boolean existsByFirstNameAndLastName(String firstName, String lastName);
 }

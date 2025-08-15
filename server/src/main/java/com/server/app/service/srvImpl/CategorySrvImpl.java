@@ -1,11 +1,9 @@
 package com.server.app.service.srvImpl;
 
 import com.server.app.dto.CategoryDto;
-import com.server.app.dto.EmployeeDto;
 import com.server.app.dto.request.CategorySaveRequest;
 import com.server.app.dto.request.CategoryUpdateRequest;
 import com.server.app.model.Category;
-import com.server.app.model.Employee;
 import com.server.app.repository.CategoryRepository;
 import com.server.app.service.CategoryService;
 import lombok.RequiredArgsConstructor;

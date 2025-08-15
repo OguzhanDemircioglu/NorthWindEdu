@@ -1,87 +1,77 @@
 package com.server.app.service.srvImpl;
 
-import com.server.app.dto.EmployeeDto;
-import com.server.app.dto.request.EmployeeSaveRequest;
-import com.server.app.dto.request.EmployeeUpdateRequest;
+import com.google.common.base.Strings;
+import com.server.app.dto.response.EmployeeDto;
+import com.server.app.dto.request.employee.EmployeeSaveRequest;
+import com.server.app.dto.request.employee.EmployeeUpdateRequest;
+import com.server.app.enums.ResultMessages;
+import com.server.app.helper.BusinessException;
+import com.server.app.helper.BusinessRules;
+import com.server.app.mapper.EmployeeMapper;
 import com.server.app.model.Employee;
 import com.server.app.repository.EmployeeRepository;
 import com.server.app.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmployeeSrvImpl implements EmployeeService {
 
     private final EmployeeRepository repository;
+    private final EmployeeMapper mapper;
 
     @Override
     public String add(EmployeeSaveRequest request) {
         try {
-            repository.save(
-                    Employee.builder()
-                            .lastName(request.getLastName())
-                            .firstName(request.getFirstName())
-                            .title(request.getTitle())
-                            .titleOfCourtesy(request.getTitleOfCourtesy())
-                            .birthDate(request.getBirthDate())
-                            .hireDate(request.getHireDate())
-                            .address(request.getAddress())
-                            .city(request.getCity())
-                            .region(request.getRegion())
-                            .postalCode(request.getPostalCode())
-                            .country(request.getCountry())
-                            .homePhone(request.getHomePhone())
-                            .extension(request.getExtension())
-                            .photo(request.getPhoto())
-                            .notes(request.getNotes())
-                            .reportsTo(request.getReportsTo())
-                            .photoPath(request.getPhotoPath())
-                            .build()
+            Employee employee = mapper.saveEntityFromRequest(request);
+
+            BusinessRules.validate(
+                    checkEmployeeForGeneralValidations(employee),
+                    checkTitleValidation(employee.getTitle()),
+                    checkPhoneFormat(employee.getHomePhone()),
+                    checkUniqueConstraints(employee)
             );
+
+            repository.save(employee);
+        } catch (BusinessException e) {
+            log.error("Business validation failed for employee add: {}", request.getFirstName() +" "+ request.getLastName(), e);
+            throw e;
         } catch (Exception e) {
-            e.printStackTrace();
-            return "İşlem Başarısız";
+            return ResultMessages.PROCESS_FAILED;
         }
-        return "İşlem Başarılı";
+        return ResultMessages.SUCCESS;
     }
 
     @Override
     public EmployeeDto update(EmployeeUpdateRequest request) {
         try {
-            Optional<Employee> employee = repository.findEmployeeByEmployeeId(request.getEmployeeId());
-            if (employee.isEmpty()) {
-                throw new RuntimeException("Update Edilecek Kayıt bulunamadı");
-            }
+            Employee employee = mapper.toEntity(request);
 
-            employee.get().setLastName(request.getLastName());
-            employee.get().setFirstName(request.getFirstName());
-            employee.get().setTitle(request.getTitle());
-            employee.get().setTitleOfCourtesy(request.getTitleOfCourtesy());
-            employee.get().setBirthDate(request.getBirthDate());
-            employee.get().setHireDate(request.getHireDate());
-            employee.get().setAddress(request.getAddress());
-            employee.get().setCity(request.getCity());
-            employee.get().setRegion(request.getRegion());
-            employee.get().setPostalCode(request.getPostalCode());
-            employee.get().setCountry(request.getCountry());
-            employee.get().setHomePhone(request.getHomePhone());
-            employee.get().setExtension(request.getExtension());
-            employee.get().setPhoto(request.getPhoto());
-            employee.get().setNotes(request.getNotes());
-            employee.get().setReportsTo(request.getReportsTo());
-            employee.get().setPhotoPath(request.getPhotoPath());
+            BusinessRules.validate(
+                    checkEmployeeForGeneralValidations(employee),
+                    checkTitleValidation(employee.getTitle()),
+                    checkPhoneFormat(employee.getHomePhone()),
+                    checkUniqueConstraints(employee)
+            );
 
-            repository.save(employee.get());
+            Employee updatedEmployee = repository.save(employee);
 
-            return employeeToEmployeeDtoMapper(employee.get());
+            return mapper.toDto(updatedEmployee);
+
+        } catch (BusinessException e) {
+            log.error("Business validation failed for employee update: {}", request.getEmployeeId(), e);
+            throw e;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("İşlem Başarısız");
+            log.error("Employee update failed for ID: {}", request.getEmployeeId(), e);
+            throw new BusinessException(ResultMessages.PROCESS_FAILED + ": " + e.getMessage());
         }
     }
 
@@ -89,10 +79,10 @@ public class EmployeeSrvImpl implements EmployeeService {
     public EmployeeDto findEmployeeByEmployeeId(Integer employeeId) {
         Optional<Employee> employee = repository.findEmployeeByEmployeeId(employeeId);
         if (employee.isEmpty()) {
-            throw new RuntimeException("Kayıt bulunamadı");
+            throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
         }
 
-        return employeeToEmployeeDtoMapper(employee.get());
+        return mapper.toDto(employee.get());
     }
 
     @Override
@@ -106,38 +96,55 @@ public class EmployeeSrvImpl implements EmployeeService {
         List<EmployeeDto> result = new ArrayList<>();
 
         for (Employee e : list) {
-            EmployeeDto dto = employeeToEmployeeDtoMapper(e);
+            EmployeeDto dto = mapper.toDto(e);;
             result.add(dto);
         }
 
         return result;
     }
 
-    private EmployeeDto employeeToEmployeeDtoMapper(Employee e) {
-        if (e == null) {
-            return null;
+    private String checkTitleValidation(String title) {
+        if(!Strings.isNullOrEmpty(title) && title.length() > 30) {
+            return ResultMessages.TITLE_OUT_OF_RANGE;
+        }
+        return null;
+    }
+
+    private String checkPhoneFormat(String phone) {
+        if(phone != null && !phone.matches("^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$")) {
+            return ResultMessages.WRONG_PHONE_FORMAT;
+        }
+        return null;
+    }
+
+    private String checkUniqueConstraints(Employee request) {
+        if (repository.existsByFirstNameAndLastName(
+                request.getFirstName(),
+                request.getLastName())) {
+            return ResultMessages.NAME_SURNAME_EXIST;
+        }
+        return null;
+    }
+
+    private String checkEmployeeForGeneralValidations(Employee request) {
+
+        if(Strings.isNullOrEmpty(request.getFirstName())) {
+            return ResultMessages.EMPTY_NAME;
         }
 
-        EmployeeDto dto = new EmployeeDto();
-        dto.setEmployeeId(e.getEmployeeId());
-        dto.setLastName(e.getLastName());
-        dto.setFirstName(e.getFirstName());
-        dto.setTitle(e.getTitle());
-        dto.setTitleOfCourtesy(e.getTitleOfCourtesy());
-        dto.setBirthDate(e.getBirthDate());
-        dto.setHireDate(e.getHireDate());
-        dto.setAddress(e.getAddress());
-        dto.setCity(e.getCity());
-        dto.setRegion(e.getRegion());
-        dto.setPostalCode(e.getPostalCode());
-        dto.setCountry(e.getCountry());
-        dto.setHomePhone(e.getHomePhone());
-        dto.setExtension(e.getExtension());
-        dto.setNotes(e.getNotes());
-        dto.setReportsTo(e.getReportsTo());
-        dto.setPhotoPath(e.getPhotoPath());
-        dto.setPhoto(e.getPhoto());
+        if(Strings.isNullOrEmpty(request.getLastName())) {
+            return ResultMessages.EMPTY_SURNAME;
+        }
 
-        return dto;
+        if(request.getBirthDate() != null && request.getBirthDate().isAfter(LocalDate.now())) {
+            return ResultMessages.INVALID_BIRTHDATE;
+        }
+
+        if(request.getHireDate() != null && request.getBirthDate() != null
+                && request.getHireDate().isBefore(request.getBirthDate())) {
+            return ResultMessages.HIRINGDATE_BEFORE_BIRTHDAY;
+        }
+
+        return null;
     }
 }

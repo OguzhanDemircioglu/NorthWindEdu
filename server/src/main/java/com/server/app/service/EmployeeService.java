@@ -1,8 +1,8 @@
 package com.server.app.service;
 
-import com.server.app.dto.EmployeeDto;
-import com.server.app.dto.request.EmployeeSaveRequest;
-import com.server.app.dto.request.EmployeeUpdateRequest;
+import com.server.app.dto.response.EmployeeDto;
+import com.server.app.dto.request.employee.EmployeeSaveRequest;
+import com.server.app.dto.request.employee.EmployeeUpdateRequest;
 
 import java.util.List;
 
