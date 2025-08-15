@@ -11,4 +11,7 @@ public class ResultMessages {
     public static final String EMPTY_SURNAME = "Soyisim alanı boş olamaz";
     public static final String INVALID_BIRTHDATE = "Doğum tarihi gelecekte olamaz";
     public static final String HIRINGDATE_BEFORE_BIRTHDAY = "İşe alım tarihi doğum tarihinden önce olamaz";
+    public static final String ORDER_REQUIRED_BEFORE_ORDER_DATE = "Gerekli tarih (required_date) sipariş tarihinden (order_date) önce olamaz";
+    public static final String ORDER_SHIPPED_BEFORE_ORDER_DATE  = "Sevk tarihi (shipped_date) sipariş tarihinden (order_date) önce olamaz";
+    public static final String NEGATIVE_FREIGHT                 = "Nakliye ücreti (freight) negatif olamaz";
 }
