@@ -39,12 +39,11 @@ public class ProductSrvImpl implements ProductService {
         );
 
         productRepository.save(product);
-
         return new GenericResponse();
     }
 
     @Override
-    public DataGenericResponse<ProductDto> update(ProductUpdateRequest request) {
+    public GenericResponse update(ProductUpdateRequest request) {
         Product product = mapper.toEntity(request);
 
         BusinessRules.validate(
@@ -53,12 +52,8 @@ public class ProductSrvImpl implements ProductService {
                 checkQuantityValidation(product.getQuantityPerUnit())
         );
 
-        Product updatedProduct = productRepository.save(product);
-        ProductDto productDto = mapper.toDto(updatedProduct);
-
-        return DataGenericResponse.<ProductDto>dataBuilder()
-                .data(productDto)
-                .build();
+        productRepository.save(product);
+        return GenericResponse.builder().message(ResultMessages.RECORD_UPDATED).build();
     }
 
     @Override
@@ -81,7 +76,7 @@ public class ProductSrvImpl implements ProductService {
         }
         productRepository.deleteProductByProductId(productId);
 
-        return new GenericResponse();
+        return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
     @Override

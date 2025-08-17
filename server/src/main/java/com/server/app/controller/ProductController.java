@@ -26,7 +26,7 @@ public class ProductController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<DataGenericResponse<ProductDto>> update(@RequestBody ProductUpdateRequest request) {
+    public ResponseEntity<GenericResponse> update(@RequestBody ProductUpdateRequest request) {
         return ResponseEntity.ok(productService.update(request));
     }
 

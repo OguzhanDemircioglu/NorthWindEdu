@@ -12,7 +12,7 @@ public interface ProductService {
 
     GenericResponse add(ProductSaveRequest request);
 
-    DataGenericResponse<ProductDto> update(ProductUpdateRequest request);
+    GenericResponse update(ProductUpdateRequest request);
 
     DataGenericResponse<ProductDto> findProductByProductId(Long productId);
 

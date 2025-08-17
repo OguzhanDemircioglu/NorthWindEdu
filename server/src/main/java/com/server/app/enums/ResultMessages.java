@@ -5,6 +5,8 @@ public class ResultMessages {
     //region General Messages
     public static final String SUCCESS = "Islem Basarili";
     public static final String RECORD_NOT_FOUND = "Kayit Bulunamadi";
+    public static final String RECORD_DELETED = "Kayit Silindi";
+    public static final String RECORD_UPDATED = "Kayit Güncellendi";
     public static final String PROCESS_FAILED = "Islem Basarisiz";
     public static final String ID_IS_NOT_DELIVERED = "Id İletilmedi";
     public static final String NULL_POINTER_REFERENCE = "Var Olmayan bir değişken girdiniz";
