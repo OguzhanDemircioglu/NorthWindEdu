@@ -9,20 +9,32 @@ import com.server.app.model.Category;
 import com.server.app.model.Product;
 import com.server.app.model.Supplier;
 import com.server.app.repository.ProductRepository;
+import com.server.app.service.CategoryService;
+import com.server.app.service.SupplierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 public class ProductMapper {
     private final ProductRepository productRepository;
+    private final SupplierService supplierService;
+    private final CategoryService categoryService;
 
     public ProductDto toDto(Product request) {
         return ProductDto.builder()
                 .productId(request.getProductId())
                 .productName(request.getProductName())
-                .supplierId(request.getSupplier() !=null ? request.getSupplier().getSupplierId() : null)
-                .categoryId(request.getCategory() !=null ? request.getCategory().getCategoryId() : null)
+                .supplierId(
+                        Objects.isNull(request.getSupplier())
+                                ? null
+                                : request.getSupplier().getSupplierId())
+                .categoryId(
+                        Objects.isNull(request.getCategory())
+                                ? null
+                                : request.getCategory().getCategoryId())
                 .quantityPerUnit(request.getQuantityPerUnit())
                 .unitPrice(request.getUnitPrice())
                 .unitsInStock(request.getUnitsInStock())
@@ -32,16 +44,32 @@ public class ProductMapper {
                 .build();
     }
 
-    public Product toEntity(ProductUpdateRequest request, Supplier supplier, Category category) {
-        Product existingProduct = productRepository.findProductByProductId(request.getProductId())
-                .orElseThrow(() -> new BusinessException(ResultMessages.RECORD_NOT_FOUND));
+    public Product toEntity(ProductUpdateRequest request) {
+        if (request.getProductId() == null || request.getProductId() == 0) {
+            throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
+        }
 
-        return updateEntityFromRequest(request, existingProduct, supplier, category);
+        boolean isExist = productRepository.existsProductByProductId(request.getProductId());
+        if (!isExist) {
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
+        }
+
+        Supplier supplier = supplierService.getSupplier(request.getSupplierId());
+        if (Objects.isNull(supplier)) {
+            throw new BusinessException(ResultMessages.SUPPLIER_NOT_FOUND);
+        }
+
+        Category category = categoryService.getCategory(request.getCategoryId());
+        if (Objects.isNull(category)) {
+            throw new BusinessException(ResultMessages.CATEGORY_NOT_FOUND);
+        }
+
+        return updateEntityFromRequest(request, supplier, category);
     }
 
-    private Product updateEntityFromRequest(ProductUpdateRequest request, Product existingProduct, Supplier supplier,  Category category) {
+    private Product updateEntityFromRequest(ProductUpdateRequest request, Supplier supplier, Category category) {
         return Product.builder()
-                .productId(existingProduct.getProductId())
+                .productId(request.getProductId())
                 .productName(request.getProductName())
                 .supplier(supplier)
                 .category(category)
@@ -54,7 +82,17 @@ public class ProductMapper {
                 .build();
     }
 
-    public Product saveEntityFromRequest(ProductSaveRequest request, Supplier supplier, Category category) {
+    public Product saveEntityFromRequest(ProductSaveRequest request) {
+        Supplier supplier = supplierService.getSupplier(request.getSupplierId());
+        if (Objects.isNull(supplier)) {
+            throw new BusinessException(ResultMessages.SUPPLIER_NOT_FOUND);
+        }
+
+        Category category = categoryService.getCategory(request.getCategoryId());
+        if (Objects.isNull(category)) {
+            throw new BusinessException(ResultMessages.CATEGORY_NOT_FOUND);
+        }
+
         return Product.builder()
                 .productName(request.getProductName())
                 .supplier(supplier)

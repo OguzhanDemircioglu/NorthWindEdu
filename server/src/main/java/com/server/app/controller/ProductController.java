@@ -3,7 +3,8 @@ package com.server.app.controller;
 import com.server.app.dto.request.product.ProductSaveRequest;
 import com.server.app.dto.request.product.ProductUpdateRequest;
 import com.server.app.dto.response.ProductDto;
-import com.server.app.enums.ResultMessages;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,32 +21,31 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody ProductSaveRequest request) {
-        String resultMessage = productService.add(request);
-        return ResponseEntity.ok(resultMessage);
+    public ResponseEntity<GenericResponse> add(@RequestBody ProductSaveRequest request) {
+        return ResponseEntity.ok(productService.add(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ProductDto> update(@RequestBody ProductUpdateRequest request) {
-        ProductDto updatedProduct = productService.update(request);
-        return ResponseEntity.ok(updatedProduct);
+    public ResponseEntity<DataGenericResponse<ProductDto>> update(@RequestBody ProductUpdateRequest request) {
+        return ResponseEntity.ok(productService.update(request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> get(@PathVariable Short id) {
-        ProductDto product = productService.findProductByProductId(id);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<DataGenericResponse<ProductDto>> get(@PathVariable Long id) {
+        DataGenericResponse<ProductDto> result = productService.findProductByProductId(id);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Short id) {
-        productService.deleteProductByProductId(id);
-        return ResponseEntity.ok(ResultMessages.SUCCESS);
+    public ResponseEntity<GenericResponse> delete(@PathVariable Long id) {
+        GenericResponse result = productService.deleteProductByProductId(id);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> findAllProducts() {
-        return  ResponseEntity.ok(productService.findAllProducts());
+    public ResponseEntity<DataGenericResponse<List<ProductDto>>> findAllProducts() {
+        DataGenericResponse<List<ProductDto>> result = productService.findAllProducts();
+        return ResponseEntity.ok(result);
     }
 }

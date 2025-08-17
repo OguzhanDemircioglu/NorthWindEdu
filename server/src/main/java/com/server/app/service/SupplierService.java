@@ -20,6 +20,4 @@ public interface SupplierService {
     List<SupplierDto> findAllSuppliers();
 
     Supplier getSupplier(Short supplierId);
-
-    boolean existsSupplierById(Short supplierId);
 }

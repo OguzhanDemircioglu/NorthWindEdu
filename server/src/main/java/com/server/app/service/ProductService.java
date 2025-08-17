@@ -3,22 +3,20 @@ package com.server.app.service;
 import com.server.app.dto.request.product.ProductSaveRequest;
 import com.server.app.dto.request.product.ProductUpdateRequest;
 import com.server.app.dto.response.ProductDto;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 
 import java.util.List;
 
 public interface ProductService {
 
-    String add(ProductSaveRequest request);
+    GenericResponse add(ProductSaveRequest request);
 
-    ProductDto update(ProductUpdateRequest request);
+    DataGenericResponse<ProductDto> update(ProductUpdateRequest request);
 
-    ProductDto findProductByProductId(Short productId);
+    DataGenericResponse<ProductDto> findProductByProductId(Long productId);
 
-    void deleteProductByProductId(Short productId);
+    GenericResponse deleteProductByProductId(Long productId);
 
-    List<ProductDto> findAllProducts();
-
-    boolean checkCategory(Short categoryId);
-
-    boolean checkSupplier(Short supplierId);
+    DataGenericResponse<List<ProductDto>> findAllProducts();
 }

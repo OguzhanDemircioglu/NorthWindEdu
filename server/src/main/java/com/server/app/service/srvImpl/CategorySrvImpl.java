@@ -85,12 +85,7 @@ public class CategorySrvImpl implements CategoryService {
 
     @Override
     public Category getCategory(Short categoryId) {
-        return repository.getReferenceById(categoryId);
-    }
-
-    @Override
-    public boolean existsCategoryById(Short categoryId) {
-        return repository.existsById(categoryId);
+        return repository.getCategoryByCategoryId(categoryId);
     }
 
     private CategoryDto categoryToCategoryDtoMapper(Category c) {

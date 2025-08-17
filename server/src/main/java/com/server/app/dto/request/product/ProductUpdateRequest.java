@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductUpdateRequest {
-    private Short productId;
+    private Long productId;
     private String productName;
     private Short supplierId;
     private Short categoryId;

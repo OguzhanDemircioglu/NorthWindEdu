@@ -90,14 +90,8 @@ public class SupplierSrvImpl implements SupplierService {
 
     @Override
     public Supplier getSupplier(Short supplierId) {
-        return repository.getReferenceById(supplierId);
+        return repository.getSupplierBySupplierId(supplierId);
     }
-
-    @Override
-    public boolean existsSupplierById(Short supplierId) {
-        return repository.existsById(supplierId);
-    }
-
 
     private SupplierDto toDto(Supplier s) {
         if (s == null) return null;

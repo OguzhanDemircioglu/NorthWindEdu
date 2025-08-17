@@ -10,4 +10,6 @@ public interface CategoryRepository extends JpaRepository<Category, Short> {
     Optional<Category> findCategoryByCategoryId(Short id);
 
     void deleteCategoryByCategoryId(Short id);
+
+    Category getCategoryByCategoryId(Short categoryId);
 }

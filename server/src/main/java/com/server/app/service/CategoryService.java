@@ -20,6 +20,4 @@ public interface CategoryService {
     List<CategoryDto> findAllCategories();
 
     Category getCategory(Short categoryId);
-
-    boolean existsCategoryById(Short categoryId);
 }
