@@ -142,7 +142,7 @@ public class EmployeeSrvImpl implements EmployeeService {
 
         if(request.getHireDate() != null && request.getBirthDate() != null
                 && request.getHireDate().isBefore(request.getBirthDate())) {
-            return ResultMessages.HIRINGDATE_BEFORE_BIRTHDAY;
+            return ResultMessages.HIRING_DATE_BEFORE_BIRTHDAY;
         }
 
         return null;
