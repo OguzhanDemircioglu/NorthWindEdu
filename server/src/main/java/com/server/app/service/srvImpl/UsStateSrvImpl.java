@@ -58,7 +58,7 @@ public class UsStateSrvImpl implements UsStateService {
     }
 
     @Override
-    public UsStateDto findStateByStateId(Short id) {
+    public UsStateDto findStateByStateId(Long id) {
         Optional<UsState> state = repository.findStateByStateId(id);
         if (state.isEmpty()) {
             throw new RuntimeException("Kayıt Bulunamadı");
@@ -67,7 +67,7 @@ public class UsStateSrvImpl implements UsStateService {
     }
 
     @Override
-    public void deleteStateByStateId(Short id) { repository.deleteStateByStateId(id); }
+    public void deleteStateByStateId(Long id) { repository.deleteStateByStateId(id); }
 
     @Override
     public List<UsStateDto> findAllStates() {

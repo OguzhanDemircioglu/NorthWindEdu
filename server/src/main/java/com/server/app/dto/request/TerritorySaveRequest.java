@@ -3,7 +3,6 @@ package com.server.app.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.server.app.model.Region;
 
 
 @Data
@@ -12,5 +11,5 @@ import com.server.app.model.Region;
 public class TerritorySaveRequest {
     private String territoryId;
     private String territoryDescription;
-    private Short regionId;
+    private Long regionId;
 }

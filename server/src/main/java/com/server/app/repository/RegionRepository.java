@@ -6,9 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface RegionRepository extends JpaRepository<Region, Integer>{
+public interface RegionRepository extends JpaRepository<Region, Long>{
 
-    Optional<Region> findRegionByRegionId(Short id);
+    Optional<Region> findRegionByRegionId(Long id);
 
-    void deleteRegionByRegionId(Short id);
+    void deleteRegionByRegionId(Long id);
 }

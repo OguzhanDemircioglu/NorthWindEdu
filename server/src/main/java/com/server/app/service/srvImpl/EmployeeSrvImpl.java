@@ -76,7 +76,7 @@ public class EmployeeSrvImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto findEmployeeByEmployeeId(Integer employeeId) {
+    public EmployeeDto findEmployeeByEmployeeId(Long employeeId) {
         Optional<Employee> employee = repository.findEmployeeByEmployeeId(employeeId);
         if (employee.isEmpty()) {
             throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
@@ -86,7 +86,7 @@ public class EmployeeSrvImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteEmployeeByEmployeeId(Integer employeeId) {
+    public void deleteEmployeeByEmployeeId(Long employeeId) {
         repository.deleteEmployeeByEmployeeId(employeeId);
     }
 
@@ -142,7 +142,7 @@ public class EmployeeSrvImpl implements EmployeeService {
 
         if(request.getHireDate() != null && request.getBirthDate() != null
                 && request.getHireDate().isBefore(request.getBirthDate())) {
-            return ResultMessages.HIRINGDATE_BEFORE_BIRTHDAY;
+            return ResultMessages.HIRING_DATE_BEFORE_BIRTHDAY;
         }
 
         return null;

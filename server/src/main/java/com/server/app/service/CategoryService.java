@@ -3,6 +3,7 @@ package com.server.app.service;
 import com.server.app.dto.CategoryDto;
 import com.server.app.dto.request.CategorySaveRequest;
 import com.server.app.dto.request.CategoryUpdateRequest;
+import com.server.app.model.Category;
 
 import java.util.List;
 
@@ -12,9 +13,11 @@ public interface CategoryService {
 
     CategoryDto update(CategoryUpdateRequest request);
 
-    CategoryDto findCategoryByCategoryId(Short id);
+    CategoryDto findCategoryByCategoryId(Long id);
 
-    void deleteCategoryByCategoryId(Short id);
+    void deleteCategoryByCategoryId(Long id);
 
     List<CategoryDto> findAllCategories();
+
+    Category getCategory(Long categoryId);
 }

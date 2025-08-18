@@ -12,11 +12,11 @@ public interface EmployeeService {
 
     EmployeeDto update(EmployeeUpdateRequest request);
 
-    boolean existsByEmployeeId(Integer employeeId);
+    EmployeeDto findEmployeeByEmployeeId(Long employeeId);
 
-    EmployeeDto findEmployeeByEmployeeId(Integer employeeId);
-
-    void deleteEmployeeByEmployeeId(Integer employeeId);
+    void deleteEmployeeByEmployeeId(Long employeeId);
 
     List<EmployeeDto> findAllEmployees();
+
+    boolean existsByEmployeeId(Integer employeeId);
 }

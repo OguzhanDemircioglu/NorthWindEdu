@@ -54,7 +54,7 @@ public class RegionSrvImpl implements RegionService {
     }
 
     @Override
-    public RegionDto findRegionByRegionId(Short id) {
+    public RegionDto findRegionByRegionId(Long id) {
         Optional<Region> region = repository.findRegionByRegionId(id);
         if (region.isEmpty()) {
             throw new RuntimeException("Kayıt Bulunamadı");
@@ -64,7 +64,7 @@ public class RegionSrvImpl implements RegionService {
     }
 
     @Override
-    public void deleteRegionByRegionId(Short id) { repository.deleteRegionByRegionId(id); }
+    public void deleteRegionByRegionId(Long id) { repository.deleteRegionByRegionId(id); }
 
     @Override
     public List<RegionDto> findAllRegions() {

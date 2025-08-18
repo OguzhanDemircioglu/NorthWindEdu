@@ -12,11 +12,11 @@ public interface ShipperService {
 
     ShipperDto update(ShipperUpdateRequest request);
 
-    ShipperDto findShipperByShipperId(Short id);
+    ShipperDto findShipperByShipperId(Long id);
 
-    boolean existsByShipperId(Short shipperId);
-
-    void deleteShipperByShipperId(Short id);
+    void deleteShipperByShipperId(Long id);
 
     List<ShipperDto> findAllShippers();
+
+    boolean existsByShipperId(Short shipperId);
 }

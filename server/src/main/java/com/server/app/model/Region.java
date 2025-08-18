@@ -18,7 +18,7 @@ public class Region {
     @SequenceGenerator(name = "region_seq", sequenceName = "region_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "region_seq")
     @Column(name = "region_id", unique = true, nullable = false, updatable = false)
-    private Short regionId;
+    private Long regionId;
 
     @Column(name = "region_description", columnDefinition = "bpchar", nullable = false)
     private String regionDescription;

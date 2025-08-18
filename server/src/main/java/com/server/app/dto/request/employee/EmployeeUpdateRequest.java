@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeUpdateRequest {
-    private Integer employeeId;
+    private Long employeeId;
     private String lastName;
     private String firstName;
     private String title;
