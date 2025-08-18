@@ -14,6 +14,8 @@ public interface ShipperService {
 
     ShipperDto findShipperByShipperId(Short id);
 
+    boolean existsByShipperId(Short shipperId);
+
     void deleteShipperByShipperId(Short id);
 
     List<ShipperDto> findAllShippers();

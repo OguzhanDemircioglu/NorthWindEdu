@@ -147,4 +147,9 @@ public class EmployeeSrvImpl implements EmployeeService {
 
         return null;
     }
+    @Override
+    public boolean existsByEmployeeId(Integer employeeId) {
+        return repository.existsById(employeeId);
+    }
+
 }

@@ -91,4 +91,8 @@ public class ShipperSrvImpl implements ShipperService {
         dto.setPhone(s.getPhone());
         return dto;
     }
+    @Override
+    public boolean existsByShipperId(Short shipperId) {
+        return repository.existsById(shipperId);
+    }
 }

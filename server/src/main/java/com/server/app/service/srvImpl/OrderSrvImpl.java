@@ -9,7 +9,10 @@ import com.server.app.helper.BusinessRules;
 import com.server.app.mapper.OrderMapper;
 import com.server.app.model.Order;
 import com.server.app.repository.OrderRepository;
+import com.server.app.service.CustomerService;
+import com.server.app.service.EmployeeService;
 import com.server.app.service.OrderService;
+import com.server.app.service.ShipperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,26 +30,35 @@ public class OrderSrvImpl implements OrderService {
     private final OrderRepository repository;
     private final OrderMapper mapper;
 
+    private final CustomerService customerService;
+    private final EmployeeService employeeService;
+    private final ShipperService  shipperService;
+
     @Override
     public String add(OrderSaveRequest request) {
         try {
             Order order = mapper.saveEntityFromRequest(request);
 
             BusinessRules.validate(
+                    checkCustomerExists(request.getCustomerId()),
+                    checkEmployeeExists(request.getEmployeeId()),
+                    checkShipperExists(request.getShipViaId()),
                     checkDateConsistency(order),
                     checkFreight(order.getFreight())
             );
 
             repository.save(order);
+            return ResultMessages.SUCCESS;
+
         } catch (BusinessException e) {
-            log.error("Business validation failed for order add: customerId={}, employeeId={}, shipViaId={}",
+            log.warn("Business validation failed for order add. customerId={}, employeeId={}, shipViaId={}",
                     request.getCustomerId(), request.getEmployeeId(), request.getShipViaId(), e);
             throw e;
+
         } catch (Exception e) {
             log.error("Order add failed", e);
             return ResultMessages.PROCESS_FAILED;
         }
-        return ResultMessages.SUCCESS;
     }
 
     @Override
@@ -55,6 +67,9 @@ public class OrderSrvImpl implements OrderService {
             Order order = mapper.toEntity(request);
 
             BusinessRules.validate(
+                    checkCustomerExists(request.getCustomerId()),
+                    checkEmployeeExists(request.getEmployeeId()),
+                    checkShipperExists(request.getShipViaId()),
                     checkDateConsistency(order),
                     checkFreight(order.getFreight())
             );
@@ -63,11 +78,12 @@ public class OrderSrvImpl implements OrderService {
             return mapper.toDto(updated);
 
         } catch (BusinessException e) {
-            log.error("Business validation failed for order update: {}", request.getOrderId(), e);
+            log.warn("Business validation failed for order update. orderId={}", request.getOrderId(), e);
             throw e;
+
         } catch (Exception e) {
             log.error("Order update failed for ID: {}", request.getOrderId(), e);
-            throw new BusinessException(ResultMessages.PROCESS_FAILED + ": " + e.getMessage());
+            throw new RuntimeException(ResultMessages.PROCESS_FAILED, e);
         }
     }
 
@@ -89,23 +105,42 @@ public class OrderSrvImpl implements OrderService {
     public List<OrderDto> findAllOrders() {
         List<Order> list = repository.findAll();
         List<OrderDto> result = new ArrayList<>();
-
         for (Order o : list) {
-            OrderDto dto = mapper.toDto(o);
-            result.add(dto);
+            result.add(mapper.toDto(o));
         }
         return result;
     }
 
+    // ----- iş kuralı yardımcıları -----
+
+    private String checkCustomerExists(String customerId) {
+        if (customerId == null || customerId.isBlank()) return null;
+        return customerService.existsByCustomerId(customerId)
+                ? null : ResultMessages.CUSTOMER_NOT_FOUND_FOR_ORDER;
+    }
+
+    private String checkEmployeeExists(Integer employeeId) {
+        if (employeeId == null) return null;
+        return employeeService.existsByEmployeeId(employeeId)
+                ? null : ResultMessages.EMPLOYEE_NOT_FOUND_FOR_ORDER;
+    }
+
+    private String checkShipperExists(Short shipperId) {
+        if (shipperId == null) return null;
+        return shipperService.existsByShipperId(shipperId)
+                ? null : ResultMessages.SHIPPER_NOT_FOUND_FOR_ORDER;
+    }
 
     private String checkDateConsistency(Order o) {
         if (o == null) return null;
-        if (o.getOrderDate() != null && o.getRequiredDate() != null
-                && o.getRequiredDate().isBefore(o.getOrderDate())) {
+        LocalDate od = o.getOrderDate();
+        LocalDate rd = o.getRequiredDate();
+        LocalDate sd = o.getShippedDate();
+
+        if (od != null && rd != null && rd.isBefore(od)) {
             return ResultMessages.ORDER_REQUIRED_BEFORE_ORDER_DATE;
         }
-        if (o.getOrderDate() != null && o.getShippedDate() != null
-                && o.getShippedDate().isBefore(o.getOrderDate())) {
+        if (od != null && sd != null && sd.isBefore(od)) {
             return ResultMessages.ORDER_SHIPPED_BEFORE_ORDER_DATE;
         }
         return null;

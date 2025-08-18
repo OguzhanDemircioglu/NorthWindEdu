@@ -14,4 +14,8 @@ public class ResultMessages {
     public static final String ORDER_REQUIRED_BEFORE_ORDER_DATE = "Gerekli tarih (required_date) sipariş tarihinden (order_date) önce olamaz";
     public static final String ORDER_SHIPPED_BEFORE_ORDER_DATE  = "Sevk tarihi (shipped_date) sipariş tarihinden (order_date) önce olamaz";
     public static final String NEGATIVE_FREIGHT                 = "Nakliye ücreti (freight) negatif olamaz";
+    public static final String CUSTOMER_NOT_FOUND_FOR_ORDER = "Sipariş için müşteri bulunamadı";
+    public static final String EMPLOYEE_NOT_FOUND_FOR_ORDER = "Sipariş için çalışan bulunamadı";
+    public static final String SHIPPER_NOT_FOUND_FOR_ORDER  = "Sipariş için kargo firması bulunamadı";
+
 }

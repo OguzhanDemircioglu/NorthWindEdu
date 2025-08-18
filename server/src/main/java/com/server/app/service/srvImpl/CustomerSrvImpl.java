@@ -131,4 +131,8 @@ public class CustomerSrvImpl implements CustomerService {
 
         return result;
     }
+
+    public boolean existsByCustomerId(String customerId) {
+        return repository.existsById(customerId);
+    }
 }

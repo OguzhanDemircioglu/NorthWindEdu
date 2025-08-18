@@ -12,6 +12,8 @@ public interface EmployeeService {
 
     EmployeeDto update(EmployeeUpdateRequest request);
 
+    boolean existsByEmployeeId(Integer employeeId);
+
     EmployeeDto findEmployeeByEmployeeId(Integer employeeId);
 
     void deleteEmployeeByEmployeeId(Integer employeeId);

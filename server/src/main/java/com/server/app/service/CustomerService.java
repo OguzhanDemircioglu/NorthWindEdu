@@ -16,5 +16,7 @@ public interface CustomerService {
 
     void deleteCustomerByCustomerId(String customerId);
 
+    boolean existsByCustomerId(String customerId);
+
     List<CustomerDto> findAllCustomers();
 }
