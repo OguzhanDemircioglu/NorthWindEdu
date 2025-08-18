@@ -68,7 +68,7 @@ public class EmployeeTerritorySrvImpl implements EmployeeTerritoryService {
     @Override
     public GenericResponse deleteEmployeeTerritoryByEmployeeTerritoryId(EmployeeTerritoryId id) {
         boolean isExists = employeeTerritoryRepository.existsByEmployeeTerritoryId_EmployeeIdAndEmployeeTerritoryId_TerritoryId(id.getEmployeeId(), id.getTerritoryId());
-        if (isExists) {
+        if (!isExists) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
         employeeTerritoryRepository.deleteEmployeeTerritoryByEmployeeTerritoryId(id);
