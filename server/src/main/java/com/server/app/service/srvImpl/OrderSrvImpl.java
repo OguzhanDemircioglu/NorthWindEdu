@@ -42,7 +42,6 @@ public class OrderSrvImpl implements OrderService {
 
     @Override
     public GenericResponse update(OrderUpdateRequest request) {
-        // Mapper içinde ID kontrolü + exists kontrolü + FK doğrulamaları mevcut
         Order order = mapper.toEntity(request);
 
         BusinessRules.validate(
@@ -54,7 +53,7 @@ public class OrderSrvImpl implements OrderService {
     }
 
     @Override
-    public DataGenericResponse<OrderDto> findOrderByOrderId(Short orderId) {
+    public DataGenericResponse<OrderDto> findOrderByOrderId(Long orderId) {
         Optional<Order> order = orderRepository.findOrderByOrderId(orderId);
         if (order.isEmpty()) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
@@ -66,7 +65,7 @@ public class OrderSrvImpl implements OrderService {
     }
 
     @Override
-    public GenericResponse deleteOrderByOrderId(Short orderId) {
+    public GenericResponse deleteOrderByOrderId(Long orderId) {
         boolean isExist = orderRepository.existsOrderByOrderId(orderId);
         if (!isExist) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
@@ -87,9 +86,6 @@ public class OrderSrvImpl implements OrderService {
                 .build();
     }
 
-    /**
-     * Genel validasyon kuralları
-     */
     private String checkOrderForGeneralValidations(Order request) {
 
         if (request.getFreight() != null && request.getFreight() < 0) {

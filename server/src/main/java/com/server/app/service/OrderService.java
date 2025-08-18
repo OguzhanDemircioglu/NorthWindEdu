@@ -14,9 +14,9 @@ public interface OrderService {
 
     GenericResponse update(OrderUpdateRequest request);
 
-    DataGenericResponse<OrderDto> findOrderByOrderId(Short orderId);
+    DataGenericResponse<OrderDto> findOrderByOrderId(Long orderId);
 
-    GenericResponse deleteOrderByOrderId(Short orderId);
+    GenericResponse deleteOrderByOrderId(Long orderId);
 
     DataGenericResponse<List<OrderDto>> findAllOrders();
 }

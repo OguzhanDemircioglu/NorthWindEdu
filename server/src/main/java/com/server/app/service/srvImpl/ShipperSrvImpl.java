@@ -29,7 +29,7 @@ public class ShipperSrvImpl implements ShipperService {
                             .build()
             );
         } catch (Exception e) {
-            e.printStackTrace(); // İstersen log.error(...) ile değiştirilebilir
+            e.printStackTrace();
             return "İşlem Başarısız";
         }
         return "İşlem Başarılı";
@@ -82,6 +82,16 @@ public class ShipperSrvImpl implements ShipperService {
         return result;
     }
 
+    @Override
+    public Shipper getShipper(Long shipperId) {
+        return repository.findShipperByShipperId(shipperId).orElse(null);
+    }
+
+    @Override
+    public boolean existsByShipperId(Long shipperId) {
+        return repository.existsById(shipperId);
+    }
+
     private ShipperDto shipperToShipperDtoMapper(Shipper s) {
         if (s == null) return null;
 
@@ -90,9 +100,5 @@ public class ShipperSrvImpl implements ShipperService {
         dto.setCompanyName(s.getCompanyName());
         dto.setPhone(s.getPhone());
         return dto;
-    }
-    @Override
-    public boolean existsByShipperId(Short shipperId) {
-        return repository.existsById(shipperId);
     }
 }

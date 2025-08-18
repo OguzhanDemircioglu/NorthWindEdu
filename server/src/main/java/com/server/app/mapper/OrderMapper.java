@@ -60,7 +60,7 @@ public class OrderMapper {
             throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
         }
 
-        boolean isExist = orderRepository.existsOrderByOrderId(request.getOrderId());
+        boolean isExist = orderRepository.existsOrderByOrderId(Long.valueOf(request.getOrderId()));
         if (!isExist) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
@@ -85,7 +85,7 @@ public class OrderMapper {
 
     private Order updateEntityFromRequest(OrderUpdateRequest request, Customer customer, Employee employee, Shipper shipper) {
         return Order.builder()
-                .orderId(request.getOrderId())
+                .orderId(Long.valueOf(request.getOrderId()))
                 .customer(customer)
                 .employee(employee)
                 .shipVia(shipper)

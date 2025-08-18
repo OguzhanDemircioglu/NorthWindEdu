@@ -14,8 +14,8 @@ import java.time.LocalDate;
 public class OrderSaveRequest {
 
     private String customerId;      // Customer FK
-    private Integer employeeId;     // Employee FK
-    private Short shipViaId;        // Shipper FK
+    private Long employeeId;     // Employee FK
+    private Long shipViaId;        // Shipper FK
 
     private LocalDate orderDate;
     private LocalDate requiredDate;

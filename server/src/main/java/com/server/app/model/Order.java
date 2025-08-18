@@ -20,7 +20,7 @@ public class Order {
     @SequenceGenerator(name = "order_seq", sequenceName = "order_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
     @Column(name = "order_id", nullable = false)
-    private Short orderId; // smallint → Short
+    private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

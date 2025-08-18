@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Short> {
+public interface OrderRepository extends JpaRepository<Order,Long> {
 
-    Optional<Order> findOrderByOrderId(Short id);
+    Optional<Order> findOrderByOrderId(Long id);
 
-    void deleteOrderByOrderId(Short id);
+    void deleteOrderByOrderId(Long id);
 
-    boolean existsOrderByOrderId(Short id);
+    boolean existsOrderByOrderId(Long id);
 }

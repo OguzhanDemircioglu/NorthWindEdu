@@ -13,10 +13,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class OrderDto {
 
-    private Short orderId;
+    private Long orderId;
     private String customerId;
-    private Integer employeeId;
-    private Short shipViaId;
+    private Long employeeId;
+    private Long shipViaId;
     private LocalDate orderDate;
     private LocalDate requiredDate;
     private LocalDate shippedDate;

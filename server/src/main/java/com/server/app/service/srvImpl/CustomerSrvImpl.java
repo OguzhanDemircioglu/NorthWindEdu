@@ -136,4 +136,9 @@ public class CustomerSrvImpl implements CustomerService {
         return repository.existsById(customerId);
     }
 
+    @Override
+    public Customer getCustomer(String customerId) {
+        return repository.getCustomerByCustomerId(customerId); // entity veya null döner
+    }
+
 }

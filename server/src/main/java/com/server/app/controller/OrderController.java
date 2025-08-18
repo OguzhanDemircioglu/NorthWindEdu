@@ -1,8 +1,8 @@
 package com.server.app.controller;
 
 import com.server.app.dto.OrderDto;
-import com.server.app.dto.request.order.OrderSaveRequest;
-import com.server.app.dto.request.order.OrderUpdateRequest;
+import com.server.app.dto.request.OrderSaveRequest;
+import com.server.app.dto.request.OrderUpdateRequest;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.OrderService;
@@ -31,14 +31,14 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataGenericResponse<OrderDto>> get(@PathVariable Short id) {
+    public ResponseEntity<DataGenericResponse<OrderDto>> get(@PathVariable Long id) {
         DataGenericResponse<OrderDto> result = orderService.findOrderByOrderId(id);
         return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<GenericResponse> delete(@PathVariable Short id) {
+    public ResponseEntity<GenericResponse> delete(@PathVariable Long id) {
         GenericResponse result = orderService.deleteOrderByOrderId(id);
         return ResponseEntity.ok(result);
     }

@@ -20,6 +20,8 @@ public interface CustomerService {
     boolean existsByCustomerId(String customerId);
 
     List<CustomerDto> findAllCustomers();
+
+    Customer getCustomer(String customerId);
 }
 
 
