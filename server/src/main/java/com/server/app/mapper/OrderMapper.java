@@ -10,25 +10,38 @@ import com.server.app.model.Employee;
 import com.server.app.model.Order;
 import com.server.app.model.Shipper;
 import com.server.app.repository.OrderRepository;
+import com.server.app.service.CustomerService;
+import com.server.app.service.EmployeeService;
+import com.server.app.service.ShipperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 public class OrderMapper {
 
-    // Sadece kendi repository'si (EmployeeMapper ile aynı desen)
-    private final OrderRepository repository;
+    private final OrderRepository orderRepository;
+    private final CustomerService customerService;
+    private final EmployeeService employeeService;
+    private final ShipperService shipperService;
 
-    // --- Entity -> DTO ---
     public OrderDto toDto(Order request) {
-        if (request == null) return null;
-
         return OrderDto.builder()
                 .orderId(request.getOrderId())
-                .customerId(request.getCustomer() != null ? request.getCustomer().getCustomerId() : null)
-                .employeeId(request.getEmployee() != null ? request.getEmployee().getEmployeeId() : null)
-                .shipViaId(request.getShipVia() != null ? request.getShipVia().getShipperId() : null)
+                .customerId(
+                        Objects.isNull(request.getCustomer())
+                                ? null
+                                : request.getCustomer().getCustomerId())
+                .employeeId(
+                        Objects.isNull(request.getEmployee())
+                                ? null
+                                : request.getEmployee().getEmployeeId())
+                .shipViaId(
+                        Objects.isNull(request.getShipVia())
+                                ? null
+                                : request.getShipVia().getShipperId())
                 .orderDate(request.getOrderDate())
                 .requiredDate(request.getRequiredDate())
                 .shippedDate(request.getShippedDate())
@@ -42,85 +55,83 @@ public class OrderMapper {
                 .build();
     }
 
-    // --- UpdateRequest -> Entity ---
     public Order toEntity(OrderUpdateRequest request) {
-        Order existing = repository.findOrderByOrderId(request.getOrderId())
-                .orElseThrow(() -> new BusinessException(ResultMessages.RECORD_NOT_FOUND));
-        return updateEntityFromRequest(request, existing);
+        if (request.getOrderId() == null || request.getOrderId() == 0) {
+            throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
+        }
+
+        boolean isExist = orderRepository.existsOrderByOrderId(request.getOrderId());
+        if (!isExist) {
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
+        }
+
+        Customer customer = customerService.getCustomer(request.getCustomerId());
+        if (Objects.isNull(customer)) {
+            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
+        }
+
+        Employee employee = employeeService.getEmployee(request.getEmployeeId());
+        if (Objects.isNull(employee)) {
+            throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
+        }
+
+        Shipper shipper = shipperService.getShipper(request.getShipViaId());
+        if (Objects.isNull(shipper)) {
+            throw new BusinessException(ResultMessages.SHIPPER_NOT_FOUND);
+        }
+
+        return updateEntityFromRequest(request, customer, employee, shipper);
     }
 
-    private Order updateEntityFromRequest(OrderUpdateRequest r, Order e) {
-        // FK referanslarını yalnızca ID set ederek oluştur (DB sorgusu yok)
-        Customer customer = null;
-        if (r.getCustomerId() != null) {
-            customer = new Customer();
-            customer.setCustomerId(r.getCustomerId());
-        }
-
-        Employee employee = null;
-        if (r.getEmployeeId() != null) {
-            employee = new Employee();
-            employee.setEmployeeId(r.getEmployeeId());
-        }
-
-        Shipper shipper = null;
-        if (r.getShipViaId() != null) {
-            shipper = new Shipper();
-            shipper.setShipperId(r.getShipViaId());
-        }
-
+    private Order updateEntityFromRequest(OrderUpdateRequest request, Customer customer, Employee employee, Shipper shipper) {
         return Order.builder()
-                .orderId(e.getOrderId()) // PK sabit
+                .orderId(request.getOrderId())
                 .customer(customer)
                 .employee(employee)
                 .shipVia(shipper)
-                .orderDate(r.getOrderDate())
-                .requiredDate(r.getRequiredDate())
-                .shippedDate(r.getShippedDate())
-                .freight(r.getFreight())
-                .shipName(r.getShipName())
-                .shipAddress(r.getShipAddress())
-                .shipCity(r.getShipCity())
-                .shipRegion(r.getShipRegion())
-                .shipPostalCode(r.getShipPostalCode())
-                .shipCountry(r.getShipCountry())
+                .orderDate(request.getOrderDate())
+                .requiredDate(request.getRequiredDate())
+                .shippedDate(request.getShippedDate())
+                .freight(request.getFreight())
+                .shipName(request.getShipName())
+                .shipAddress(request.getShipAddress())
+                .shipCity(request.getShipCity())
+                .shipRegion(request.getShipRegion())
+                .shipPostalCode(request.getShipPostalCode())
+                .shipCountry(request.getShipCountry())
                 .build();
     }
 
-    // --- SaveRequest -> Entity ---
-    public Order saveEntityFromRequest(OrderSaveRequest r) {
-        Customer customer = null;
-        if (r.getCustomerId() != null) {
-            customer = new Customer();
-            customer.setCustomerId(r.getCustomerId());
+    public Order saveEntityFromRequest(OrderSaveRequest request) {
+        Customer customer = customerService.getCustomer(request.getCustomerId());
+        if (Objects.isNull(customer)) {
+            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
         }
 
-        Employee employee = null;
-        if (r.getEmployeeId() != null) {
-            employee = new Employee();
-            employee.setEmployeeId(r.getEmployeeId());
+        Employee employee = employeeService.getEmployee(request.getEmployeeId());
+        if (Objects.isNull(employee)) {
+            throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
         }
 
-        Shipper shipper = null;
-        if (r.getShipViaId() != null) {
-            shipper = new Shipper();
-            shipper.setShipperId(r.getShipViaId());
+        Shipper shipper = shipperService.getShipper(request.getShipViaId());
+        if (Objects.isNull(shipper)) {
+            throw new BusinessException(ResultMessages.SHIPPER_NOT_FOUND);
         }
 
         return Order.builder()
                 .customer(customer)
                 .employee(employee)
                 .shipVia(shipper)
-                .orderDate(r.getOrderDate())
-                .requiredDate(r.getRequiredDate())
-                .shippedDate(r.getShippedDate())
-                .freight(r.getFreight())
-                .shipName(r.getShipName())
-                .shipAddress(r.getShipAddress())
-                .shipCity(r.getShipCity())
-                .shipRegion(r.getShipRegion())
-                .shipPostalCode(r.getShipPostalCode())
-                .shipCountry(r.getShipCountry())
+                .orderDate(request.getOrderDate())
+                .requiredDate(request.getRequiredDate())
+                .shippedDate(request.getShippedDate())
+                .freight(request.getFreight())
+                .shipName(request.getShipName())
+                .shipAddress(request.getShipAddress())
+                .shipCity(request.getShipCity())
+                .shipRegion(request.getShipRegion())
+                .shipPostalCode(request.getShipPostalCode())
+                .shipCountry(request.getShipCountry())
                 .build();
     }
 }

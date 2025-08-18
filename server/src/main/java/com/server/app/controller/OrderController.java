@@ -1,8 +1,10 @@
 package com.server.app.controller;
 
 import com.server.app.dto.OrderDto;
-import com.server.app.dto.request.OrderSaveRequest;
-import com.server.app.dto.request.OrderUpdateRequest;
+import com.server.app.dto.request.order.OrderSaveRequest;
+import com.server.app.dto.request.order.OrderUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,32 +21,31 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody OrderSaveRequest request){
-        String resultMessage = orderService.add(request);
-        return ResponseEntity.ok(resultMessage);
+    public ResponseEntity<GenericResponse> add(@RequestBody OrderSaveRequest request) {
+        return ResponseEntity.ok(orderService.add(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<OrderDto> update(@RequestBody OrderUpdateRequest request){
-        OrderDto updatedOrder = orderService.update(request);
-        return ResponseEntity.ok(updatedOrder);
+    public ResponseEntity<GenericResponse> update(@RequestBody OrderUpdateRequest request) {
+        return ResponseEntity.ok(orderService.update(request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> findOrderByOrderId(@PathVariable Short id){
-        OrderDto order = orderService.findOrderByOrderId(id);
-        return ResponseEntity.ok(order);
+    public ResponseEntity<DataGenericResponse<OrderDto>> get(@PathVariable Short id) {
+        DataGenericResponse<OrderDto> result = orderService.findOrderByOrderId(id);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Short id){
-        orderService.deleteOrderByOrderId(id);
-        return ResponseEntity.ok("İşlem Başarılı");
+    public ResponseEntity<GenericResponse> delete(@PathVariable Short id) {
+        GenericResponse result = orderService.deleteOrderByOrderId(id);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> findAllOrders(){
-        return ResponseEntity.ok(orderService.findAllOrders());
+    public ResponseEntity<DataGenericResponse<List<OrderDto>>> findAllOrders() {
+        DataGenericResponse<List<OrderDto>> result = orderService.findAllOrders();
+        return ResponseEntity.ok(result);
     }
 }

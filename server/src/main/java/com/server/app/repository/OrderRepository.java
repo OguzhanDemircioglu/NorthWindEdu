@@ -9,9 +9,9 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Short> {
 
-    Optional<Order> findOrderByOrderId(Short orderId);
+    Optional<Order> findOrderByOrderId(Short id);
 
-    void deleteOrderByOrderId(Short orderId);
+    void deleteOrderByOrderId(Short id);
 
-    boolean existsByCustomer_CustomerId(String customerId);
+    boolean existsOrderByOrderId(Short id);
 }
