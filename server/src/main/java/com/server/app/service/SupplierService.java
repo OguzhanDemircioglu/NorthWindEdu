@@ -13,11 +13,11 @@ public interface SupplierService {
 
     SupplierDto update(SupplierUpdateRequest request);
 
-    SupplierDto findSupplierBySupplierId(Short supplierId);
+    SupplierDto findSupplierBySupplierId(Long supplierId);
 
-    void deleteSupplierBySupplierId(Short supplierId);
+    void deleteSupplierBySupplierId(Long supplierId);
 
     List<SupplierDto> findAllSuppliers();
 
-    Supplier getSupplier(Short supplierId);
+    Supplier getSupplier(Long supplierId);
 }

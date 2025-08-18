@@ -76,7 +76,7 @@ public class EmployeeSrvImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto findEmployeeByEmployeeId(Integer employeeId) {
+    public EmployeeDto findEmployeeByEmployeeId(Long employeeId) {
         Optional<Employee> employee = repository.findEmployeeByEmployeeId(employeeId);
         if (employee.isEmpty()) {
             throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
@@ -86,7 +86,7 @@ public class EmployeeSrvImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteEmployeeByEmployeeId(Integer employeeId) {
+    public void deleteEmployeeByEmployeeId(Long employeeId) {
         repository.deleteEmployeeByEmployeeId(employeeId);
     }
 

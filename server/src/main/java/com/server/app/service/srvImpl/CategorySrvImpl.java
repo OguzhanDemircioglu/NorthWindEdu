@@ -58,7 +58,7 @@ public class CategorySrvImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto findCategoryByCategoryId(Short id) {
+    public CategoryDto findCategoryByCategoryId(Long id) {
         Optional<Category> category = repository.findCategoryByCategoryId(id);
         if (category.isEmpty()) {
             throw new RuntimeException("Kayıt Bulunamadı");
@@ -68,7 +68,7 @@ public class CategorySrvImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategoryByCategoryId(Short id) { repository.deleteCategoryByCategoryId(id); }
+    public void deleteCategoryByCategoryId(Long id) { repository.deleteCategoryByCategoryId(id); }
 
     @Override
     public List<CategoryDto> findAllCategories() {
@@ -84,7 +84,7 @@ public class CategorySrvImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategory(Short categoryId) {
+    public Category getCategory(Long categoryId) {
         return repository.getCategoryByCategoryId(categoryId);
     }
 

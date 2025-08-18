@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class ProductUpdateRequest {
     private Long productId;
     private String productName;
-    private Short supplierId;
-    private Short categoryId;
+    private Long supplierId;
+    private Long categoryId;
     private String quantityPerUnit;
     private Float unitPrice;
     private Integer discontinued;

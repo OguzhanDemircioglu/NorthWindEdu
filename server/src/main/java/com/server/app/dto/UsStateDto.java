@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsStateDto {
-    private Short stateId;
+    private Long stateId;
     private String stateName;
     private String stateAbbr;
     private String stateRegion;

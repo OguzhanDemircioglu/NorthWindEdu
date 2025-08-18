@@ -31,14 +31,14 @@ public class SupplierController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SupplierDto> findSupplierBySupplierId(@PathVariable Short id){
+    public ResponseEntity<SupplierDto> findSupplierBySupplierId(@PathVariable Long id){
         SupplierDto supplier = supplierService.findSupplierBySupplierId(id);
         return ResponseEntity.ok(supplier);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Short id){
+    public ResponseEntity<String> delete(@PathVariable Long id){
         supplierService.deleteSupplierBySupplierId(id);
         return ResponseEntity.ok().body("İslem Basarili");
     }

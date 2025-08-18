@@ -31,14 +31,14 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findCategoryById(@PathVariable Short id) {
+    public ResponseEntity<?> findCategoryById(@PathVariable Long id) {
         CategoryDto category = categoryService.findCategoryByCategoryId(id);
         return ResponseEntity.ok(category);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCategoryById(@PathVariable Short id) {
+    public ResponseEntity<?> deleteCategoryById(@PathVariable Long id) {
         categoryService.deleteCategoryByCategoryId(id);
         return ResponseEntity.ok("İşlem Başarılı");
     }
