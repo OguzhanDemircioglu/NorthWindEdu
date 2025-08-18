@@ -3,7 +3,6 @@ package com.server.app.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.server.app.model.Region;
 
 
 @Data

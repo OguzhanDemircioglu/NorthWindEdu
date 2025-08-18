@@ -11,4 +11,6 @@ public interface SupplierRepository extends JpaRepository<Supplier, Short> {
     Optional<Supplier> findSupplierBySupplierId(Short supplierId);
 
     void deleteSupplierBySupplierId(Short supplierId);
+
+    Supplier getSupplierBySupplierId(Short supplierId);
 }
