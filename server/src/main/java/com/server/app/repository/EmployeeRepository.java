@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    Optional<Employee> findEmployeeByEmployeeId(Integer employeeId);
+    Optional<Employee> findEmployeeByEmployeeId(Long employeeId);
 
-    void deleteEmployeeByEmployeeId(Integer employeeId);
+    void deleteEmployeeByEmployeeId(Long employeeId);
 
     boolean existsByFirstNameAndLastName(String firstName, String lastName);
 }

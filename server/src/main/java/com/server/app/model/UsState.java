@@ -18,7 +18,7 @@ public class UsState {
     @SequenceGenerator(name = "state_seq", sequenceName = "state_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_seq")
     @Column(name = "state_id", nullable = false, updatable = false, unique = true)
-    private Short stateId;
+    private Long stateId;
 
     @Column(name = "state_name", columnDefinition = "varchar", length = 100)
     private String stateName;

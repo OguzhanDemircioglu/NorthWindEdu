@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class TerritoryDto {
     private String territoryId;
     private String territoryDescription;
-    private Short regionId;
+    private Long regionId;
 }

@@ -56,7 +56,7 @@ public class ShipperSrvImpl implements ShipperService {
     }
 
     @Override
-    public ShipperDto findShipperByShipperId(Short id) {
+    public ShipperDto findShipperByShipperId(Long id) {
         Optional<Shipper> shipper = repository.findShipperByShipperId(id);
         if (shipper.isEmpty()) {
             throw new RuntimeException("Kayıt Bulunamadı");
@@ -65,7 +65,7 @@ public class ShipperSrvImpl implements ShipperService {
     }
 
     @Override
-    public void deleteShipperByShipperId(Short id) {
+    public void deleteShipperByShipperId(Long id) {
         repository.deleteShipperByShipperId(id);
     }
 

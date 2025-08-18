@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShipperUpdateRequest {
-    private Short shipperId;
+    private Long shipperId;
     private String companyName;
     private String phone;
 }

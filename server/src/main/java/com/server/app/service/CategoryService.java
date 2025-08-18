@@ -13,11 +13,11 @@ public interface CategoryService {
 
     CategoryDto update(CategoryUpdateRequest request);
 
-    CategoryDto findCategoryByCategoryId(Short id);
+    CategoryDto findCategoryByCategoryId(Long id);
 
-    void deleteCategoryByCategoryId(Short id);
+    void deleteCategoryByCategoryId(Long id);
 
     List<CategoryDto> findAllCategories();
 
-    Category getCategory(Short categoryId);
+    Category getCategory(Long categoryId);
 }

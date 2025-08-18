@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductSaveRequest {
     private String productName;
-    private Short supplierId;
-    private Short categoryId;
+    private Long supplierId;
+    private Long categoryId;
     private String quantityPerUnit;
     private Float unitPrice;
     private Integer discontinued;

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShipperDto {
-    private Short shipperId;
+    private Long shipperId;
     private String companyName;
     private String phone;
 }

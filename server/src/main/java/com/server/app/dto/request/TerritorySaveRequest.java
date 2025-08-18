@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class TerritorySaveRequest {
     private String territoryId;
     private String territoryDescription;
-    private Short regionId;
+    private Long regionId;
 }

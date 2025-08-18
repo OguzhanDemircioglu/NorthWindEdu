@@ -31,14 +31,14 @@ public class UsStateController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UsStateDto> getState(@PathVariable Short id) {
+    public ResponseEntity<UsStateDto> getState(@PathVariable Long id) {
         UsStateDto state = stateService.findStateByStateId(id);
         return ResponseEntity.ok(state);
     }
 
     @Transactional
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteState(@PathVariable Short id) {
+    public ResponseEntity<?> deleteState(@PathVariable Long id) {
         stateService.deleteStateByStateId(id);
         return ResponseEntity.ok("İşlem Başarılı");
     }
