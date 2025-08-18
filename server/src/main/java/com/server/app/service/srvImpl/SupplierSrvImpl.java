@@ -69,14 +69,14 @@ public class SupplierSrvImpl implements SupplierService {
     }
 
     @Override
-    public SupplierDto findSupplierBySupplierId(Short supplierId) {
+    public SupplierDto findSupplierBySupplierId(Long supplierId) {
         return repository.findSupplierBySupplierId(supplierId)
                 .map(this::toDto)
                 .orElseThrow(() -> new RuntimeException("Kayıt bulunamadı"));
     }
 
     @Override
-    public void deleteSupplierBySupplierId(Short supplierId) {
+    public void deleteSupplierBySupplierId(Long supplierId) {
         repository.deleteSupplierBySupplierId(supplierId);
     }
 
@@ -89,7 +89,7 @@ public class SupplierSrvImpl implements SupplierService {
     }
 
     @Override
-    public Supplier getSupplier(Short supplierId) {
+    public Supplier getSupplier(Long supplierId) {
         return repository.getSupplierBySupplierId(supplierId);
     }
 

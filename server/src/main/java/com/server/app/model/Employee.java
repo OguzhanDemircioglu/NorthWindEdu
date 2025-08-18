@@ -20,7 +20,7 @@ public class Employee {
     @SequenceGenerator(name = "employee_seq", sequenceName = "employee_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_seq")
     @Column(name = "employee_id", nullable = false)
-    private Integer employeeId;
+    private Long employeeId;
 
     @Column(name = "last_name", length = 20, nullable = false)
     private String lastName;

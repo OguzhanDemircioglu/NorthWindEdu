@@ -17,7 +17,7 @@ public class Supplier {
     @SequenceGenerator(name = "supplier_seq", sequenceName = "supplier_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supplier_seq")
     @Column(name = "supplier_id", nullable = false)
-    private Short supplierId; // smallint → Short
+    private Long supplierId;
 
     @Column(name = "company_name", length = 40, nullable = false)
     private String companyName;

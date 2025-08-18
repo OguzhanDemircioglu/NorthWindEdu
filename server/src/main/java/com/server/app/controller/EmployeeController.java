@@ -31,14 +31,14 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDto> findEmployeeByEmployeeId(@PathVariable Integer id){
+    public ResponseEntity<EmployeeDto> findEmployeeByEmployeeId(@PathVariable Long id){
         EmployeeDto employee = employeeService.findEmployeeByEmployeeId(id);
         return ResponseEntity.ok(employee);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id){
+    public ResponseEntity<String> delete(@PathVariable Long id){
         employeeService.deleteEmployeeByEmployeeId(id);
         return ResponseEntity.ok("İşlem Başarılı");
     }

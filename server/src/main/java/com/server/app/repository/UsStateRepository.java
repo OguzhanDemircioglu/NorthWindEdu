@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UsStateRepository extends JpaRepository<UsState, Integer> {
+public interface UsStateRepository extends JpaRepository<UsState, Long> {
 
-    Optional<UsState> findStateByStateId(Short id);
+    Optional<UsState> findStateByStateId(Long id);
 
-    void deleteStateByStateId(Short id);
+    void deleteStateByStateId(Long id);
 }

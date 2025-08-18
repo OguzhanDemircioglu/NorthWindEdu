@@ -18,7 +18,7 @@ public class Shipper {
     @SequenceGenerator(name = "shipper_seq", sequenceName = "shipper_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "shipper_seq")
     @Column(name = "shipper_id", nullable = false)
-    private Short shipperId; // smallint → Short
+    private Long shipperId; // smallint → Short
 
     @Column(name = "company_name", length = 40, nullable = false)
     private String companyName;
