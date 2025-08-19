@@ -35,6 +35,8 @@ public class ResultMessages {
     public static final String QUANTITY_OUT_OF_RANGE = "Ürün miktar bilgisi 20 karakterden uzun olamaz";
     //endregion
 
+
+    //region Order
     public static final String FREIGHT_NEGATIVE = "Kargo ücreti negatif olamaz";
     public static final String SHIP_NAME_OUT_OF_RANGE = "ShipName 40 karakterden uzun olamaz";
     public static final String SHIP_ADDRESS_OUT_OF_RANGE = "ShipAddress 60 karakterden uzun olamaz";
@@ -44,4 +46,5 @@ public class ResultMessages {
     public static final String SHIP_COUNTRY_OUT_OF_RANGE = "ShipCountry 15 karakterden uzun olamaz";
     public static final String REQUIRED_DATE_INVALID = "RequiredDate, OrderDate'ten önce olamaz";
     public static final String SHIPPED_DATE_INVALID = "ShippedDate, OrderDate'ten önce olamaz";
+    //endregion
 }
