@@ -92,4 +92,9 @@ public class CustomerDemographicsSrvImpl implements CustomerDemographicsService 
 
         return result;
     }
+
+    @Override
+    public CustomerDemographics getCustomerDemographics(String customerTypeId) {
+        return repository.getCustomerDemographicsByCustomerTypeId(customerTypeId);
+    }
 }
