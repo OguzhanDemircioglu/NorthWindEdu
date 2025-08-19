@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Builder
 public class OrderUpdateRequest {
 
-    private Short orderId;          // Güncellenecek Order’ın PK
+    private Long orderId;          // Güncellenecek Order’ın PK
 
     private String customerId;      // Customer FK
     private Long employeeId;     // Employee FK
