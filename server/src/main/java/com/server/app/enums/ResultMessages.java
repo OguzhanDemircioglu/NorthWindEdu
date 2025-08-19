@@ -15,6 +15,7 @@ public class ResultMessages {
     public static final String WRONG_PHONE_FORMAT = "Geçersiz telefon format";
     public static final String SUPPLIER_NOT_FOUND = "Bu ID ile Tedarikçi bulunamadı";
     public static final String CATEGORY_NOT_FOUND = "Bu ID ile Kategori bulunamadı";
+    public static final String EMPLOYEE_NOT_FOUND = "Bu ID ile Employee bulunamadı";
     //endregion
 
     //region Employee
@@ -41,4 +42,10 @@ public class ResultMessages {
     public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
     public static final String EMPTY_CUSTOMER_TYPE_ID = "Müşteri tipi ID alanı boş bırakılamaz";
     //
+
+    //region Territory
+    public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
+    public static final String EMPTY_TERRITORY_ID = "Bölge ID alanı boş veya null olamaz";
+    //endregion
+
 }

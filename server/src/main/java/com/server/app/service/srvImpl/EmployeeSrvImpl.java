@@ -147,4 +147,8 @@ public class EmployeeSrvImpl implements EmployeeService {
 
         return null;
     }
+
+    public Employee getEmployee(Long employeeId) {
+        return repository.getEmployeeByEmployeeId(employeeId);
+    }
 }

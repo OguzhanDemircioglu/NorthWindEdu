@@ -15,14 +15,12 @@ import com.server.app.model.CustomerCustomerDemo;
 import com.server.app.repository.CustomerCustomerDemoRepository;
 import com.server.app.service.CustomerCustomerDemoService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class CustomerCustomerDemoSrvImpl implements CustomerCustomerDemoService {
 

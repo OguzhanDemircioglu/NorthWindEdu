@@ -105,5 +105,9 @@ public class TerritorySrvImpl implements TerritoryService {
         return dto;
     }
 
+    public Territory getTerritory(String id) {
+        return repository.getTerritoryByTerritoryId(id);
+    }
+
 
 }
