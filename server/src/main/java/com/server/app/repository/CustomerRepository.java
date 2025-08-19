@@ -11,4 +11,6 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     Optional<Customer> findCustomerByCustomerId(String customerId);
 
     void deleteCustomerByCustomerId(String customerId);
+
+    Customer getCustomerByCustomerId(String customerId);
 }

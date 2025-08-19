@@ -131,4 +131,9 @@ public class CustomerSrvImpl implements CustomerService {
 
         return result;
     }
+
+    @Override
+    public Customer getCustomer(String id) {
+        return repository.getCustomerByCustomerId(id);
+    }
 }

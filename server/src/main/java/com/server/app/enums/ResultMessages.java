@@ -24,8 +24,6 @@ public class ResultMessages {
     public static final String EMPTY_SURNAME = "Soyisim alanı boş olamaz";
     public static final String INVALID_BIRTHDATE = "Doğum tarihi gelecekte olamaz";
     public static final String HIRING_DATE_BEFORE_BIRTHDAY = "İşe alım tarihi doğum tarihinden önce olamaz";
-    public static final String EMPLOYEE_NOT_FOUND = "Bu ID ile Çalışan bulunamadı";
-    public static final String EMPTY_EMPLOYEE_ID = "Çalışan ID alanı boş veya 0 olamaz";
     //endregion
 
     //region Product
@@ -33,6 +31,16 @@ public class ResultMessages {
     public static final String P_NAME_OUT_OF_RANGE = "Ürün adı 40 karakterden uzun olamaz";
     public static final String QUANTITY_OUT_OF_RANGE = "Ürün miktar bilgisi 20 karakterden uzun olamaz";
     //endregion
+
+    //region Customer
+    public static final String CUSTOMER_NOT_FOUND = "Bu ID ile Müşteri bulunamadı";
+    public static final String EMPTY_CUSTOMER_ID = "Müşteri ID alanı boş bırakılamaz";
+    //endregion
+
+    //region CustomerDemographic
+    public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
+    public static final String EMPTY_CUSTOMER_TYPE_ID = "Müşteri tipi ID alanı boş bırakılamaz";
+    //
 
     //region Territory
     public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge bulunamadı";

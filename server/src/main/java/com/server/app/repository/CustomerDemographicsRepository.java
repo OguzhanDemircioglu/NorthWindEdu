@@ -11,4 +11,6 @@ public interface CustomerDemographicsRepository extends JpaRepository<CustomerDe
     Optional<CustomerDemographics> findCustomerDemographicsByCustomerTypeId(String customerTypeId);
 
     void deleteCustomerDemographicsByCustomerTypeId(String customerTypeId);
+
+    CustomerDemographics getCustomerDemographicsByCustomerTypeId(String customerTypeId);
 }
