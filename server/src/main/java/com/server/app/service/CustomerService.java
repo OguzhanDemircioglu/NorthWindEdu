@@ -23,5 +23,3 @@ public interface CustomerService {
 
     Customer getCustomer(String customerId);
 }
-
-
