@@ -31,10 +31,10 @@ public class EmployeeTerritoryController {
         return ResponseEntity.ok(employeeTerritoryService.update(request));
     }
 
-    @GetMapping("/{employeeId}/{territoryId}")
+    @GetMapping("/")
     public ResponseEntity<GenericResponse> get(
-            @PathVariable("employeeId") Long employeeId,
-            @PathVariable("territoryId") String territoryId) {
+            @RequestParam Long employeeId,
+            @RequestParam String territoryId) {
 
         EmployeeTerritoryId id = new EmployeeTerritoryId(employeeId, territoryId);
 
@@ -43,10 +43,10 @@ public class EmployeeTerritoryController {
     }
 
     @Transactional
-    @DeleteMapping("/{employeeId}/{territoryId}")
+    @DeleteMapping("/")
     public ResponseEntity<GenericResponse> delete(
-            @PathVariable("employeeId") Long employeeId,
-            @PathVariable("territoryId") String territoryId) {
+            @RequestParam Long employeeId,
+            @RequestParam String territoryId) {
         EmployeeTerritoryId id = new EmployeeTerritoryId(employeeId, territoryId);
         GenericResponse result = employeeTerritoryService.deleteEmployeeTerritoryByEmployeeTerritoryId(id);
         return ResponseEntity.ok(result);
