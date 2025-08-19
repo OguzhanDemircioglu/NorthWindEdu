@@ -90,7 +90,7 @@ public class EmployeeTerritorySrvImpl implements EmployeeTerritoryService {
 
     private String checkEmployeeTerritoryForGeneralValidations(EmployeeTerritory request) {
         if(request.getEmployeeTerritoryId().getEmployeeId() == null || request.getEmployeeTerritoryId().getEmployeeId() == 0) {
-            return ResultMessages.EMPTY_EMPLOYEE_ID;
+            return ResultMessages.ID_IS_NOT_DELIVERED;
         }
 
         if(Strings.isNullOrEmpty(request.getEmployeeTerritoryId().getTerritoryId())) {
