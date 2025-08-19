@@ -15,14 +15,12 @@ import com.server.app.model.embedded.EmployeeTerritoryId;
 import com.server.app.repository.EmployeeTerritoryRepository;
 import com.server.app.service.EmployeeTerritoryService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class EmployeeTerritorySrvImpl implements EmployeeTerritoryService {
 

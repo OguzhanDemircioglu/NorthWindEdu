@@ -12,5 +12,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     void deleteCustomerByCustomerId(String customerId);
 
+    boolean existsCustomerByCustomerId(String customerId);
+
     Customer getCustomerByCustomerId(String customerId);
 }

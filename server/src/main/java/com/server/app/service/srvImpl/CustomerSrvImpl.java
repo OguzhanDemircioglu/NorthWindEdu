@@ -132,8 +132,13 @@ public class CustomerSrvImpl implements CustomerService {
         return result;
     }
 
-    @Override
-    public Customer getCustomer(String id) {
-        return repository.getCustomerByCustomerId(id);
+    public boolean existsByCustomerId(String customerId) {
+        return repository.existsById(customerId);
     }
+
+    @Override
+    public Customer getCustomer(String customerId) {
+        return repository.getCustomerByCustomerId(customerId); // entity veya null döner
+    }
+
 }
