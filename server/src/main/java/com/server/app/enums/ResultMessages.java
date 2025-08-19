@@ -31,4 +31,12 @@ public class ResultMessages {
     public static final String P_NAME_OUT_OF_RANGE = "Ürün adı 40 karakterden uzun olamaz";
     public static final String QUANTITY_OUT_OF_RANGE = "Ürün miktar bilgisi 20 karakterden uzun olamaz";
     //endregion
+
+    //region Customer
+    public static final String CUSTOMER_NOT_FOUND = "Bu ID ile Müşteri bulunamadı";
+    //endregion
+
+    //region CustomerDemographic
+    public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
+    //
 }
