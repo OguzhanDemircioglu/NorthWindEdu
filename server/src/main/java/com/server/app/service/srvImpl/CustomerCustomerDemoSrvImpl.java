@@ -66,7 +66,7 @@ public class CustomerCustomerDemoSrvImpl implements CustomerCustomerDemoService 
 
     @Override
     public GenericResponse deleteCustomerCustomerDemoByCcdId(CcdId id) {
-        boolean isExists = repository.existsByCcdId_CustomerIdAndCcdId_CustomerTrypeId(id.getCustomerId(), id.getCustomerTypeId());
+        boolean isExists = repository.existsByCcdId_CustomerIdAndCcdId_CustomerTypeId(id.getCustomerId(), id.getCustomerTypeId());
         if (!isExists) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }

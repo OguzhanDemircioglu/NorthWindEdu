@@ -14,5 +14,5 @@ public interface CustomerCustomerDemoRepository extends JpaRepository<CustomerCu
 
     void deleteCustomerCustomerDemoByCcdId(CcdId id);
 
-    boolean existsByCcdId_CustomerIdAndCcdId_CustomerTrypeId(String customerId, String customerTypeId);
+    boolean existsByCcdId_CustomerIdAndCcdId_CustomerTypeId(String customerId, String customerTypeId);
 }

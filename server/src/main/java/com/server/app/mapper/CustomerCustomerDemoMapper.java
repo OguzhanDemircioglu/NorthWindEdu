@@ -46,7 +46,7 @@ public class CustomerCustomerDemoMapper {
             throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
         }
 
-        boolean isExist = repository.existsByCcdId_CustomerIdAndCcdId_CustomerTrypeId(request.getCustomerId(), request.getCustomerTypeId());
+        boolean isExist = repository.existsByCcdId_CustomerIdAndCcdId_CustomerTypeId(request.getCustomerId(), request.getCustomerTypeId());
         if (!isExist) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
