@@ -31,21 +31,4 @@ public class ResultMessages {
     public static final String P_NAME_OUT_OF_RANGE = "Ürün adı 40 karakterden uzun olamaz";
     public static final String QUANTITY_OUT_OF_RANGE = "Ürün miktar bilgisi 20 karakterden uzun olamaz";
     //endregion
-
-    //region Order
-    public static final String CUSTOMER_NOT_FOUND = "Bu ID ile Musteri bulunamadi";
-    public static final String EMPLOYEE_NOT_FOUND = "Bu ID ile Calisan bulunamadi";
-    public static final String SHIPPER_NOT_FOUND = "Bu ID ile Nakliyeci (Shipper) bulunamadi";
-
-    public static final String FREIGHT_NEGATIVE = "Nakliye ucreti 0'dan kucuk olamaz";
-    public static final String SHIP_NAME_OUT_OF_RANGE = "Gonderim adi 40 karakterden uzun olamaz";
-    public static final String SHIP_ADDRESS_OUT_OF_RANGE = "Adres 60 karakterden uzun olamaz";
-    public static final String SHIP_CITY_OUT_OF_RANGE = "Sehir 15 karakterden uzun olamaz";
-    public static final String SHIP_REGION_OUT_OF_RANGE = "Bolge 15 karakterden uzun olamaz";
-    public static final String SHIP_POSTAL_CODE_OUT_OF_RANGE = "Posta kodu 10 karakterden uzun olamaz";
-    public static final String SHIP_COUNTRY_OUT_OF_RANGE = "Ulke 15 karakterden uzun olamaz";
-
-    public static final String REQUIRED_DATE_INVALID = "Teslim tarihi siparis tarihinden once olamaz";
-    public static final String SHIPPED_DATE_INVALID = "Kargolama tarihi siparis tarihinden once olamaz";
-    //endregion
 }
