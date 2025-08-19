@@ -15,6 +15,9 @@ public class ResultMessages {
     public static final String WRONG_PHONE_FORMAT = "Geçersiz telefon format";
     public static final String SUPPLIER_NOT_FOUND = "Bu ID ile Tedarikçi bulunamadı";
     public static final String CATEGORY_NOT_FOUND = "Bu ID ile Kategori bulunamadı";
+    public static final String SHIPPER_NOT_FOUND = "Bu ID ile Kargo şirketi bulunamadı";
+    public static final String EMPLOYEE_NOT_FOUND = "Bu ID ile Çalışan bulunamadı";
+    public static final String CUSTOMER_NOT_FOUND = "Bu ID ile Müşteri bulunamadı";
     //endregion
 
     //region Employee
@@ -31,4 +34,14 @@ public class ResultMessages {
     public static final String P_NAME_OUT_OF_RANGE = "Ürün adı 40 karakterden uzun olamaz";
     public static final String QUANTITY_OUT_OF_RANGE = "Ürün miktar bilgisi 20 karakterden uzun olamaz";
     //endregion
+
+    public static final String FREIGHT_NEGATIVE = "Kargo ücreti negatif olamaz";
+    public static final String SHIP_NAME_OUT_OF_RANGE = "ShipName 40 karakterden uzun olamaz";
+    public static final String SHIP_ADDRESS_OUT_OF_RANGE = "ShipAddress 60 karakterden uzun olamaz";
+    public static final String SHIP_CITY_OUT_OF_RANGE = "ShipCity 15 karakterden uzun olamaz";
+    public static final String SHIP_REGION_OUT_OF_RANGE = "ShipRegion 15 karakterden uzun olamaz";
+    public static final String SHIP_POSTAL_CODE_OUT_OF_RANGE = "ShipPostalCode 10 karakterden uzun olamaz";
+    public static final String SHIP_COUNTRY_OUT_OF_RANGE = "ShipCountry 15 karakterden uzun olamaz";
+    public static final String REQUIRED_DATE_INVALID = "RequiredDate, OrderDate'ten önce olamaz";
+    public static final String SHIPPED_DATE_INVALID = "ShippedDate, OrderDate'ten önce olamaz";
 }

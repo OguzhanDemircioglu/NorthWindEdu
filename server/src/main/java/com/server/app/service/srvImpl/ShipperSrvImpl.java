@@ -87,10 +87,6 @@ public class ShipperSrvImpl implements ShipperService {
         return repository.findShipperByShipperId(shipperId).orElse(null);
     }
 
-    @Override
-    public boolean existsByShipperId(Long shipperId) {
-        return repository.existsById(shipperId);
-    }
 
     private ShipperDto shipperToShipperDtoMapper(Shipper s) {
         if (s == null) return null;
