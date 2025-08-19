@@ -3,6 +3,7 @@ package com.server.app.service;
 import com.server.app.dto.CustomerDto;
 import com.server.app.dto.request.CustomerSaveRequest;
 import com.server.app.dto.request.CustomerUpdateRequest;
+import com.server.app.model.Customer;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface CustomerService {
     void deleteCustomerByCustomerId(String customerId);
 
     List<CustomerDto> findAllCustomers();
+
+    Customer getCustomer(String id);
 }

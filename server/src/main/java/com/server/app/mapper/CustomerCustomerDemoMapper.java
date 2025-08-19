@@ -61,7 +61,7 @@ public class CustomerCustomerDemoMapper {
             throw new BusinessException(ResultMessages.CUSTOMER_DEMOGRAPHICS_NOT_FOUND);
         }
 
-        return
+        return updateEntityFromRequest(request, customer, customerDemographics);
     }
 
     private CustomerCustomerDemo updateEntityFromRequest(CustomerCustomerDemoUpdateRequest request, Customer customer, CustomerDemographics customerDemographics) {
