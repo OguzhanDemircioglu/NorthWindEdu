@@ -18,6 +18,8 @@ public class ResultMessages {
     public static final String EMPLOYEE_NOT_FOUND = "Bu ID ile Employee bulunamadı";
     public static final String CUSTOMER_NOT_FOUND = "Bu ID ile Müşteri bulunamadı";
     public static final String SHIPPER_NOT_FOUND = "Bu ID ile Kargocu bulunamadı";
+    public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
+    public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
     //endregion
 
     //region Employee
@@ -40,12 +42,10 @@ public class ResultMessages {
     //endregion
 
     //region CustomerDemographic
-    public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
     public static final String EMPTY_CUSTOMER_TYPE_ID = "Müşteri tipi ID alanı boş bırakılamaz";
     //
 
     //region Territory
-    public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
     public static final String EMPTY_TERRITORY_ID = "Bölge ID alanı boş veya null olamaz";
     //endregion
 

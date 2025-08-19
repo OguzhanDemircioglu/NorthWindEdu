@@ -12,7 +12,7 @@ import lombok.*;
 public class CustomerDemographics {
 
     @Id
-    @Column(name = "customer_type_id", length = 1, nullable = false) // bpchar => fixed-length char
+    @Column(name = "customer_type_id", length = 1, nullable = false)
     private String customerTypeId;
 
     @Column(name = "customer_desc", columnDefinition = "TEXT")
