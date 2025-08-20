@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class OrderDetailSaveRequest {
     private Long orderId;
     private Long productId;
-    private Float unitPrice;
+    private Double unitPrice;
     private Long quantity;
-    private Float discount;
+    private Double discount;
 }

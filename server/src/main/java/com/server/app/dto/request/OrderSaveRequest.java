@@ -21,7 +21,7 @@ public class OrderSaveRequest {
     private LocalDate requiredDate;
     private LocalDate shippedDate;
 
-    private Float freight;
+    private Double freight;
     private String shipName;
     private String shipAddress;
     private String shipCity;

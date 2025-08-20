@@ -14,14 +14,12 @@ import com.server.app.model.OrderDetailId;
 import com.server.app.repository.OrderDetailRepository;
 import com.server.app.service.OrderDetailService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class OrderDetailSrvImpl implements OrderDetailService {
 
@@ -116,7 +114,7 @@ public class OrderDetailSrvImpl implements OrderDetailService {
         return null;
     }
 
-    private String checkUnitPriceValidation(Float unitPrice) {
+    private String checkUnitPriceValidation(Double unitPrice) {
         if (unitPrice == null) {
             return ResultMessages.OD_UNIT_PRICE_EMPTY;
         }
@@ -126,7 +124,7 @@ public class OrderDetailSrvImpl implements OrderDetailService {
         return null;
     }
 
-    private String checkDiscountValidation(Float discount) {
+    private String checkDiscountValidation(Double discount) {
         if (discount == null) {
             return ResultMessages.OD_DISCOUNT_EMPTY;
         }

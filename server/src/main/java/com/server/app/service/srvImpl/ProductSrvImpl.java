@@ -14,14 +14,12 @@ import com.server.app.model.Product;
 import com.server.app.repository.ProductRepository;
 import com.server.app.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ProductSrvImpl implements ProductService {
 

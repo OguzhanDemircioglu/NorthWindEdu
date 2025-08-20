@@ -13,7 +13,7 @@ public class ProductUpdateRequest {
     private Long supplierId;
     private Long categoryId;
     private String quantityPerUnit;
-    private Float unitPrice;
+    private Double unitPrice;
     private Integer discontinued;
     private Short reorderLevel;
     private Short unitsInStock;

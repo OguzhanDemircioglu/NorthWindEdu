@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class OrderDetailDto {
     private Long orderId;
     private Long productId;
-    private Float unitPrice;
+    private Double unitPrice;
     private Long quantity;   // smallint -> Long (senin istediğin)
-    private Float discount;
+    private Double discount;
 }

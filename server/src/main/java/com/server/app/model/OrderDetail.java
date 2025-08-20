@@ -25,11 +25,11 @@ public class OrderDetail {
     private Product product;
 
     @Column(name = "unit_price", nullable = false)
-    private Float unitPrice;
+    private Double unitPrice;
 
     @Column(name = "quantity", nullable = false)
     private Long quantity;
 
     @Column(name = "discount", nullable = false)
-    private Float discount;
+    private Double discount;
 }
