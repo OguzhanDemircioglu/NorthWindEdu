@@ -69,4 +69,8 @@ public class ResultMessages {
     public static final String OD_DISCOUNT_EMPTY = "Discount boş olamaz";
     public static final String OD_DISCOUNT_OUT_OF_RANGE = "Discount 0..1 aralığında olmalı";
 //endregion
+
+    //region Category
+    public static final String C_NAME_OUT_OF_RANGE = "Kategori adı 15 karakterden uzun olamaz";
+    //endregion
 }

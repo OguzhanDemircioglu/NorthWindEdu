@@ -1,15 +1,21 @@
 package com.server.app.service.srvImpl;
 
-import com.server.app.dto.CategoryDto;
-import com.server.app.dto.request.CategorySaveRequest;
-import com.server.app.dto.request.CategoryUpdateRequest;
+import com.google.common.base.Strings;
+import com.server.app.dto.response.CategoryDto;
+import com.server.app.dto.request.category.CategorySaveRequest;
+import com.server.app.dto.request.category.CategoryUpdateRequest;
+import com.server.app.enums.ResultMessages;
+import com.server.app.helper.BusinessException;
+import com.server.app.helper.BusinessRules;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
+import com.server.app.mapper.CategoryMapper;
 import com.server.app.model.Category;
 import com.server.app.repository.CategoryRepository;
 import com.server.app.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,69 +24,70 @@ import java.util.Optional;
 public class CategorySrvImpl implements CategoryService {
 
     private final CategoryRepository repository;
+    private final CategoryMapper mapper;
 
     @Override
-    public String add(CategorySaveRequest request){
-        try {
-            repository.save(
-                    Category.builder()
-                            .categoryName(request.getCategoryName())
-                            .description(request.getDescription())
-                            .picture(request.getPicture())
-                            .build()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "İşlem Başarısız";
-        }
-        return "İşlem Başarılı";
+    public GenericResponse add(CategorySaveRequest request){
+        Category category = mapper.saveEntityFromRequest(request);
+
+        BusinessRules.validate(
+                checkCategoryForGeneralValidations(category),
+                checkNameValidation(category.getCategoryName())
+        );
+
+        repository.save(category);
+        return new GenericResponse();
     }
 
     @Override
-    public CategoryDto update(CategoryUpdateRequest request) {
-        try {
-            Optional<Category> category = repository.findCategoryByCategoryId(request.getCategoryId());
-            if (category.isEmpty()) {
-                throw new RuntimeException("Update Edilecek Kayıt Bulunamadı");
-            }
+    public GenericResponse update(CategoryUpdateRequest request) {
+        Category category = mapper.toEntity(request);
 
-            category.get().setCategoryName(request.getCategoryName());
-            category.get().setDescription(request.getDescription());
-            category.get().setPicture(request.getPicture());
+        BusinessRules.validate(
+                checkCategoryForGeneralValidations(category),
+                checkNameValidation(category.getCategoryName())
+        );
 
-            repository.save(category.get());
-
-            return categoryToCategoryDtoMapper(category.get());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("İşlem Başarısız");
-        }
+        repository.save(category);
+        return GenericResponse.builder().message(ResultMessages.RECORD_UPDATED).build();
     }
 
     @Override
-    public CategoryDto findCategoryByCategoryId(Long id) {
+    public DataGenericResponse<CategoryDto> findCategoryByCategoryId(Long id) {
         Optional<Category> category = repository.findCategoryByCategoryId(id);
         if (category.isEmpty()) {
-            throw new RuntimeException("Kayıt Bulunamadı");
+            throw new BusinessException(ResultMessages.CATEGORY_NOT_FOUND);
         }
 
-        return categoryToCategoryDtoMapper(category.get());
+        CategoryDto dto = mapper.toDto(category.get());
+
+        return DataGenericResponse.<CategoryDto>dataBuilder()
+                .data(dto)
+                .build();
     }
 
     @Override
-    public void deleteCategoryByCategoryId(Long id) { repository.deleteCategoryByCategoryId(id); }
-
-    @Override
-    public List<CategoryDto> findAllCategories() {
-        List<Category> list = repository.findAll();
-        List<CategoryDto> result = new ArrayList<>();
-
-        for (Category c : list) {
-            CategoryDto dto = categoryToCategoryDtoMapper(c);
-            result.add(dto);
+    public GenericResponse deleteCategoryByCategoryId(Long id) {
+        boolean isExist = repository.existsCategoryByCategoryId(id);
+        if (!isExist) {
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
 
-        return result;
+        repository.deleteCategoryByCategoryId(id);
+
+        return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
+    }
+
+    @Override
+    public DataGenericResponse<List<CategoryDto>> findAllCategories() {
+        List<Category> categories = repository.findAll();
+        List<CategoryDto> dtos = categories.stream()
+                .map(mapper::toDto)
+                .toList();
+
+        return DataGenericResponse.<List<CategoryDto>>dataBuilder()
+                .data(dtos)
+                .build();
     }
 
     @Override
@@ -88,17 +95,17 @@ public class CategorySrvImpl implements CategoryService {
         return repository.getCategoryByCategoryId(categoryId);
     }
 
-    private CategoryDto categoryToCategoryDtoMapper(Category c) {
-        if (c == null) {
-            return null;
+    private String checkNameValidation(String name) {
+        if (!Strings.isNullOrEmpty(name) && name.length() > 15) {
+            return ResultMessages.C_NAME_OUT_OF_RANGE;
         }
+        return null;
+    }
 
-        CategoryDto dto = new CategoryDto();
-        dto.setCategoryId(c.getCategoryId());
-        dto.setCategoryName(c.getCategoryName());
-        dto.setDescription(c.getDescription());
-        dto.setPicture(c.getPicture());
-
-        return dto;
+    private String checkCategoryForGeneralValidations(Category request) {
+        if(Strings.isNullOrEmpty(request.getCategoryName())) {
+            return ResultMessages.EMPTY_NAME;
+        }
+        return null;
     }
 }

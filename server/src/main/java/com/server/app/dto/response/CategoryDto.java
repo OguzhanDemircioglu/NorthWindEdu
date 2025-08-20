@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomerCustomerDemoDto {
-    private String customerId;
-    private String customerTypeId;
+public class CategoryDto {
+    private Long categoryId;
+    private String categoryName;
+    private String description;
+    private String picture;
 }
