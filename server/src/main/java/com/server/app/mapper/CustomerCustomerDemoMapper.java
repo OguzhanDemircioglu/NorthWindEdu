@@ -1,11 +1,11 @@
 package com.server.app.mapper;
 
-import com.server.app.dto.request.CustomerCustomerDemo.CustomerCustomerDemoSaveRequest;
-import com.server.app.dto.request.CustomerCustomerDemo.CustomerCustomerDemoUpdateRequest;
+import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoSaveRequest;
+import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoUpdateRequest;
 import com.server.app.dto.response.CustomerCustomerDemoDto;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
-import com.server.app.model.CcdId;
+import com.server.app.model.embedded.CustomerCustomerDemoId;
 import com.server.app.model.Customer;
 import com.server.app.model.CustomerCustomerDemo;
 import com.server.app.model.CustomerDemographics;
@@ -46,7 +46,7 @@ public class CustomerCustomerDemoMapper {
             throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
         }
 
-        boolean isExist = repository.existsByCcdId_CustomerIdAndCcdId_CustomerTypeId(request.getCustomerId(), request.getCustomerTypeId());
+        boolean isExist = repository.existsByCustomerCustomerDemoId_CustomerIdAndCustomerCustomerDemoId_CustomerTypeId(request.getCustomerId(), request.getCustomerTypeId());
         if (!isExist) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
@@ -66,7 +66,7 @@ public class CustomerCustomerDemoMapper {
 
     private CustomerCustomerDemo updateEntityFromRequest(CustomerCustomerDemoUpdateRequest request, Customer customer, CustomerDemographics customerDemographics) {
         return CustomerCustomerDemo.builder()
-                .ccdId(new CcdId(request.getCustomerId(), request.getCustomerTypeId()))
+                .customerCustomerDemoId(new CustomerCustomerDemoId(request.getCustomerId(), request.getCustomerTypeId()))
                 .customer(customer)
                 .customerDemographics(customerDemographics)
                 .build();
@@ -84,7 +84,7 @@ public class CustomerCustomerDemoMapper {
         }
 
         return CustomerCustomerDemo.builder()
-                .ccdId(new CcdId(request.getCustomerId(), request.getCustomerTypeId()))
+                .customerCustomerDemoId(new CustomerCustomerDemoId(request.getCustomerId(), request.getCustomerTypeId()))
                 .customer(customer)
                 .customerDemographics(customerDemographics)
                 .build();

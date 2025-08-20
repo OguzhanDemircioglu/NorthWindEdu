@@ -1,11 +1,11 @@
 package com.server.app.controller;
 
-import com.server.app.dto.request.CustomerCustomerDemo.CustomerCustomerDemoSaveRequest;
-import com.server.app.dto.request.CustomerCustomerDemo.CustomerCustomerDemoUpdateRequest;
+import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoSaveRequest;
+import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoUpdateRequest;
 import com.server.app.dto.response.CustomerCustomerDemoDto;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
-import com.server.app.model.CcdId;
+import com.server.app.model.embedded.CustomerCustomerDemoId;
 import com.server.app.service.CustomerCustomerDemoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +35,9 @@ public class CustomerCustomerDemoController {
     public ResponseEntity<GenericResponse> get(
             @RequestParam String customerId,
             @RequestParam String customerTypeId) {
-        CcdId id = new CcdId(customerId, customerTypeId);
+        CustomerCustomerDemoId id = new CustomerCustomerDemoId(customerId, customerTypeId);
 
-        DataGenericResponse<CustomerCustomerDemoDto> result = service.findCustomerCustomerDemoByCcdId(id);
+        DataGenericResponse<CustomerCustomerDemoDto> result = service.findCustomerCustomerDemoByCustomerCustomerDemoId(id);
         return ResponseEntity.ok(result);
     }
 
@@ -46,9 +46,9 @@ public class CustomerCustomerDemoController {
     public ResponseEntity<GenericResponse> delete(
             @RequestParam String customerId,
             @RequestParam String customerTypeId) {
-        CcdId id = new CcdId(customerId, customerTypeId);
+        CustomerCustomerDemoId id = new CustomerCustomerDemoId(customerId, customerTypeId);
 
-        GenericResponse result = service.deleteCustomerCustomerDemoByCcdId(id);
+        GenericResponse result = service.deleteCustomerCustomerDemoByCustomerCustomerDemoId(id);
         return ResponseEntity.ok(result);
     }
 

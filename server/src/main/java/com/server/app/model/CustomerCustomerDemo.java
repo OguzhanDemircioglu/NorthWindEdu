@@ -1,5 +1,6 @@
 package com.server.app.model;
 
+import com.server.app.model.embedded.CustomerCustomerDemoId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class CustomerCustomerDemo {
 
     @EmbeddedId
-    private CcdId ccdId;
+    private CustomerCustomerDemoId customerCustomerDemoId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("customerId")

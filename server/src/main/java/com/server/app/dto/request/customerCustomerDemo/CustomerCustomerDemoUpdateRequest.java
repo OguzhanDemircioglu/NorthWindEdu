@@ -1,4 +1,4 @@
-package com.server.app.dto.request.CustomerCustomerDemo;
+package com.server.app.dto.request.customerCustomerDemo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

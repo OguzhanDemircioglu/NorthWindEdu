@@ -1,4 +1,4 @@
-package com.server.app.model;
+package com.server.app.model.embedded;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CcdId implements Serializable {
+public class CustomerCustomerDemoId implements Serializable {
     private String customerId;
     private String customerTypeId;
 }

@@ -1,11 +1,11 @@
 package com.server.app.service;
 
-import com.server.app.dto.request.CustomerCustomerDemo.CustomerCustomerDemoSaveRequest;
-import com.server.app.dto.request.CustomerCustomerDemo.CustomerCustomerDemoUpdateRequest;
+import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoSaveRequest;
+import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoUpdateRequest;
 import com.server.app.dto.response.CustomerCustomerDemoDto;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
-import com.server.app.model.CcdId;
+import com.server.app.model.embedded.CustomerCustomerDemoId;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public interface CustomerCustomerDemoService {
 
     GenericResponse update(CustomerCustomerDemoUpdateRequest request);
 
-    DataGenericResponse<CustomerCustomerDemoDto> findCustomerCustomerDemoByCcdId(CcdId id);
+    DataGenericResponse<CustomerCustomerDemoDto> findCustomerCustomerDemoByCustomerCustomerDemoId(CustomerCustomerDemoId id);
 
-    GenericResponse deleteCustomerCustomerDemoByCcdId(CcdId id);
+    GenericResponse deleteCustomerCustomerDemoByCustomerCustomerDemoId(CustomerCustomerDemoId id);
 
     DataGenericResponse<List<CustomerCustomerDemoDto>> findAllCustomerCustomerDemos();
 }

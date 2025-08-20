@@ -1,8 +1,8 @@
 package com.server.app.service.srvImpl;
 
 import com.google.common.base.Strings;
-import com.server.app.dto.request.CustomerCustomerDemo.CustomerCustomerDemoSaveRequest;
-import com.server.app.dto.request.CustomerCustomerDemo.CustomerCustomerDemoUpdateRequest;
+import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoSaveRequest;
+import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoUpdateRequest;
 import com.server.app.dto.response.CustomerCustomerDemoDto;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
@@ -10,7 +10,7 @@ import com.server.app.helper.BusinessRules;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
 import com.server.app.mapper.CustomerCustomerDemoMapper;
-import com.server.app.model.CcdId;
+import com.server.app.model.embedded.CustomerCustomerDemoId;
 import com.server.app.model.CustomerCustomerDemo;
 import com.server.app.repository.CustomerCustomerDemoRepository;
 import com.server.app.service.CustomerCustomerDemoService;
@@ -50,8 +50,8 @@ public class CustomerCustomerDemoSrvImpl implements CustomerCustomerDemoService 
     }
 
     @Override
-    public DataGenericResponse<CustomerCustomerDemoDto> findCustomerCustomerDemoByCcdId(CcdId id) {
-        Optional<CustomerCustomerDemo> customerCustomerDemo = repository.findCustomerCustomerDemoByCcdId(id);
+    public DataGenericResponse<CustomerCustomerDemoDto> findCustomerCustomerDemoByCustomerCustomerDemoId(CustomerCustomerDemoId id) {
+        Optional<CustomerCustomerDemo> customerCustomerDemo = repository.findCustomerCustomerDemoByCustomerCustomerDemoId(id);
         if (customerCustomerDemo.isEmpty()) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
@@ -63,12 +63,12 @@ public class CustomerCustomerDemoSrvImpl implements CustomerCustomerDemoService 
     }
 
     @Override
-    public GenericResponse deleteCustomerCustomerDemoByCcdId(CcdId id) {
-        boolean isExists = repository.existsByCcdId_CustomerIdAndCcdId_CustomerTypeId(id.getCustomerId(), id.getCustomerTypeId());
+    public GenericResponse deleteCustomerCustomerDemoByCustomerCustomerDemoId(CustomerCustomerDemoId id) {
+        boolean isExists = repository.existsByCustomerCustomerDemoId_CustomerIdAndCustomerCustomerDemoId_CustomerTypeId(id.getCustomerId(), id.getCustomerTypeId());
         if (!isExists) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
-        repository.deleteCustomerCustomerDemoByCcdId(id);
+        repository.deleteCustomerCustomerDemoByCustomerCustomerDemoId(id);
 
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
@@ -86,11 +86,11 @@ public class CustomerCustomerDemoSrvImpl implements CustomerCustomerDemoService 
     }
 
     private String checkCustomerCustomerDemoForGeneralValidations(CustomerCustomerDemo request) {
-        if(Strings.isNullOrEmpty(request.getCcdId().getCustomerId())) {
+        if(Strings.isNullOrEmpty(request.getCustomerCustomerDemoId().getCustomerId())) {
             return ResultMessages.EMPTY_CUSTOMER_ID;
         }
 
-        if(Strings.isNullOrEmpty(request.getCcdId().getCustomerTypeId())) {
+        if(Strings.isNullOrEmpty(request.getCustomerCustomerDemoId().getCustomerTypeId())) {
             return ResultMessages.EMPTY_CUSTOMER_TYPE_ID;
         }
         return null;
