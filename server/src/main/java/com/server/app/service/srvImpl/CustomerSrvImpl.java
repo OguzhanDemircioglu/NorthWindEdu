@@ -1,15 +1,21 @@
 package com.server.app.service.srvImpl;
 
-import com.server.app.dto.CustomerDto;
-import com.server.app.dto.request.CustomerSaveRequest;
-import com.server.app.dto.request.CustomerUpdateRequest;
+import com.google.common.base.Strings;
+import com.server.app.dto.response.CustomerDto;
+import com.server.app.dto.request.customer.CustomerSaveRequest;
+import com.server.app.dto.request.customer.CustomerUpdateRequest;
+import com.server.app.enums.ResultMessages;
+import com.server.app.helper.BusinessException;
+import com.server.app.helper.BusinessRules;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
+import com.server.app.mapper.CustomerMapper;
 import com.server.app.model.Customer;
 import com.server.app.repository.CustomerRepository;
 import com.server.app.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,127 +24,196 @@ import java.util.Optional;
 public class CustomerSrvImpl implements CustomerService {
 
     private final CustomerRepository repository;
+    private final CustomerMapper mapper;
 
     @Override
-    public String add(CustomerSaveRequest request) {
+    public GenericResponse add(CustomerSaveRequest request) {
+        Customer customer = mapper.saveEntityFromRequest(request);
 
-        try {
-            repository.save(
-                    Customer.builder()
-                            .customerId(request.getCustomerId())
-                            .city(request.getCity())
-                            .country(request.getCountry())
-                            .fax(request.getFax())
-                            .phone(request.getPhone())
-                            .companyName(request.getCompanyName())
-                            .address(request.getAddress())
-                            .postalCode(request.getPostalCode())
-                            .region(request.getRegion())
-                            .contactName(request.getContactName())
-                            .contactTitle(request.getContactTitle())
-                            .build());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "İşlem Başarısız";
-        }
-        return "İşlem Başarılı";
+        BusinessRules.validate(
+                checkCustomerForGeneralValidations(customer),
+                checkAddressValidation(request.getAddress()),
+                checkCityValidation(request.getCity()),
+                checkCountryValidation(request.getCountry()),
+                checkPhoneFormat(request.getPhone()),
+                checkFaxFormat(request.getFax()),
+                checkNameValidation(request.getContactName()),
+                checkCompanyValidation(request.getCompanyName()),
+                checkRegionValidation(request.getRegion()),
+                checkPostalCodeValidation(request.getPostalCode()),
+                checkTitleValidation(request.getContactTitle())
+        );
+
+        repository.save(customer);
+        return new GenericResponse();
     }
 
-    public CustomerDto update(CustomerUpdateRequest request) {
-        CustomerDto result = new CustomerDto();
-        Optional<Customer> customer = repository.findCustomerByCustomerId(request.getCustomerId());
-        if (customer.isEmpty()) {
-            throw new RuntimeException("Update Edilecek Kayıt bulunamadı");
-        }
+    public GenericResponse update(CustomerUpdateRequest request) {
+        Customer customer = mapper.toEntity(request);
 
-        customer.get().setCity(request.getCity());
-        customer.get().setCountry(request.getCountry());
-        customer.get().setFax(request.getFax());
-        customer.get().setPhone(request.getPhone());
-        customer.get().setCompanyName(request.getCompanyName());
-        customer.get().setAddress(request.getAddress());
-        customer.get().setPostalCode(request.getPostalCode());
-        customer.get().setRegion(request.getRegion());
-        customer.get().setContactName(request.getContactName());
-        customer.get().setContactTitle(request.getContactTitle());
+        BusinessRules.validate(
+                checkCustomerForGeneralValidations(customer),
+                checkAddressValidation(request.getAddress()),
+                checkCityValidation(request.getCity()),
+                checkCountryValidation(request.getCountry()),
+                checkPhoneFormat(request.getPhone()),
+                checkFaxFormat(request.getFax()),
+                checkNameValidation(request.getContactName()),
+                checkCompanyValidation(request.getCompanyName()),
+                checkRegionValidation(request.getRegion()),
+                checkPostalCodeValidation(request.getPostalCode()),
+                checkTitleValidation(request.getContactTitle())
+        );
 
-        result.setCustomerId(customer.get().getCustomerId());
-        result.setCity(customer.get().getCity());
-        result.setCountry(customer.get().getCountry());
-        result.setFax(customer.get().getFax());
-        result.setPhone(customer.get().getPhone());
-        result.setCompanyName(customer.get().getCompanyName());
-        result.setAddress(customer.get().getAddress());
-        result.setPostalCode(customer.get().getPostalCode());
-        result.setRegion(customer.get().getRegion());
-        result.setContactName(customer.get().getContactName());
-        result.setContactTitle(customer.get().getContactTitle());
-
-        repository.save(customer.get());
-        return result;
+        repository.save(customer);
+        return GenericResponse.builder()
+                .message(ResultMessages.RECORD_UPDATED)
+                .build();
     }
 
     @Override
-    public CustomerDto findCustomerByCustomerId(String customerId) {
-        CustomerDto result = new CustomerDto();
-
+    public DataGenericResponse<CustomerDto> findCustomerByCustomerId(String customerId) {
         Optional<Customer> customer = repository.findCustomerByCustomerId(customerId);
         if (customer.isEmpty()) {
-            throw new RuntimeException("Update Edilecek Kayıt bulunamadı");
+            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
         }
 
-        result.setCustomerId(customer.get().getCustomerId());
-        result.setCity(customer.get().getCity());
-        result.setCountry(customer.get().getCountry());
-        result.setFax(customer.get().getFax());
-        result.setPhone(customer.get().getPhone());
-        result.setCompanyName(customer.get().getCompanyName());
-        result.setAddress(customer.get().getAddress());
-        result.setPostalCode(customer.get().getPostalCode());
-        result.setRegion(customer.get().getRegion());
-        result.setContactName(customer.get().getContactName());
-        result.setContactTitle(customer.get().getContactTitle());
+        CustomerDto dto = mapper.toDto(customer.get());
 
-        return result;
+        return DataGenericResponse.<CustomerDto>dataBuilder()
+                .data(dto)
+                .build();
     }
 
     @Override
-    public void deleteCustomerByCustomerId(String customerId) {
+    public GenericResponse deleteCustomerByCustomerId(String customerId) {
+        boolean isExist = repository.existsCustomerByCustomerId(customerId);
+        if (!isExist) {
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
+        }
+
         repository.deleteCustomerByCustomerId(customerId);
+
+        return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
     @Override
-    public List<CustomerDto> findAllCustomers() {
-        List<Customer> list = repository.findAll();
-        List<CustomerDto> result = new ArrayList<>();
+    public DataGenericResponse<List<CustomerDto>> findAllCustomers() {
+        List<Customer> customers = repository.findAll();
+        List<CustomerDto> dtos = customers.stream()
+                .map(mapper::toDto)
+                .toList();
 
-        for (Customer customer : list) {
-            CustomerDto newCustomer = new CustomerDto();
-            newCustomer.setCustomerId(customer.getCustomerId());
-            newCustomer.setCity(customer.getCity());
-            newCustomer.setCountry(customer.getCountry());
-            newCustomer.setFax(customer.getFax());
-            newCustomer.setPhone(customer.getPhone());
-            newCustomer.setCompanyName(customer.getCompanyName());
-            newCustomer.setAddress(customer.getAddress());
-            newCustomer.setPostalCode(customer.getPostalCode());
-            newCustomer.setRegion(customer.getRegion());
-            newCustomer.setContactName(customer.getContactName());
-            newCustomer.setContactTitle(customer.getContactTitle());
-
-            result.add(newCustomer);
-        }
-
-        return result;
-    }
-
-    public boolean existsByCustomerId(String customerId) {
-        return repository.existsById(customerId);
+        return DataGenericResponse.<List<CustomerDto>>dataBuilder()
+                .data(dtos)
+                .build();
     }
 
     @Override
     public Customer getCustomer(String customerId) {
-        return repository.getCustomerByCustomerId(customerId); // entity veya null döner
+        return repository.getCustomerByCustomerId(customerId);
     }
 
+    private String checkNameValidation(String name) {
+        if (!Strings.isNullOrEmpty(name) && name.length() > 30) {
+            return ResultMessages.CONTACT_NAME_OUT_OF_RANGE;
+        }
+        return null;
+    }
+
+    private String checkAddressValidation(String address) {
+        if (!Strings.isNullOrEmpty(address) && address.length() > 30) {
+            return ResultMessages.ADDRESS_OUT_OF_RANGE;
+        }
+        return null;
+    }
+
+    private String checkCityValidation(String city) {
+        if (!Strings.isNullOrEmpty(city) && city.length() > 30) {
+            return ResultMessages.CITY_OUT_OF_RANGE;
+        }
+
+        if (!Strings.isNullOrEmpty(city) && !city.matches("^[\\p{L} ]+$")) {
+            return ResultMessages.WRONG_CITY_FORMAT;
+        }
+        return null;
+    }
+
+    private String checkCountryValidation(String country) {
+        if (!Strings.isNullOrEmpty(country) && country.length() > 15) {
+            return ResultMessages.COUNTRY_OUT_OF_RANGE;
+        }
+
+        if (!Strings.isNullOrEmpty(country) && !country.matches("^[\\p{L} ]+$")) {
+            return ResultMessages.WRONG_COUNTRY_FORMAT;
+        }
+        return null;
+    }
+
+    private String checkPhoneFormat(String phone) {
+        if(phone != null && phone.length() > 24) {
+            return ResultMessages.PHONE_OUT_OF_RANGE;
+        }
+
+        if(phone != null && !phone.matches("^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$")) {
+            return ResultMessages.WRONG_PHONE_FORMAT;
+        }
+        return null;
+    }
+
+    private String checkFaxFormat(String fax) {
+        if(fax != null && fax.length() > 24) {
+            return ResultMessages.FAX_OUT_OF_RANGE;
+        }
+
+        if(fax != null && !fax.matches("^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$")) {
+            return ResultMessages.WRONG_FAX_FORMAT;
+        }
+        return null;
+    }
+
+    private String checkRegionValidation(String region) {
+        if (region != null && region.length() > 15) {
+            return ResultMessages.REGION_OUT_OF_RANGE;
+        }
+        return null;
+    }
+
+    private String checkTitleValidation(String title) {
+        if (title != null && title.length() > 30) {
+            return ResultMessages.C_TITLE_OUT_OF_RANGE;
+        }
+        return null;
+    }
+
+    private String checkPostalCodeValidation(String postalCode) {
+        if(postalCode != null && postalCode.length() > 10) {
+            return ResultMessages.POSTAL_CODE_OUT_OF_RANGE;
+        }
+
+        if (postalCode != null && !postalCode.matches("^[0-9]+$")) {
+            return ResultMessages.WRONG_POSTAL_CODE_FORMAT;
+        }
+        return null;
+    }
+
+    private String checkCompanyValidation(String name) {
+        if (!Strings.isNullOrEmpty(name) && name.length() > 40) {
+            return ResultMessages.COMPANY_NAME_OUT_OF_RANGE;
+        }
+        return null;
+    }
+
+
+
+    private String checkCustomerForGeneralValidations(Customer request) {
+        if(Strings.isNullOrEmpty(request.getCustomerId())) {
+            return ResultMessages.ID_IS_NOT_DELIVERED;
+        }
+
+        if (Strings.isNullOrEmpty(request.getCompanyName())) {
+            return ResultMessages.EMPTY_NAME;
+        }
+        return null;
+    }
 }

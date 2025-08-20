@@ -20,6 +20,10 @@ public class ResultMessages {
     public static final String SHIPPER_NOT_FOUND = "Bu ID ile Kargocu bulunamadı";
     public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
     public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
+    public static final String WRONG_CITY_FORMAT = "Şehir alanı yalnızca harflerden oluşmalı";
+    public static final String WRONG_COUNTRY_FORMAT = "Ülke alanı yalnızca harflerden oluşmalı";
+    public static final String WRONG_FAX_FORMAT = "Geçersiz fax formatı";
+    public static final String WRONG_POSTAL_CODE_FORMAT = "Geçersiz posta kodu formatı";
     //endregion
 
     //region Employee
@@ -39,6 +43,17 @@ public class ResultMessages {
 
     //region Customer
     public static final String EMPTY_CUSTOMER_ID = "Müşteri ID alanı boş bırakılamaz";
+    public static final String CONTACT_NAME_OUT_OF_RANGE = "Müşteri ismi 30 karakterden uzun olamaz";
+    public static final String ADDRESS_OUT_OF_RANGE = "Adres alanı 30 karakterden uzun olamaz";
+    public static final String CITY_OUT_OF_RANGE = "Şehir alanı 30 karakterden uzun olamaz";
+    public static final String COUNTRY_OUT_OF_RANGE = "Ülke alanı 15 karakterden uzun olamaz";
+    public static final String PHONE_OUT_OF_RANGE = "Telefon alanı 24 haneden uzun olamaz";
+    public static final String FAX_OUT_OF_RANGE = "Fax alanı 24 haneden uzun olamaz";
+    public static final String REGION_OUT_OF_RANGE = "Bölge alanı 15 karakterden uzun olamaz";
+    public static final String POSTAL_CODE_OUT_OF_RANGE = "Posta kodu 10 haneden uzun olamaz";
+    public static final String COMPANY_NAME_OUT_OF_RANGE = "Firma ismi 40 karakterden uzun olamaz";
+    public static final String C_TITLE_OUT_OF_RANGE = "Unvan 30 karakterden uzun olamaz";
+
     //endregion
 
     //region CustomerDemographic
