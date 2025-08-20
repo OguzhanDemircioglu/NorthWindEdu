@@ -60,4 +60,13 @@ public class ResultMessages {
     public static final String REQUIRED_DATE_INVALID = "RequiredDate, OrderDate'ten önce olamaz";
     public static final String SHIPPED_DATE_INVALID = "ShippedDate, OrderDate'ten önce olamaz";
     //endregion
+
+    //region OrderDetail
+    public static final String OD_QUANTITY_EMPTY = "Quantity boş olamaz";
+    public static final String OD_QUANTITY_NEGATIVE = "Quantity negatif olamaz";
+    public static final String OD_UNIT_PRICE_EMPTY = "UnitPrice boş olamaz";
+    public static final String OD_UNIT_PRICE_NEGATIVE = "UnitPrice negatif olamaz";
+    public static final String OD_DISCOUNT_EMPTY = "Discount boş olamaz";
+    public static final String OD_DISCOUNT_OUT_OF_RANGE = "Discount 0..1 aralığında olmalı";
+//endregion
 }
