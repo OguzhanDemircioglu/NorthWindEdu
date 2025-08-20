@@ -1,4 +1,4 @@
-package com.server.app.dto.request;
+package com.server.app.dto.request.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryUpdateRequest {
-    private Long categoryId;
+public class CategorySaveRequest {
     private String categoryName;
     private String description;
     private String picture;

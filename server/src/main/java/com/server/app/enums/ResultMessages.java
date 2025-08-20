@@ -60,4 +60,8 @@ public class ResultMessages {
     public static final String REQUIRED_DATE_INVALID = "RequiredDate, OrderDate'ten önce olamaz";
     public static final String SHIPPED_DATE_INVALID = "ShippedDate, OrderDate'ten önce olamaz";
     //endregion
+
+    //region Category
+    public static final String C_NAME_OUT_OF_RANGE = "Kategori adı 15 karakterden uzun olamaz";
+    //endregion
 }

@@ -1,6 +1,5 @@
-package com.server.app.dto;
+package com.server.app.dto.request.category;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDto {
+public class CategoryUpdateRequest {
     private Long categoryId;
     private String categoryName;
     private String description;
