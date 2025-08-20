@@ -1,15 +1,15 @@
 package com.server.app.mapper;
 
-import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoSaveRequest;
-import com.server.app.dto.request.customerCustomerDemo.CustomerCustomerDemoUpdateRequest;
-import com.server.app.dto.response.CustomerCustomerDemoDto;
+import com.server.app.dto.request.customerDemo.CustomerDemoSaveRequest;
+import com.server.app.dto.request.customerDemo.CustomerDemoUpdateRequest;
+import com.server.app.dto.response.CustomerDemoDto;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
-import com.server.app.model.embedded.CustomerCustomerDemoId;
+import com.server.app.model.embedded.CustomerDemoId;
 import com.server.app.model.Customer;
-import com.server.app.model.CustomerCustomerDemo;
+import com.server.app.model.CustomerDemo;
 import com.server.app.model.CustomerDemographics;
-import com.server.app.repository.CustomerCustomerDemoRepository;
+import com.server.app.repository.CustomerDemoRepository;
 import com.server.app.service.CustomerDemographicsService;
 import com.server.app.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +19,14 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class CustomerCustomerDemoMapper {
+public class CustomerDemoMapper {
 
-    private final CustomerCustomerDemoRepository repository;
+    private final CustomerDemoRepository repository;
     private final CustomerService customerService;
     private final CustomerDemographicsService customerDemographicsService;
 
-    public CustomerCustomerDemoDto toDto(CustomerCustomerDemo request) {
-        return CustomerCustomerDemoDto.builder()
+    public CustomerDemoDto toDto(CustomerDemo request) {
+        return CustomerDemoDto.builder()
                 .customerId(
                         Objects.isNull(request.getCustomer())
                         ? null
@@ -40,13 +40,13 @@ public class CustomerCustomerDemoMapper {
                 .build();
     }
 
-    public CustomerCustomerDemo toEntity(CustomerCustomerDemoUpdateRequest request) {
+    public CustomerDemo toEntity(CustomerDemoUpdateRequest request) {
         if (request.getCustomerId() == null || request.getCustomerId().isEmpty() ||
                 request.getCustomerTypeId() == null || request.getCustomerTypeId().isEmpty()) {
             throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
         }
 
-        boolean isExist = repository.existsByCustomerCustomerDemoId_CustomerIdAndCustomerCustomerDemoId_CustomerTypeId(request.getCustomerId(), request.getCustomerTypeId());
+        boolean isExist = repository.existsByCustomerDemoId_CustomerIdAndCustomerDemoId_CustomerTypeId(request.getCustomerId(), request.getCustomerTypeId());
         if (!isExist) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
@@ -64,15 +64,15 @@ public class CustomerCustomerDemoMapper {
         return updateEntityFromRequest(request, customer, customerDemographics);
     }
 
-    private CustomerCustomerDemo updateEntityFromRequest(CustomerCustomerDemoUpdateRequest request, Customer customer, CustomerDemographics customerDemographics) {
-        return CustomerCustomerDemo.builder()
-                .customerCustomerDemoId(new CustomerCustomerDemoId(request.getCustomerId(), request.getCustomerTypeId()))
+    private CustomerDemo updateEntityFromRequest(CustomerDemoUpdateRequest request, Customer customer, CustomerDemographics customerDemographics) {
+        return CustomerDemo.builder()
+                .customerDemoId(new CustomerDemoId(request.getCustomerId(), request.getCustomerTypeId()))
                 .customer(customer)
                 .customerDemographics(customerDemographics)
                 .build();
     }
 
-    public CustomerCustomerDemo saveEntityFromRequest(CustomerCustomerDemoSaveRequest request) {
+    public CustomerDemo saveEntityFromRequest(CustomerDemoSaveRequest request) {
         Customer customer = customerService.getCustomer(request.getCustomerId());
         if(Objects.isNull(customer)) {
             throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
@@ -83,8 +83,8 @@ public class CustomerCustomerDemoMapper {
             throw new BusinessException(ResultMessages.CUSTOMER_DEMOGRAPHICS_NOT_FOUND);
         }
 
-        return CustomerCustomerDemo.builder()
-                .customerCustomerDemoId(new CustomerCustomerDemoId(request.getCustomerId(), request.getCustomerTypeId()))
+        return CustomerDemo.builder()
+                .customerDemoId(new CustomerDemoId(request.getCustomerId(), request.getCustomerTypeId()))
                 .customer(customer)
                 .customerDemographics(customerDemographics)
                 .build();

@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerCustomerDemoId implements Serializable {
+public class CustomerDemoId implements Serializable {
     private String customerId;
     private String customerTypeId;
 }
