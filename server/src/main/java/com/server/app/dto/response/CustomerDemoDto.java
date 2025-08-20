@@ -1,13 +1,15 @@
-package com.server.app.dto.request.CustomerCustomerDemo;
+package com.server.app.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerCustomerDemoSaveRequest {
+@Builder
+public class CustomerDemoDto {
     private String customerId;
     private String customerTypeId;
 }

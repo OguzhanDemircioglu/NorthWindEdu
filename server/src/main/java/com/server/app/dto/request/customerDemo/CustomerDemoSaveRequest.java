@@ -1,17 +1,13 @@
-package com.server.app.model;
+package com.server.app.dto.request.customerDemo;
 
-import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
-@Embeddable
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CcdId implements Serializable {
+@AllArgsConstructor
+public class CustomerDemoSaveRequest {
     private String customerId;
     private String customerTypeId;
 }
