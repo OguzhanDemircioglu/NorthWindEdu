@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegionDto {
-    private Short regionId;
+    private Long regionId;
     private String regionDescription;
 }

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ShipperRepository extends JpaRepository<Shipper, Short> {
+public interface ShipperRepository extends JpaRepository<Shipper, Long> {
 
-    Optional<Shipper> findShipperByShipperId(Short shipperId);
+    Optional<Shipper> findShipperByShipperId(Long shipperId);
 
-    void deleteShipperByShipperId(Short shipperId);
+    void deleteShipperByShipperId(Long shipperId);
 }

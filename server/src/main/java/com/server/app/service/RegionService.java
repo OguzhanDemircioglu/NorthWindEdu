@@ -12,9 +12,9 @@ public interface RegionService {
 
     RegionDto update(RegionUpdateRequest request);
 
-    RegionDto findRegionByRegionId(Short id);
+    RegionDto findRegionByRegionId(Long id);
 
-    void deleteRegionByRegionId(Short id);
+    void deleteRegionByRegionId(Long id);
 
     List<RegionDto> findAllRegions();
 }

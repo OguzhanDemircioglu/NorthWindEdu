@@ -12,9 +12,9 @@ public interface UsStateService {
 
     UsStateDto update(UsStateUpdateRequest request);
 
-    UsStateDto findStateByStateId(Short id);
+    UsStateDto findStateByStateId(Long id);
 
-    void deleteStateByStateId(Short id);
+    void deleteStateByStateId(Long id);
 
     List<UsStateDto> findAllStates();
 }

@@ -31,14 +31,14 @@ public class ShipperController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Short id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         ShipperDto dto = shipperService.findShipperByShipperId(id);
         return ResponseEntity.ok(dto);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Short id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         shipperService.deleteShipperByShipperId(id);
         return ResponseEntity.ok("İşlem Başarılı");
     }

@@ -31,14 +31,14 @@ public class RegionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RegionDto> getRegionByRegionId(@PathVariable Short id) {
+    public ResponseEntity<RegionDto> getRegionByRegionId(@PathVariable Long id) {
         RegionDto region = regionService.findRegionByRegionId(id);
         return ResponseEntity.ok(region);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRegionByRegionId(@PathVariable Short id) {
+    public ResponseEntity<String> deleteRegionByRegionId(@PathVariable Long id) {
         regionService.deleteRegionByRegionId(id);
         return ResponseEntity.ok("İşlem Başarılı");
     }

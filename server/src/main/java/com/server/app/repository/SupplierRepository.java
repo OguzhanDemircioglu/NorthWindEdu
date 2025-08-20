@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SupplierRepository extends JpaRepository<Supplier, Short> {
-    Optional<Supplier> findSupplierBySupplierId(Short supplierId);
+public interface SupplierRepository extends JpaRepository<Supplier, Long> {
+    Optional<Supplier> findSupplierBySupplierId(Long supplierId);
 
-    void deleteSupplierBySupplierId(Short supplierId);
+    void deleteSupplierBySupplierId(Long supplierId);
 
-    Supplier getSupplierBySupplierId(Short supplierId);
+    Supplier getSupplierBySupplierId(Long supplierId);
 }

@@ -29,7 +29,7 @@ public class ShipperSrvImpl implements ShipperService {
                             .build()
             );
         } catch (Exception e) {
-            e.printStackTrace(); // İstersen log.error(...) ile değiştirilebilir
+            e.printStackTrace();
             return "İşlem Başarısız";
         }
         return "İşlem Başarılı";
@@ -56,7 +56,7 @@ public class ShipperSrvImpl implements ShipperService {
     }
 
     @Override
-    public ShipperDto findShipperByShipperId(Short id) {
+    public ShipperDto findShipperByShipperId(Long id) {
         Optional<Shipper> shipper = repository.findShipperByShipperId(id);
         if (shipper.isEmpty()) {
             throw new RuntimeException("Kayıt Bulunamadı");
@@ -65,7 +65,7 @@ public class ShipperSrvImpl implements ShipperService {
     }
 
     @Override
-    public void deleteShipperByShipperId(Short id) {
+    public void deleteShipperByShipperId(Long id) {
         repository.deleteShipperByShipperId(id);
     }
 
@@ -81,6 +81,12 @@ public class ShipperSrvImpl implements ShipperService {
 
         return result;
     }
+
+    @Override
+    public Shipper getShipper(Long shipperId) {
+        return repository.findShipperByShipperId(shipperId).orElse(null);
+    }
+
 
     private ShipperDto shipperToShipperDtoMapper(Shipper s) {
         if (s == null) return null;

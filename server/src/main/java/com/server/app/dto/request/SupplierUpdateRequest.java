@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SupplierUpdateRequest {
-    private Short supplierId;
+    private Long supplierId;
     private String companyName;
     private String contactName;
     private String contactTitle;
