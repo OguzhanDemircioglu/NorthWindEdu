@@ -18,7 +18,8 @@ public class ResultMessages {
     public static final String EMPLOYEE_NOT_FOUND = "Bu ID ile Employee bulunamadı";
     public static final String CUSTOMER_NOT_FOUND = "Bu ID ile Müşteri bulunamadı";
     public static final String SHIPPER_NOT_FOUND = "Bu ID ile Kargocu bulunamadı";
-    public static final String REGION_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
+    public static final String ORDER_NOT_FOUND = "Bu ID ile Sipariş bulunamadı";
+    public static final String PRODUCT_NOT_FOUND = "Bu ID ile Ürün bulunamadı";
     public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
     public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
     public static final String WRONG_CITY_FORMAT = "Şehir alanı yalnızca harflerden oluşmalı";
@@ -54,12 +55,11 @@ public class ResultMessages {
     public static final String POSTAL_CODE_OUT_OF_RANGE = "Posta kodu 10 haneden uzun olamaz";
     public static final String COMPANY_NAME_OUT_OF_RANGE = "Firma ismi 40 karakterden uzun olamaz";
     public static final String C_TITLE_OUT_OF_RANGE = "Unvan 30 karakterden uzun olamaz";
-
     //endregion
 
     //region CustomerDemographic
     public static final String EMPTY_CUSTOMER_TYPE_ID = "Müşteri tipi ID alanı boş bırakılamaz";
-    //
+    //endregion
 
     //region Territory
     public static final String EMPTY_TERRITORY_ID = "Bölge ID alanı boş veya null olamaz";
@@ -77,11 +77,17 @@ public class ResultMessages {
     public static final String SHIPPED_DATE_INVALID = "ShippedDate, OrderDate'ten önce olamaz";
     //endregion
 
-    //region Category
-    public static final String C_NAME_OUT_OF_RANGE = "Kategori adı 15 karakterden uzun olamaz";
+    //region OrderDetail
+    public static final String OD_QUANTITY_EMPTY = "Quantity boş olamaz";
+    public static final String OD_QUANTITY_NEGATIVE = "Quantity negatif olamaz";
+    public static final String OD_UNIT_PRICE_EMPTY = "UnitPrice boş olamaz";
+    public static final String OD_UNIT_PRICE_NEGATIVE = "UnitPrice negatif olamaz";
+    public static final String OD_DISCOUNT_EMPTY = "Discount boş olamaz";
+    public static final String OD_DISCOUNT_OUT_OF_RANGE = "Discount 0..1 aralığında olmalı";
+
     //endregion
 
-    //region Region
-    public static final String EMPTY_DESCRIPTION = "Bölge açıklaması boş olamaz";
+    //region Category
+    public static final String C_NAME_OUT_OF_RANGE = "Kategori adı 15 karakterden uzun olamaz";
     //endregion
 }

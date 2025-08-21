@@ -44,7 +44,7 @@ public class Order {
     private LocalDate shippedDate;
 
     @Column(name = "freight")
-    private Float freight;
+    private Double freight;
 
     @Column(name = "ship_name", length = 40)
     private String shipName;
