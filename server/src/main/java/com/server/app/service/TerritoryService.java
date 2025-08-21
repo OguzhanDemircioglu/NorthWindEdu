@@ -1,23 +1,25 @@
 package com.server.app.service;
 
-import com.server.app.dto.TerritoryDto;
-import com.server.app.dto.request.TerritorySaveRequest;
-import com.server.app.dto.request.TerritoryUpdateRequest;
+import com.server.app.dto.response.TerritoryDto;
+import com.server.app.dto.request.territory.TerritorySaveRequest;
+import com.server.app.dto.request.territory.TerritoryUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.model.Territory;
 
 import java.util.List;
 
 public interface TerritoryService {
 
-    String add(TerritorySaveRequest request);
+    GenericResponse add(TerritorySaveRequest request);
 
-    TerritoryDto update(TerritoryUpdateRequest request);
+    GenericResponse update(TerritoryUpdateRequest request);
 
-    TerritoryDto findTerritoryByTerritoryId(String id);
+    DataGenericResponse<TerritoryDto> findTerritoryByTerritoryId(String id);
 
-    void deleteTerritoryByTerritoryId(String id);
+    GenericResponse deleteTerritoryByTerritoryId(String id);
 
-    List<TerritoryDto> findAllTerritories();
+    DataGenericResponse<List<TerritoryDto>> findAllTerritories();
 
     Territory getTerritory(String id);
 }

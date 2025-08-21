@@ -1,17 +1,20 @@
 package com.server.app.service.srvImpl;
 
-import com.server.app.dto.TerritoryDto;
-import com.server.app.dto.request.TerritorySaveRequest;
-import com.server.app.dto.request.TerritoryUpdateRequest;
-import com.server.app.model.Region;
+import com.google.common.base.Strings;
+import com.server.app.dto.response.TerritoryDto;
+import com.server.app.dto.request.territory.TerritorySaveRequest;
+import com.server.app.dto.request.territory.TerritoryUpdateRequest;
+import com.server.app.enums.ResultMessages;
+import com.server.app.helper.BusinessRules;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
+import com.server.app.mapper.TerritoryMapper;
 import com.server.app.model.Territory;
-import com.server.app.repository.RegionRepository;
 import com.server.app.repository.TerritoryRepository;
 import com.server.app.service.TerritoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,90 +23,77 @@ import java.util.Optional;
 public class TerritorySrvImpl implements TerritoryService {
 
     private final TerritoryRepository repository;
-    private final RegionRepository regionRepository;
+    private final TerritoryMapper mapper;
 
     @Override
-    public String add(TerritorySaveRequest request) {
+    public GenericResponse add(TerritorySaveRequest request) {
+        Territory territory = mapper.saveEntityFromRequest(request);
 
-        try {
-            Region region = regionRepository.findRegionByRegionId(request.getRegionId())
-                    .orElseThrow(() -> new RuntimeException("Region bulunamadı"));
+        BusinessRules.validate(checkTerritoryForGeneralValidations(territory));
 
-            repository.save(
-                    Territory.builder()
-                            .territoryId(request.getTerritoryId())
-                            .territoryDescription(request.getTerritoryDescription())
-                            .region(region)
-                            .build()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "İşlem Başarısız";
-        }
-        return "İşlem Başarılı";
+        repository.save(territory);
+        return new GenericResponse();
     }
 
     @Override
-    public TerritoryDto update(TerritoryUpdateRequest request) {
-        try {
-            Region region = regionRepository.findRegionByRegionId(request.getRegionId())
-                    .orElseThrow(() -> new RuntimeException("Region bulunamadı"));
+    public GenericResponse update(TerritoryUpdateRequest request) {
+        Territory territory = mapper.toEntity(request);
 
-            Optional<Territory> territory = repository.findTerritoryByTerritoryId(request.getTerritoryId());
-            if (territory.isEmpty()) {
-                throw new RuntimeException("Update Edilecek Kayıt Bulunamadı");
-            }
+        BusinessRules.validate(checkTerritoryForGeneralValidations(territory));
 
-            territory.get().setTerritoryDescription(request.getTerritoryDescription());
-            territory.get().setRegion(region);
-
-            repository.save(territory.get());
-
-            return territoryToTerritoryDto(territory.get());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("İşlem Başarısız");
-        }
+        repository.save(territory);
+        return GenericResponse.builder().message(ResultMessages.RECORD_UPDATED).build();
     }
 
     @Override
-    public TerritoryDto findTerritoryByTerritoryId(String id) {
+    public DataGenericResponse<TerritoryDto> findTerritoryByTerritoryId(String id) {
         Optional<Territory> territory = repository.findTerritoryByTerritoryId(id);
         if (territory.isEmpty()) {
-            throw new RuntimeException("Kayıt Bulunamadı");
+            throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
         }
 
-        return territoryToTerritoryDto(territory.get());
+        TerritoryDto dto = mapper.toDto(territory.get());
+
+        return DataGenericResponse.<TerritoryDto>dataBuilder()
+                .data(dto)
+                .build();
     }
 
     @Override
-    public void deleteTerritoryByTerritoryId(String id) { repository.deleteTerritoryByTerritoryId(id); }
+    public GenericResponse deleteTerritoryByTerritoryId(String id) {
+        boolean isExist = repository.existsTerritoryByTerritoryId(id);
+        if (!isExist) {
+            throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
+        }
+        repository.deleteTerritoryByTerritoryId(id);
+
+        return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
+    }
 
     @Override
-    public List<TerritoryDto> findAllTerritories() {
-        List<Territory> list = repository.findAll();
-        List<TerritoryDto> result = new ArrayList<>();
+    public DataGenericResponse<List<TerritoryDto>> findAllTerritories() {
+        List<Territory> territories = repository.findAll();
+        List<TerritoryDto> dtos = territories.stream()
+                .map(mapper::toDto)
+                .toList();
 
-        for (Territory t : list) {
-            TerritoryDto dto = territoryToTerritoryDto(t);
-            result.add(dto);
-        }
-
-        return result;
+        return DataGenericResponse.<List<TerritoryDto>>dataBuilder()
+                .data(dtos)
+                .build();
     }
 
-    private TerritoryDto territoryToTerritoryDto(Territory t) {
-        if (t == null) {
-            return null;
+    private String checkTerritoryForGeneralValidations(Territory request) {
+        if(Strings.isNullOrEmpty(request.getTerritoryId())) {
+            return ResultMessages.ID_IS_NOT_DELIVERED;
         }
 
-        TerritoryDto dto = new TerritoryDto();
-        dto.setTerritoryId(t.getTerritoryId());
-        dto.setTerritoryDescription(t.getTerritoryDescription());
-        dto.setRegionId(t.getRegion().getRegionId());
-
-        return dto;
+        if(Strings.isNullOrEmpty(request.getTerritoryDescription())) {
+            return ResultMessages.EMPTY_T_DESCRIPTION;
+        }
+        return null;
     }
+
+
 
     public Territory getTerritory(String id) {
         return repository.getTerritoryByTerritoryId(id);

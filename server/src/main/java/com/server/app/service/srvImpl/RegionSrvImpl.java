@@ -86,6 +86,11 @@ public class RegionSrvImpl implements RegionService {
                 .build();
     }
 
+    @Override
+    public Region getRegion(Long regionId) {
+        return repository.getRegionByRegionId(regionId);
+    }
+
     private String checkRegionForDescription(Region request) {
         if(Strings.isNullOrEmpty(request.getRegionDescription())) {
             return ResultMessages.EMPTY_DESCRIPTION;
