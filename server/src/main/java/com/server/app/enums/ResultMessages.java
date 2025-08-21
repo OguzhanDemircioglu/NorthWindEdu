@@ -21,6 +21,7 @@ public class ResultMessages {
     public static final String ORDER_NOT_FOUND = "Bu ID ile Sipariş bulunamadı";
     public static final String PRODUCT_NOT_FOUND = "Bu ID ile Ürün bulunamadı";
     public static final String REGION_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
+    public static final String STATE_NOT_FOUND = "Bu ID ile Eyalet bulunamadı";
     public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
     public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge(Terry) bulunamadı";
     public static final String WRONG_CITY_FORMAT = "Şehir alanı yalnızca harflerden oluşmalı";

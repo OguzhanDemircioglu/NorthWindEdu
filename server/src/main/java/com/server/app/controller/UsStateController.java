@@ -1,8 +1,10 @@
 package com.server.app.controller;
 
-import com.server.app.dto.UsStateDto;
-import com.server.app.dto.request.UsStateSaveRequest;
-import com.server.app.dto.request.UsStateUpdateRequest;
+import com.server.app.dto.response.UsStateDto;
+import com.server.app.dto.request.usState.UsStateSaveRequest;
+import com.server.app.dto.request.usState.UsStateUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.UsStateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,32 +21,31 @@ public class UsStateController {
     private final UsStateService stateService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody UsStateSaveRequest request) {
-        String resultMessage = stateService.add(request);
-        return ResponseEntity.ok(resultMessage);
+    public ResponseEntity<GenericResponse> add(@RequestBody UsStateSaveRequest request) {
+        return ResponseEntity.ok(stateService.add(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UsStateDto> updateState(@RequestBody UsStateUpdateRequest request) {
-        UsStateDto updatedState = stateService.update(request);
-        return ResponseEntity.ok(updatedState);
+    public ResponseEntity<GenericResponse> updateState(@RequestBody UsStateUpdateRequest request) {
+        return ResponseEntity.ok(stateService.update(request));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UsStateDto> getState(@PathVariable Long id) {
-        UsStateDto state = stateService.findStateByStateId(id);
-        return ResponseEntity.ok(state);
+    public ResponseEntity<DataGenericResponse<UsStateDto>> getState(@PathVariable Long id) {
+        DataGenericResponse<UsStateDto> result = stateService.findStateByStateId(id);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteState(@PathVariable Long id) {
-        stateService.deleteStateByStateId(id);
-        return ResponseEntity.ok("İşlem Başarılı");
+    public ResponseEntity<GenericResponse> deleteState(@PathVariable Long id) {
+        GenericResponse resut = stateService.deleteStateByStateId(id);
+        return ResponseEntity.ok(resut);
     }
 
     @GetMapping
-    public ResponseEntity<List<UsStateDto>> findAllStates() {
-        return ResponseEntity.ok(stateService.findAllStates());
+    public ResponseEntity<DataGenericResponse<List<UsStateDto>>> findAllStates() {
+        DataGenericResponse<List<UsStateDto>> result = stateService.findAllStates();
+        return ResponseEntity.ok(result);
     }
 }
