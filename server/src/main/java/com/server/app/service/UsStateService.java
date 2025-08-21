@@ -1,20 +1,22 @@
 package com.server.app.service;
 
-import com.server.app.dto.UsStateDto;
-import com.server.app.dto.request.UsStateSaveRequest;
-import com.server.app.dto.request.UsStateUpdateRequest;
+import com.server.app.dto.response.UsStateDto;
+import com.server.app.dto.request.usState.UsStateSaveRequest;
+import com.server.app.dto.request.usState.UsStateUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 
 import java.util.List;
 
 public interface UsStateService {
 
-    String add(UsStateSaveRequest request);
+    GenericResponse add(UsStateSaveRequest request);
 
-    UsStateDto update(UsStateUpdateRequest request);
+    GenericResponse update(UsStateUpdateRequest request);
 
-    UsStateDto findStateByStateId(Long id);
+    DataGenericResponse<UsStateDto> findStateByStateId(Long id);
 
-    void deleteStateByStateId(Long id);
+    GenericResponse deleteStateByStateId(Long id);
 
-    List<UsStateDto> findAllStates();
+    DataGenericResponse<List<UsStateDto>> findAllStates();
 }

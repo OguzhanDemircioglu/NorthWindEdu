@@ -1,15 +1,20 @@
 package com.server.app.service.srvImpl;
 
-import com.server.app.dto.UsStateDto;
-import com.server.app.dto.request.UsStateSaveRequest;
-import com.server.app.dto.request.UsStateUpdateRequest;
+import com.server.app.dto.response.UsStateDto;
+import com.server.app.dto.request.usState.UsStateSaveRequest;
+import com.server.app.dto.request.usState.UsStateUpdateRequest;
+import com.server.app.enums.ResultMessages;
+import com.server.app.helper.BusinessException;
+import com.server.app.helper.BusinessRules;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
+import com.server.app.mapper.UsStateMapper;
 import com.server.app.model.UsState;
 import com.server.app.repository.UsStateRepository;
 import com.server.app.service.UsStateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,81 +23,70 @@ import java.util.Optional;
 public class UsStateSrvImpl implements UsStateService {
 
     private final UsStateRepository repository;
+    private final UsStateMapper mapper;
 
     @Override
-    public String add(UsStateSaveRequest request) {
-        try {
-            repository.save(
-                    UsState.builder()
-                            .stateName(request.getStateName())
-                            .stateAbbr(request.getStateAbbr())
-                            .stateRegion(request.getStateRegion())
-                            .build()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "İşlem Başarısız";
-        }
-        return "İşlem Başarılı";
+    public GenericResponse add(UsStateSaveRequest request) {
+        UsState usState = mapper.saveEntityFromRequest(request);
+
+        BusinessRules.validate(checkUsStateForGeneralValidations(usState));
+
+        repository.save(usState);
+        return new GenericResponse();
     }
 
     @Override
-    public UsStateDto update(UsStateUpdateRequest request) {
-        try {
-            Optional<UsState> state = repository.findStateByStateId(request.getStateId());
-            if (state.isEmpty()) {
-                throw new RuntimeException("Update edilecek Kayıt Bulunamadı");
-            }
+    public GenericResponse update(UsStateUpdateRequest request) {
+        UsState usState = mapper.toEntity(request);
 
-            state.get().setStateName(request.getStateName());
-            state.get().setStateAbbr(request.getStateAbbr());
-            state.get().setStateRegion(request.getStateRegion());
+        BusinessRules.validate(checkUsStateForGeneralValidations(usState));
 
-            repository.save(state.get());
-
-            return stateToStateDtoMapper(state.get());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("İşlem Başarısız");
-        }
+        repository.save(usState);
+        return GenericResponse.builder().message(ResultMessages.RECORD_UPDATED).build();
     }
 
     @Override
-    public UsStateDto findStateByStateId(Long id) {
+    public DataGenericResponse<UsStateDto> findStateByStateId(Long id) {
         Optional<UsState> state = repository.findStateByStateId(id);
         if (state.isEmpty()) {
-            throw new RuntimeException("Kayıt Bulunamadı");
+            throw new RuntimeException(ResultMessages.STATE_NOT_FOUND);
         }
-        return stateToStateDtoMapper(state.get());
+
+        UsStateDto dto = mapper.toDto(state.get());
+
+        return DataGenericResponse.<UsStateDto>dataBuilder()
+                .data(dto)
+                .build();
     }
 
     @Override
-    public void deleteStateByStateId(Long id) { repository.deleteStateByStateId(id); }
-
-    @Override
-    public List<UsStateDto> findAllStates() {
-        List<UsState> list = repository.findAll();
-        List<UsStateDto> result = new ArrayList<>();
-
-        for (UsState us : list) {
-            UsStateDto dto = stateToStateDtoMapper(us);
-            result.add(dto);
+    public GenericResponse deleteStateByStateId(Long id) {
+        boolean isExist = repository.existsStateByStateId(id);
+        if (!isExist) {
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
 
-        return result;
+        repository.deleteStateByStateId(id);
+
+        return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
-    private UsStateDto stateToStateDtoMapper(UsState us) {
-        if (us == null) {
-            return null;
+    @Override
+    public DataGenericResponse<List<UsStateDto>> findAllStates() {
+        List<UsState> states = repository.findAll();
+        List<UsStateDto> dtos = states.stream()
+                .map(mapper::toDto)
+                .toList();
+
+        return DataGenericResponse.<List<UsStateDto>>dataBuilder()
+                .data(dtos)
+                .build();
+    }
+
+    private String checkUsStateForGeneralValidations(UsState request) {
+        if (request.getStateId() == null || request.getStateId() == 0) {
+            return ResultMessages.ID_IS_NOT_DELIVERED;
         }
-
-        UsStateDto dto = new UsStateDto();
-        dto.setStateId(us.getStateId());
-        dto.setStateName(us.getStateName());
-        dto.setStateAbbr(us.getStateAbbr());
-        dto.setStateRegion(us.getStateRegion());
-
-        return dto;
+        return null;
     }
 }
