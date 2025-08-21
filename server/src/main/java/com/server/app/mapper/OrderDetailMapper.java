@@ -79,9 +79,9 @@ public class OrderDetailMapper {
         }
 
         Order order = orderRepository.findById(request.getOrderId())
-                .orElseThrow(() -> new BusinessException(ResultMessages.RECORD_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ResultMessages.ORDER_NOT_FOUND));
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new BusinessException(ResultMessages.RECORD_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ResultMessages.PRODUCT_NOT_FOUND));
 
         return OrderDetail.builder()
                 .id(new OrderDetailId(request.getOrderId(), request.getProductId()))

@@ -3,6 +3,7 @@ package com.server.app.controller;
 import com.server.app.dto.request.OrderDetailSaveRequest;
 import com.server.app.dto.request.OrderDetailUpdateRequest;
 import com.server.app.dto.response.OrderDetailDto;
+import com.server.app.enums.ResultMessages;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.service.OrderDetailService;
 import jakarta.transaction.Transactional;
@@ -22,7 +23,7 @@ public class OrderDetailController {
     @PostMapping("/add")
     public ResponseEntity<String> add(@RequestBody OrderDetailSaveRequest request){
         orderDetailService.add(request);
-        return ResponseEntity.ok("İşlem Başarılı");
+        return ResponseEntity.ok(ResultMessages.SUCCESS);
     }
 
     @PutMapping("/update")
@@ -33,19 +34,19 @@ public class OrderDetailController {
         return ResponseEntity.ok(latest.getData());
     }
 
-    @GetMapping("/{orderId}/{productId}")
-    public ResponseEntity<OrderDetailDto> findById(@PathVariable Long orderId,
-                                                   @PathVariable Long productId){
+    @GetMapping("/")
+    public ResponseEntity<OrderDetailDto> findById(@RequestParam Long orderId,
+                                                   @RequestParam Long productId){
         DataGenericResponse<OrderDetailDto> dto = orderDetailService.findOrderDetailById(orderId, productId);
         return ResponseEntity.ok(dto.getData());
     }
 
     @Transactional
-    @DeleteMapping("/{orderId}/{productId}")
-    public ResponseEntity<String> delete(@PathVariable Long orderId,
-                                         @PathVariable Long productId){
+    @DeleteMapping("/")
+    public ResponseEntity<String> delete(@RequestParam Long orderId,
+                                         @RequestParam Long productId){
         orderDetailService.deleteOrderDetailById(orderId, productId);
-        return ResponseEntity.ok("İşlem Başarılı");
+        return ResponseEntity.ok(ResultMessages.RECORD_DELETED);
     }
 
     @GetMapping

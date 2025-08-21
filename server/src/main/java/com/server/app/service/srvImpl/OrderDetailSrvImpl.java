@@ -95,11 +95,7 @@ public class OrderDetailSrvImpl implements OrderDetailService {
 
     private String checkOrderDetailForGeneralValidations(OrderDetail request) {
         if (request == null) {
-            return ResultMessages.NULL_POINTER_REFERENCE;
-        }
-        // Mapper zaten Order/Product varlığını garanti ediyor; yine de korunmacı olalım
-        if (request.getOrder() == null || request.getProduct() == null) {
-            return ResultMessages.VALUES_NOT_MATCHED;
+            return ResultMessages.ID_IS_NOT_DELIVERED;
         }
         return null;
     }
