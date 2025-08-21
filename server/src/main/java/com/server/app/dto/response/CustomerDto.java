@@ -1,13 +1,15 @@
-package com.server.app.dto.request;
+package com.server.app.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerUpdateRequest {
+@Builder
+public class CustomerDto {
     private String customerId;
     private String companyName;
     private String contactName;

@@ -1,25 +1,25 @@
 package com.server.app.service;
 
-import com.server.app.dto.CustomerDto;
-import com.server.app.dto.request.CustomerSaveRequest;
-import com.server.app.dto.request.CustomerUpdateRequest;
+import com.server.app.dto.response.CustomerDto;
+import com.server.app.dto.request.customer.CustomerSaveRequest;
+import com.server.app.dto.request.customer.CustomerUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.model.Customer;
 
 import java.util.List;
 
 public interface CustomerService {
 
-    String add(CustomerSaveRequest request);
+    GenericResponse add(CustomerSaveRequest request);
 
-    CustomerDto update(CustomerUpdateRequest request);
+    GenericResponse update(CustomerUpdateRequest request);
 
-    CustomerDto findCustomerByCustomerId(String customerId);
+    DataGenericResponse<CustomerDto> findCustomerByCustomerId(String customerId);
 
-    void deleteCustomerByCustomerId(String customerId);
+    GenericResponse deleteCustomerByCustomerId(String customerId);
 
-    boolean existsByCustomerId(String customerId);
-
-    List<CustomerDto> findAllCustomers();
+    DataGenericResponse<List<CustomerDto>> findAllCustomers();
 
     Customer getCustomer(String customerId);
 }

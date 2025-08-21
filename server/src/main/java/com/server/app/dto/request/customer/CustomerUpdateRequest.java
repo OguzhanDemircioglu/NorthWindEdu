@@ -1,4 +1,4 @@
-package com.server.app.dto.request;
+package com.server.app.dto.request.customer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerSaveRequest {
+public class CustomerUpdateRequest {
     private String customerId;
     private String companyName;
     private String contactName;

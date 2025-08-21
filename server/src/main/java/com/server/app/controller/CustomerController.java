@@ -1,8 +1,10 @@
 package com.server.app.controller;
 
-import com.server.app.dto.CustomerDto;
-import com.server.app.dto.request.CustomerSaveRequest;
-import com.server.app.dto.request.CustomerUpdateRequest;
+import com.server.app.dto.response.CustomerDto;
+import com.server.app.dto.request.customer.CustomerSaveRequest;
+import com.server.app.dto.request.customer.CustomerUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.CustomerService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,32 +21,31 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody CustomerSaveRequest request){
-        String resultMessage = customerService.add(request);
-        return ResponseEntity.ok(resultMessage);
+    public ResponseEntity<GenericResponse> add(@RequestBody CustomerSaveRequest request){
+        return ResponseEntity.ok(customerService.add(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody CustomerUpdateRequest request){
-        CustomerDto updatedCustomer = customerService.update(request);
-        return ResponseEntity.ok(updatedCustomer);
+    public ResponseEntity<GenericResponse> updateCustomer(@RequestBody CustomerUpdateRequest request){
+        return ResponseEntity.ok(customerService.update(request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDto> findCustomerByCustomerId(@PathVariable String id){
-        CustomerDto customer = customerService.findCustomerByCustomerId(id);
-        return ResponseEntity.ok(customer);
+    public ResponseEntity<GenericResponse> findCustomerByCustomerId(@PathVariable String id){
+        DataGenericResponse<CustomerDto> result = customerService.findCustomerByCustomerId(id);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable String id){
-        customerService.deleteCustomerByCustomerId(id);
-        return ResponseEntity.ok().body("İşlem Başarılı");
+    public ResponseEntity<GenericResponse> delete(@PathVariable String id){
+        GenericResponse result = customerService.deleteCustomerByCustomerId(id);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerDto>> findAllCustomers(){
-        return ResponseEntity.ok(customerService.findAllCustomers());
+    public ResponseEntity<DataGenericResponse<List<CustomerDto>>> findAllCustomers(){
+        DataGenericResponse<List<CustomerDto>> result = customerService.findAllCustomers();
+        return ResponseEntity.ok(result);
     }
 }
