@@ -31,7 +31,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GenericResponse> findCustomerByCustomerId(@PathVariable String id){
+    public ResponseEntity<DataGenericResponse<CustomerDto>> findCustomerByCustomerId(@PathVariable String id){
         DataGenericResponse<CustomerDto> result = customerService.findCustomerByCustomerId(id);
         return ResponseEntity.ok(result);
     }

@@ -1,15 +1,21 @@
 package com.server.app.service.srvImpl;
 
-import com.server.app.dto.RegionDto;
-import com.server.app.dto.request.RegionSaveRequest;
-import com.server.app.dto.request.RegionUpdateRequest;
+import com.google.common.base.Strings;
+import com.server.app.dto.response.RegionDto;
+import com.server.app.dto.request.region.RegionSaveRequest;
+import com.server.app.dto.request.region.RegionUpdateRequest;
+import com.server.app.enums.ResultMessages;
+import com.server.app.helper.BusinessException;
+import com.server.app.helper.BusinessRules;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
+import com.server.app.mapper.RegionMapper;
 import com.server.app.model.Region;
 import com.server.app.repository.RegionRepository;
 import com.server.app.service.RegionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,76 +24,72 @@ import java.util.Optional;
 public class RegionSrvImpl implements RegionService {
 
     private final RegionRepository repository;
+    private final RegionMapper mapper;
 
     @Override
-    public String add(RegionSaveRequest request) {
-        try {
-            repository.save(
-                    Region.builder()
-                            .regionDescription(request.getRegionDescription())
-                            .build()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "İşlem Başarısız";
-        }
-        return "İşlem Başarılı";
+    public GenericResponse add(RegionSaveRequest request) {
+        Region region = mapper.saveEntityFromRequest(request);
+
+        BusinessRules.validate(checkRegionForDescription(region));
+
+        repository.save(region);
+        return new GenericResponse();
     }
 
     @Override
-    public RegionDto update(RegionUpdateRequest request) {
-        try {
-            Optional<Region> region = repository.findRegionByRegionId(request.getRegionId());
-            if (region.isEmpty()) {
-                throw new RuntimeException("Update Edilecek Kayıt Bulunamadı");
-            }
+    public GenericResponse update(RegionUpdateRequest request) {
+        Region region = mapper.toEntity(request);
 
-            region.get().setRegionDescription(request.getRegionDescription());
+        BusinessRules.validate(checkRegionForDescription(region));
 
-            repository.save(region.get());
-
-            return regionToRegionDtoMapper(region.get());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("İşlem Başarısız");
-        }
+        repository.save(region);
+        return GenericResponse.builder()
+                .message(ResultMessages.RECORD_UPDATED)
+                .build();
     }
 
     @Override
-    public RegionDto findRegionByRegionId(Long id) {
+    public DataGenericResponse<RegionDto> findRegionByRegionId(Long id) {
         Optional<Region> region = repository.findRegionByRegionId(id);
         if (region.isEmpty()) {
-            throw new RuntimeException("Kayıt Bulunamadı");
+            throw new BusinessException(ResultMessages.REGION_NOT_FOUND);
         }
 
-        return regionToRegionDtoMapper(region.get());
+        RegionDto dto = mapper.toDto(region.get());
+
+        return DataGenericResponse.<RegionDto>dataBuilder()
+                .data(dto)
+                .build();
     }
 
     @Override
-    public void deleteRegionByRegionId(Long id) { repository.deleteRegionByRegionId(id); }
-
-    @Override
-    public List<RegionDto> findAllRegions() {
-        List<Region> list = repository.findAll();
-        List<RegionDto> result = new ArrayList<>();
-
-        for (Region r : list) {
-            RegionDto dto = regionToRegionDtoMapper(r);
-            result.add(dto);
+    public GenericResponse deleteRegionByRegionId(Long id) {
+        boolean isExist = repository.existsRegionByRegionId(id);
+        if (!isExist) {
+            throw new BusinessException(ResultMessages.REGION_NOT_FOUND);
         }
 
-        return result;
+        repository.deleteRegionByRegionId(id);
+
+        return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
-    private RegionDto regionToRegionDtoMapper(Region r) {
-        if (r == null) {
-            return null;
+    @Override
+    public DataGenericResponse<List<RegionDto>> findAllRegions() {
+        List<Region> regions = repository.findAll();
+        List<RegionDto> dtos = regions.stream()
+                .map(mapper::toDto)
+                .toList();
+
+        return DataGenericResponse.<List<RegionDto>>dataBuilder()
+                .data(dtos)
+                .build();
+    }
+
+    private String checkRegionForDescription(Region request) {
+        if(Strings.isNullOrEmpty(request.getRegionDescription())) {
+            return ResultMessages.EMPTY_DESCRIPTION;
         }
-
-        RegionDto dto = new RegionDto();
-        dto.setRegionId(r.getRegionId());
-        dto.setRegionDescription(r.getRegionDescription());
-
-        return dto;
+        return null;
     }
 }
