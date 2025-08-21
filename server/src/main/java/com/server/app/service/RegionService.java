@@ -1,20 +1,23 @@
 package com.server.app.service;
 
-import com.server.app.dto.RegionDto;
-import com.server.app.dto.request.RegionSaveRequest;
-import com.server.app.dto.request.RegionUpdateRequest;
+import com.server.app.dto.response.RegionDto;
+import com.server.app.dto.request.region.RegionSaveRequest;
+import com.server.app.dto.request.region.RegionUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
 public interface RegionService {
 
-    String add(RegionSaveRequest request);
+    GenericResponse add(RegionSaveRequest request);
 
-    RegionDto update(RegionUpdateRequest request);
+    GenericResponse update(RegionUpdateRequest request);
 
-    RegionDto findRegionByRegionId(Long id);
+    DataGenericResponse<RegionDto> findRegionByRegionId(Long id);
 
-    void deleteRegionByRegionId(Long id);
+    GenericResponse deleteRegionByRegionId(Long id);
 
-    List<RegionDto> findAllRegions();
+    DataGenericResponse<List<RegionDto>> findAllRegions();
 }

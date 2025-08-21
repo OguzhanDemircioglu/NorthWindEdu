@@ -18,6 +18,7 @@ public class ResultMessages {
     public static final String EMPLOYEE_NOT_FOUND = "Bu ID ile Employee bulunamadı";
     public static final String CUSTOMER_NOT_FOUND = "Bu ID ile Müşteri bulunamadı";
     public static final String SHIPPER_NOT_FOUND = "Bu ID ile Kargocu bulunamadı";
+    public static final String REGION_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
     public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
     public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
     public static final String WRONG_CITY_FORMAT = "Şehir alanı yalnızca harflerden oluşmalı";
@@ -78,5 +79,9 @@ public class ResultMessages {
 
     //region Category
     public static final String C_NAME_OUT_OF_RANGE = "Kategori adı 15 karakterden uzun olamaz";
+    //endregion
+
+    //region Region
+    public static final String EMPTY_DESCRIPTION = "Bölge açıklaması boş olamaz";
     //endregion
 }
