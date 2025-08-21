@@ -30,21 +30,22 @@ public class OrderDetailController {
         return ResponseEntity.ok(orderDetailService.update(request));
     }
 
-    @GetMapping("/by-id")
+    @GetMapping("/")
     public ResponseEntity<DataGenericResponse<OrderDetailDto>> get(@RequestParam Long orderId,
                                                                    @RequestParam Long productId) {
         DataGenericResponse<OrderDetailDto> result = orderDetailService.findOrderDetailById(orderId, productId);
         return ResponseEntity.ok(result);
     }
-
+    // /delete?orderId=&productId=
     @Transactional
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<GenericResponse> delete(@RequestParam Long orderId,
                                                   @RequestParam Long productId) {
         GenericResponse result = orderDetailService.deleteOrderDetailById(orderId, productId);
         return ResponseEntity.ok(result);
     }
 
+    // Örnek: GET /api/order-details?orderId=10248&productId=11
     @GetMapping
     public ResponseEntity<DataGenericResponse<List<OrderDetailDto>>> findAllOrderDetails() {
         DataGenericResponse<List<OrderDetailDto>> result = orderDetailService.findAllOrderDetails();
