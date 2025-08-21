@@ -13,6 +13,6 @@ public class OrderDetailDto {
     private Long orderId;
     private Long productId;
     private Double unitPrice;
-    private Long quantity;   // smallint -> Long (senin istediğin)
+    private Long quantity;
     private Double discount;
 }
