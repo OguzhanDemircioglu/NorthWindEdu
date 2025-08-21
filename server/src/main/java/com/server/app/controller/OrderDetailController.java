@@ -3,8 +3,8 @@ package com.server.app.controller;
 import com.server.app.dto.request.OrderDetailSaveRequest;
 import com.server.app.dto.request.OrderDetailUpdateRequest;
 import com.server.app.dto.response.OrderDetailDto;
-import com.server.app.enums.ResultMessages;
 import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.OrderDetailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,37 +21,33 @@ public class OrderDetailController {
     private final OrderDetailService orderDetailService;
 
     @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody OrderDetailSaveRequest request){
-        orderDetailService.add(request);
-        return ResponseEntity.ok(ResultMessages.SUCCESS);
+    public ResponseEntity<GenericResponse> add(@RequestBody OrderDetailSaveRequest request) {
+        return ResponseEntity.ok(orderDetailService.add(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<OrderDetailDto> update(@RequestBody OrderDetailUpdateRequest request){
-        orderDetailService.update(request);
-        DataGenericResponse<OrderDetailDto> latest =
-                orderDetailService.findOrderDetailById(request.getOrderId(), request.getProductId());
-        return ResponseEntity.ok(latest.getData());
+    public ResponseEntity<GenericResponse> update(@RequestBody OrderDetailUpdateRequest request) {
+        return ResponseEntity.ok(orderDetailService.update(request));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<OrderDetailDto> findById(@RequestParam Long orderId,
-                                                   @RequestParam Long productId){
-        DataGenericResponse<OrderDetailDto> dto = orderDetailService.findOrderDetailById(orderId, productId);
-        return ResponseEntity.ok(dto.getData());
+    @GetMapping("/by-id")
+    public ResponseEntity<DataGenericResponse<OrderDetailDto>> get(@RequestParam Long orderId,
+                                                                   @RequestParam Long productId) {
+        DataGenericResponse<OrderDetailDto> result = orderDetailService.findOrderDetailById(orderId, productId);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
-    @DeleteMapping("/")
-    public ResponseEntity<String> delete(@RequestParam Long orderId,
-                                         @RequestParam Long productId){
-        orderDetailService.deleteOrderDetailById(orderId, productId);
-        return ResponseEntity.ok(ResultMessages.RECORD_DELETED);
+    @DeleteMapping
+    public ResponseEntity<GenericResponse> delete(@RequestParam Long orderId,
+                                                  @RequestParam Long productId) {
+        GenericResponse result = orderDetailService.deleteOrderDetailById(orderId, productId);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDetailDto>> findAll(){
-        DataGenericResponse<List<OrderDetailDto>> all = orderDetailService.findAllOrderDetails();
-        return ResponseEntity.ok(all.getData());
+    public ResponseEntity<DataGenericResponse<List<OrderDetailDto>>> findAllOrderDetails() {
+        DataGenericResponse<List<OrderDetailDto>> result = orderDetailService.findAllOrderDetails();
+        return ResponseEntity.ok(result);
     }
 }
