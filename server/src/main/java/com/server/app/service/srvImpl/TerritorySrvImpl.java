@@ -87,13 +87,15 @@ public class TerritorySrvImpl implements TerritoryService {
             return ResultMessages.ID_IS_NOT_DELIVERED;
         }
 
+        if(request.getTerritoryId().length() > 20) {
+            return ResultMessages.TERRITORY_ID_OUT_OF_RANGE;
+        }
+
         if(Strings.isNullOrEmpty(request.getTerritoryDescription())) {
             return ResultMessages.EMPTY_T_DESCRIPTION;
         }
         return null;
     }
-
-
 
     public Territory getTerritory(String id) {
         return repository.getTerritoryByTerritoryId(id);
