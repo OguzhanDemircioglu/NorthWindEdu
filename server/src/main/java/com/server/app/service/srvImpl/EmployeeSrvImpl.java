@@ -7,21 +7,20 @@ import com.server.app.dto.request.employee.EmployeeUpdateRequest;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.helper.BusinessRules;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.mapper.EmployeeMapper;
 import com.server.app.model.Employee;
 import com.server.app.repository.EmployeeRepository;
 import com.server.app.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class EmployeeSrvImpl implements EmployeeService {
 
@@ -29,126 +28,115 @@ public class EmployeeSrvImpl implements EmployeeService {
     private final EmployeeMapper mapper;
 
     @Override
-    public String add(EmployeeSaveRequest request) {
-        try {
-            Employee employee = mapper.saveEntityFromRequest(request);
+    public GenericResponse add(EmployeeSaveRequest request) {
+        Employee employee = mapper.saveEntityFromRequest(request);
 
-            BusinessRules.validate(
-                    checkEmployeeForGeneralValidations(employee),
-                    checkTitleValidation(employee.getTitle()),
-                    checkPhoneFormat(employee.getHomePhone()),
-                    checkUniqueConstraints(employee)
-            );
+        BusinessRules.validate(
+                checkEmployeeForGeneralValidations(employee),
+                checkTitleValidation(employee.getTitle()),
+                checkPhoneFormat(employee.getHomePhone()),
+                checkUniqueConstraints(employee)
+        );
 
-            repository.save(employee);
-        } catch (BusinessException e) {
-            log.error("Business validation failed for employee add: {}", request.getFirstName() +" "+ request.getLastName(), e);
-            throw e;
-        } catch (Exception e) {
-            return ResultMessages.PROCESS_FAILED;
-        }
-        return ResultMessages.SUCCESS;
+        repository.save(employee);
+        return new GenericResponse();
     }
 
     @Override
-    public EmployeeDto update(EmployeeUpdateRequest request) {
-        try {
-            Employee employee = mapper.toEntity(request);
+    public GenericResponse update(EmployeeUpdateRequest request) {
+        Employee employee = mapper.toEntity(request);
 
-            BusinessRules.validate(
-                    checkEmployeeForGeneralValidations(employee),
-                    checkTitleValidation(employee.getTitle()),
-                    checkPhoneFormat(employee.getHomePhone()),
-                    checkUniqueConstraints(employee)
-            );
+        BusinessRules.validate(
+                checkEmployeeForGeneralValidations(employee),
+                checkTitleValidation(employee.getTitle()),
+                checkPhoneFormat(employee.getHomePhone()),
+                checkUniqueConstraints(employee)
+        );
 
-            Employee updatedEmployee = repository.save(employee);
-
-            return mapper.toDto(updatedEmployee);
-
-        } catch (BusinessException e) {
-            log.error("Business validation failed for employee update: {}", request.getEmployeeId(), e);
-            throw e;
-        } catch (Exception e) {
-            log.error("Employee update failed for ID: {}", request.getEmployeeId(), e);
-            throw new BusinessException(ResultMessages.PROCESS_FAILED + ": " + e.getMessage());
-        }
+        repository.save(employee);
+        return GenericResponse.builder()
+                .message(ResultMessages.RECORD_UPDATED)
+                .build();
     }
 
     @Override
-    public EmployeeDto findEmployeeByEmployeeId(Long employeeId) {
+    public DataGenericResponse<EmployeeDto> findEmployeeByEmployeeId(Long employeeId) {
         Optional<Employee> employee = repository.findEmployeeByEmployeeId(employeeId);
         if (employee.isEmpty()) {
-            throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
+            throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
         }
 
-        return mapper.toDto(employee.get());
+        EmployeeDto dto = mapper.toDto(employee.get());
+        return DataGenericResponse.<EmployeeDto>dataBuilder()
+                .data(dto)
+                .build();
     }
 
     @Override
-    public void deleteEmployeeByEmployeeId(Long employeeId) {
+    public GenericResponse deleteEmployeeByEmployeeId(Long employeeId) {
+        boolean exists = repository.existsById(employeeId);
+        if (!exists) {
+            throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
+        }
         repository.deleteEmployeeByEmployeeId(employeeId);
+        return GenericResponse.builder()
+                .message(ResultMessages.RECORD_DELETED)
+                .build();
     }
 
     @Override
-    public List<EmployeeDto> findAllEmployees() {
-        List<Employee> list = repository.findAll();
-        List<EmployeeDto> result = new ArrayList<>();
+    public DataGenericResponse<List<EmployeeDto>> findAllEmployees() {
+        List<EmployeeDto> dtos = repository.findAll()
+                .stream()
+                .map(mapper::toDto)
+                .toList();
 
-        for (Employee e : list) {
-            EmployeeDto dto = mapper.toDto(e);;
-            result.add(dto);
-        }
-
-        return result;
+        return DataGenericResponse.<List<EmployeeDto>>dataBuilder()
+                .data(dtos)
+                .build();
     }
 
+    @Override
+    public Employee getEmployee(Long employeeId) {
+        return repository.getEmployeeByEmployeeId(employeeId);
+    }
+
+    // ===== Helpers =====
     private String checkTitleValidation(String title) {
-        if(!Strings.isNullOrEmpty(title) && title.length() > 30) {
+        if (!Strings.isNullOrEmpty(title) && title.length() > 30) {
             return ResultMessages.TITLE_OUT_OF_RANGE;
         }
         return null;
     }
 
     private String checkPhoneFormat(String phone) {
-        if(phone != null && !phone.matches("^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$")) {
+        if (phone != null && !phone.matches("^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$")) {
             return ResultMessages.WRONG_PHONE_FORMAT;
         }
         return null;
     }
 
     private String checkUniqueConstraints(Employee request) {
-        if (repository.existsByFirstNameAndLastName(
-                request.getFirstName(),
-                request.getLastName())) {
+        if (repository.existsByFirstNameAndLastName(request.getFirstName(), request.getLastName())) {
             return ResultMessages.NAME_SURNAME_EXIST;
         }
         return null;
     }
 
     private String checkEmployeeForGeneralValidations(Employee request) {
-
-        if(Strings.isNullOrEmpty(request.getFirstName())) {
+        if (Strings.isNullOrEmpty(request.getFirstName())) {
             return ResultMessages.EMPTY_NAME;
         }
-
-        if(Strings.isNullOrEmpty(request.getLastName())) {
+        if (Strings.isNullOrEmpty(request.getLastName())) {
             return ResultMessages.EMPTY_SURNAME;
         }
-
-        if(request.getBirthDate() != null && request.getBirthDate().isAfter(LocalDate.now())) {
+        if (request.getBirthDate() != null && request.getBirthDate().isAfter(LocalDate.now())) {
             return ResultMessages.INVALID_BIRTHDATE;
         }
-
-        if(request.getHireDate() != null && request.getBirthDate() != null
+        if (request.getHireDate() != null && request.getBirthDate() != null
                 && request.getHireDate().isBefore(request.getBirthDate())) {
             return ResultMessages.HIRING_DATE_BEFORE_BIRTHDAY;
         }
-
         return null;
-    }
-
-    public Employee getEmployee(Long employeeId) {
-        return repository.getEmployeeByEmployeeId(employeeId);
     }
 }
