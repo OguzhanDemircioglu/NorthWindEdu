@@ -3,6 +3,8 @@ package com.server.app.controller;
 import com.server.app.dto.ShipperDto;
 import com.server.app.dto.request.ShipperSaveRequest;
 import com.server.app.dto.request.ShipperUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.ShipperService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,32 +21,31 @@ public class ShipperController {
     private final ShipperService shipperService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody ShipperSaveRequest request) {
-        String resultMessage = shipperService.add(request);
-        return ResponseEntity.ok(resultMessage);
+    public ResponseEntity<GenericResponse> add(@RequestBody ShipperSaveRequest request) {
+        return ResponseEntity.ok(shipperService.add(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> update(@RequestBody ShipperUpdateRequest request) {
-        ShipperDto updated = shipperService.update(request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<GenericResponse> update(@RequestBody ShipperUpdateRequest request) {
+        return ResponseEntity.ok(shipperService.update(request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
-        ShipperDto dto = shipperService.findShipperByShipperId(id);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<DataGenericResponse<ShipperDto>> findShipperById(@PathVariable Long id) {
+        DataGenericResponse<ShipperDto> result = shipperService.findShipperByShipperId(id);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        shipperService.deleteShipperByShipperId(id);
-        return ResponseEntity.ok("İşlem Başarılı");
+    public ResponseEntity<GenericResponse> deleteShipperById(@PathVariable Long id) {
+        GenericResponse result = shipperService.deleteShipperByShipperId(id);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<ShipperDto>> findAll() {
-        return ResponseEntity.ok(shipperService.findAllShippers());
+    public ResponseEntity<DataGenericResponse<List<ShipperDto>>> findAllShippers() {
+        DataGenericResponse<List<ShipperDto>> result = shipperService.findAllShippers();
+        return ResponseEntity.ok(result);
     }
 }
