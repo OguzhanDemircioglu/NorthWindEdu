@@ -1,23 +1,25 @@
 package com.server.app.service;
 
-import com.server.app.dto.response.EmployeeDto;
 import com.server.app.dto.request.employee.EmployeeSaveRequest;
 import com.server.app.dto.request.employee.EmployeeUpdateRequest;
+import com.server.app.dto.response.EmployeeDto;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.model.Employee;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    String add(EmployeeSaveRequest request);
+    GenericResponse add(EmployeeSaveRequest request);
 
-    EmployeeDto update(EmployeeUpdateRequest request);
+    GenericResponse update(EmployeeUpdateRequest request);
 
-    EmployeeDto findEmployeeByEmployeeId(Long employeeId);
+    DataGenericResponse<EmployeeDto> findEmployeeByEmployeeId(Long employeeId);
 
-    void deleteEmployeeByEmployeeId(Long employeeId);
+    GenericResponse deleteEmployeeByEmployeeId(Long employeeId);
 
-    List<EmployeeDto> findAllEmployees();
+    DataGenericResponse<List<EmployeeDto>> findAllEmployees();
 
     Employee getEmployee(Long employeeId);
 }
