@@ -12,4 +12,8 @@ public interface ShipperRepository extends JpaRepository<Shipper, Long> {
     Optional<Shipper> findShipperByShipperId(Long shipperId);
 
     void deleteShipperByShipperId(Long shipperId);
+
+    Shipper getShipperByShipperId(Long shipperId);
+
+    boolean existsShipperByShipperId(Long shipperId);
 }
