@@ -1,5 +1,6 @@
 package com.server.app.model;
 
+import com.server.app.model.embedded.OrderDetailId;
 import jakarta.persistence.*;
 import lombok.*;
 
