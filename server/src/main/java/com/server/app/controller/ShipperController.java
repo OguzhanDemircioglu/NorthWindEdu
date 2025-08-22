@@ -31,18 +31,21 @@ public class ShipperController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataGenericResponse<ShipperDto>> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(shipperService.findShipperByShipperId(id));
+    public ResponseEntity<DataGenericResponse<ShipperDto>> findShipperById(@PathVariable Long id) {
+        DataGenericResponse<ShipperDto> result = shipperService.findShipperByShipperId(id);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<GenericResponse> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(shipperService.deleteShipperByShipperId(id));
+    public ResponseEntity<GenericResponse> deleteShipperById(@PathVariable Long id) {
+        GenericResponse result = shipperService.deleteShipperByShipperId(id);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<DataGenericResponse<List<ShipperDto>>> findAll() {
-        return ResponseEntity.ok(shipperService.findAllShippers());
+    public ResponseEntity<DataGenericResponse<List<ShipperDto>>> findAllShippers() {
+        DataGenericResponse<List<ShipperDto>> result = shipperService.findAllShippers();
+        return ResponseEntity.ok(result);
     }
 }
