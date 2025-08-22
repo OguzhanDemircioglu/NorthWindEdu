@@ -1,4 +1,4 @@
-package com.server.app.dto.request;
+package com.server.app.dto.request.supplier;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
