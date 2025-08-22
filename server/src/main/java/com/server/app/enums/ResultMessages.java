@@ -62,6 +62,7 @@ public class ResultMessages {
 
     //region CustomerDemographic
     public static final String EMPTY_CUSTOMER_TYPE_ID = "Müşteri tipi ID alanı boş bırakılamaz";
+    public static final String CUSTOMER_TYPE_ID_OUT_OF_RANGE = "Müşteri tipi ID tam 1 karakter olmalı";
     //endregion
 
     //region Territory

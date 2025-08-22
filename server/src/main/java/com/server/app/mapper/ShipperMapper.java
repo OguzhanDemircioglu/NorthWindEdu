@@ -1,8 +1,8 @@
 package com.server.app.mapper;
 
-import com.server.app.dto.ShipperDto;
-import com.server.app.dto.request.ShipperSaveRequest;
-import com.server.app.dto.request.ShipperUpdateRequest;
+import com.server.app.dto.response.ShipperDto;
+import com.server.app.dto.request.shipper.ShipperSaveRequest;
+import com.server.app.dto.request.shipper.ShipperUpdateRequest;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.model.Shipper;
