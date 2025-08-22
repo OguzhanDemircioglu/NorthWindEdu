@@ -12,4 +12,6 @@ public interface UsStateRepository extends JpaRepository<UsState, Long> {
     Optional<UsState> findStateByStateId(Long id);
 
     void deleteStateByStateId(Long id);
+
+    boolean existsStateByStateId(Long id);
 }

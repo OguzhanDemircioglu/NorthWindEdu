@@ -14,4 +14,6 @@ public interface TerritoryRepository extends JpaRepository<Territory, String> {
     void deleteTerritoryByTerritoryId(String id);
 
     Territory getTerritoryByTerritoryId(String id);
+
+    boolean existsTerritoryByTerritoryId(String id);
 }

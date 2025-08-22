@@ -5,6 +5,7 @@ import com.server.app.dto.request.region.RegionSaveRequest;
 import com.server.app.dto.request.region.RegionUpdateRequest;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
+import com.server.app.model.Region;
 
 import javax.xml.crypto.Data;
 import java.util.List;
@@ -20,4 +21,6 @@ public interface RegionService {
     GenericResponse deleteRegionByRegionId(Long id);
 
     DataGenericResponse<List<RegionDto>> findAllRegions();
+
+    Region getRegion(Long regionId);
 }

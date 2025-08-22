@@ -1,8 +1,11 @@
 package com.server.app.controller;
 
-import com.server.app.dto.TerritoryDto;
-import com.server.app.dto.request.TerritorySaveRequest;
-import com.server.app.dto.request.TerritoryUpdateRequest;
+
+import com.server.app.dto.request.territory.TerritorySaveRequest;
+import com.server.app.dto.request.territory.TerritoryUpdateRequest;
+import com.server.app.dto.response.TerritoryDto;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.TerritoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,32 +22,31 @@ public class TerritoryController {
     private final TerritoryService territoryService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody TerritorySaveRequest request) {
-        String resultMessage = territoryService.add(request);
-        return ResponseEntity.ok(resultMessage);
+    public ResponseEntity<GenericResponse> add(@RequestBody TerritorySaveRequest request) {
+        return ResponseEntity.ok(territoryService.add(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<TerritoryDto> update(@RequestBody TerritoryUpdateRequest request) {
-        TerritoryDto updatedTerritory = territoryService.update(request);
-        return ResponseEntity.ok(updatedTerritory);
+    public ResponseEntity<GenericResponse> update(@RequestBody TerritoryUpdateRequest request) {
+        return ResponseEntity.ok(territoryService.update(request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TerritoryDto> findById(@PathVariable String id) {
-        TerritoryDto territory = territoryService.findTerritoryByTerritoryId(id);
-        return ResponseEntity.ok(territory);
+    public ResponseEntity<DataGenericResponse<TerritoryDto>> get(@PathVariable String id) {
+        DataGenericResponse<TerritoryDto> result = territoryService.findTerritoryByTerritoryId(id);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable String id) {
-        territoryService.deleteTerritoryByTerritoryId(id);
-        return ResponseEntity.ok("İşlem Başarılı");
+    public ResponseEntity<GenericResponse> delete(@PathVariable String id) {
+        GenericResponse result = territoryService.deleteTerritoryByTerritoryId(id);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<TerritoryDto>> findAllTerritories() {
-        return ResponseEntity.ok(territoryService.findAllTerritories());
+    public ResponseEntity<DataGenericResponse<List<TerritoryDto>>> findAllTerritories() {
+        DataGenericResponse<List<TerritoryDto>> result = territoryService.findAllTerritories();
+        return ResponseEntity.ok(result);
     }
 }
