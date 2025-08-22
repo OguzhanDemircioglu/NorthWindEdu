@@ -10,7 +10,7 @@ import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
 import com.server.app.mapper.OrderDetailMapper;
 import com.server.app.model.OrderDetail;
-import com.server.app.model.OrderDetailId;
+import com.server.app.model.embedded.OrderDetailId;
 import com.server.app.repository.OrderDetailRepository;
 import com.server.app.service.OrderDetailService;
 import lombok.RequiredArgsConstructor;

@@ -7,7 +7,7 @@ import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.model.Order;
 import com.server.app.model.OrderDetail;
-import com.server.app.model.OrderDetailId;
+import com.server.app.model.embedded.OrderDetailId;
 import com.server.app.model.Product;
 import com.server.app.repository.OrderDetailRepository;
 import com.server.app.repository.OrderRepository;
