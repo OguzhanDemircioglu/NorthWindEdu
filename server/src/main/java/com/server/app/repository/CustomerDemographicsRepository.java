@@ -8,9 +8,13 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerDemographicsRepository extends JpaRepository<CustomerDemographics, String> {
+
     Optional<CustomerDemographics> findCustomerDemographicsByCustomerTypeId(String customerTypeId);
+
+    boolean existsCustomerDemographicsByCustomerTypeId(String customerTypeId);
 
     void deleteCustomerDemographicsByCustomerTypeId(String customerTypeId);
 
     CustomerDemographics getCustomerDemographicsByCustomerTypeId(String customerTypeId);
 }
+

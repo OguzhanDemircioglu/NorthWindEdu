@@ -1,23 +1,25 @@
 package com.server.app.service;
 
-import com.server.app.dto.CustomerDemographicsDto;
-import com.server.app.dto.request.CustomerDemographicsSaveRequest;
-import com.server.app.dto.request.CustomerDemographicsUpdateRequest;
+import com.server.app.dto.request.customerDemographics.CustomerDemographicsSaveRequest;
+import com.server.app.dto.request.customerDemographics.CustomerDemographicsUpdateRequest;
+import com.server.app.dto.response.CustomerDemographicsDto;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.model.CustomerDemographics;
 
 import java.util.List;
 
 public interface CustomerDemographicsService {
 
-    String add(CustomerDemographicsSaveRequest request);
+    GenericResponse add(CustomerDemographicsSaveRequest request);
 
-    CustomerDemographicsDto update(CustomerDemographicsUpdateRequest request);
+    GenericResponse update(CustomerDemographicsUpdateRequest request);
 
-    CustomerDemographicsDto findCustomerDemographicsByCustomerTypeId(String customerTypeId);
+    DataGenericResponse<CustomerDemographicsDto> findCustomerDemographicsByCustomerTypeId(String customerTypeId);
 
-    void deleteCustomerDemographicsByCustomerTypeId(String customerTypeId);
+    GenericResponse deleteCustomerDemographicsByCustomerTypeId(String customerTypeId);
 
-    List<CustomerDemographicsDto> findAllCustomerDemographics();
+    DataGenericResponse<List<CustomerDemographicsDto>> findAllCustomerDemographics();
 
     CustomerDemographics getCustomerDemographics(String customerTypeId);
 }
