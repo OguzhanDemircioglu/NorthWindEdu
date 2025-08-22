@@ -23,7 +23,7 @@ public class ResultMessages {
     public static final String REGION_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
     public static final String STATE_NOT_FOUND = "Bu ID ile Eyalet bulunamadı";
     public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
-    public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge(Terry) bulunamadı";
+    public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge(Territory) bulunamadı";
     public static final String WRONG_CITY_FORMAT = "Şehir alanı yalnızca harflerden oluşmalı";
     public static final String WRONG_COUNTRY_FORMAT = "Ülke alanı yalnızca harflerden oluşmalı";
     public static final String WRONG_FAX_FORMAT = "Geçersiz fax formatı";
@@ -47,6 +47,7 @@ public class ResultMessages {
 
     //region Customer
     public static final String EMPTY_CUSTOMER_ID = "Müşteri ID alanı boş bırakılamaz";
+    public static final String EMPTY_COMPANY_NAME = "Şirket isim alanı boş bırakılamaz";
     public static final String CONTACT_NAME_OUT_OF_RANGE = "Müşteri ismi 30 karakterden uzun olamaz";
     public static final String ADDRESS_OUT_OF_RANGE = "Adres alanı 30 karakterden uzun olamaz";
     public static final String CITY_OUT_OF_RANGE = "Şehir alanı 30 karakterden uzun olamaz";

@@ -212,7 +212,7 @@ public class CustomerSrvImpl implements CustomerService {
         }
 
         if (Strings.isNullOrEmpty(request.getCompanyName())) {
-            return ResultMessages.EMPTY_NAME;
+            return ResultMessages.EMPTY_COMPANY_NAME;
         }
         return null;
     }

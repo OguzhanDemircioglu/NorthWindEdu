@@ -1,23 +1,25 @@
 package com.server.app.service;
 
-import com.server.app.dto.SupplierDto;
-import com.server.app.dto.request.SupplierSaveRequest;
-import com.server.app.dto.request.SupplierUpdateRequest;
+import com.server.app.dto.response.SupplierDto;
+import com.server.app.dto.request.supplier.SupplierSaveRequest;
+import com.server.app.dto.request.supplier.SupplierUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.model.Supplier;
 
 import java.util.List;
 
 public interface SupplierService {
 
-    String add(SupplierSaveRequest request);
+    GenericResponse add(SupplierSaveRequest request);
 
-    SupplierDto update(SupplierUpdateRequest request);
+    GenericResponse update(SupplierUpdateRequest request);
 
-    SupplierDto findSupplierBySupplierId(Long supplierId);
+    DataGenericResponse<SupplierDto> findSupplierBySupplierId(Long supplierId);
 
-    void deleteSupplierBySupplierId(Long supplierId);
+    GenericResponse deleteSupplierBySupplierId(Long supplierId);
 
-    List<SupplierDto> findAllSuppliers();
+    DataGenericResponse<List<SupplierDto>> findAllSuppliers();
 
     Supplier getSupplier(Long supplierId);
 }

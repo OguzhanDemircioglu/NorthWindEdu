@@ -1,8 +1,10 @@
 package com.server.app.controller;
 
-import com.server.app.dto.SupplierDto;
-import com.server.app.dto.request.SupplierSaveRequest;
-import com.server.app.dto.request.SupplierUpdateRequest;
+import com.server.app.dto.response.SupplierDto;
+import com.server.app.dto.request.supplier.SupplierSaveRequest;
+import com.server.app.dto.request.supplier.SupplierUpdateRequest;
+import com.server.app.helper.results.DataGenericResponse;
+import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.SupplierService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,32 +21,31 @@ public class SupplierController {
     private final SupplierService supplierService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody SupplierSaveRequest request){
-        String resultMessage = supplierService.add(request);
-        return ResponseEntity.ok(resultMessage);
+    public ResponseEntity<GenericResponse> add(@RequestBody SupplierSaveRequest request){
+        return ResponseEntity.ok(supplierService.add(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<SupplierDto> update(@RequestBody SupplierUpdateRequest request){
-        SupplierDto updated = supplierService.update(request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<GenericResponse> update(@RequestBody SupplierUpdateRequest request){
+        return ResponseEntity.ok(supplierService.update(request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SupplierDto> findSupplierBySupplierId(@PathVariable Long id){
-        SupplierDto supplier = supplierService.findSupplierBySupplierId(id);
-        return ResponseEntity.ok(supplier);
+    public ResponseEntity<DataGenericResponse<SupplierDto>> get(@PathVariable Long id){
+        DataGenericResponse<SupplierDto> result = supplierService.findSupplierBySupplierId(id);
+        return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id){
-        supplierService.deleteSupplierBySupplierId(id);
-        return ResponseEntity.ok().body("İslem Basarili");
+    public ResponseEntity<GenericResponse> delete(@PathVariable Long id){
+        GenericResponse result = supplierService.deleteSupplierBySupplierId(id);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping
-    public ResponseEntity<List<SupplierDto>> findAllSuppliers(){
-        return ResponseEntity.ok(supplierService.findAllSuppliers());
+    public ResponseEntity<DataGenericResponse<List<SupplierDto>>> findAllSuppliers(){
+        DataGenericResponse<List<SupplierDto>> result = supplierService.findAllSuppliers();
+        return ResponseEntity.ok(result);
     }
 }

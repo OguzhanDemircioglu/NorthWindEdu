@@ -1,12 +1,14 @@
-package com.server.app.dto;
+package com.server.app.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SupplierDto {
     private Long supplierId;
     private String companyName;
