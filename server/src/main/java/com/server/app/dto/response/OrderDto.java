@@ -1,4 +1,4 @@
-package com.server.app.dto.request;
+package com.server.app.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,19 +8,18 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class OrderSaveRequest {
+public class OrderDto {
 
-    private String customerId;      // Customer FK
-    private Long employeeId;     // Employee FK
-    private Long shipViaId;        // Shipper FK
-
+    private Long orderId;
+    private String customerId;
+    private Long employeeId;
+    private Long shipViaId;
     private LocalDate orderDate;
     private LocalDate requiredDate;
     private LocalDate shippedDate;
-
     private Double freight;
     private String shipName;
     private String shipAddress;

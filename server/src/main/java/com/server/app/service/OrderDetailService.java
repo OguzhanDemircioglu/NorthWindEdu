@@ -1,7 +1,7 @@
 package com.server.app.service;
 
-import com.server.app.dto.request.OrderDetailSaveRequest;
-import com.server.app.dto.request.OrderDetailUpdateRequest;
+import com.server.app.dto.request.orderDetail.OrderDetailSaveRequest;
+import com.server.app.dto.request.orderDetail.OrderDetailUpdateRequest;
 import com.server.app.dto.response.OrderDetailDto;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
