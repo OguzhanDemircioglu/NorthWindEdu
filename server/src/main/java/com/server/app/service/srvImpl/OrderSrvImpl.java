@@ -1,8 +1,8 @@
 package com.server.app.service.srvImpl;
 
-import com.server.app.dto.OrderDto;
-import com.server.app.dto.request.OrderSaveRequest;
-import com.server.app.dto.request.OrderUpdateRequest;
+import com.server.app.dto.response.OrderDto;
+import com.server.app.dto.request.order.OrderSaveRequest;
+import com.server.app.dto.request.order.OrderUpdateRequest;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.helper.BusinessRules;
@@ -29,7 +29,6 @@ public class OrderSrvImpl implements OrderService {
 
     @Override
     public GenericResponse add(OrderSaveRequest request) {
-        // Mapper içinde FK kontrolleri (customer/employee/shipper) ve BusinessException atımı zaten var
         Order order = mapper.saveEntityFromRequest(request);
 
         BusinessRules.validate(

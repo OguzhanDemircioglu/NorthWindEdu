@@ -1,4 +1,4 @@
-package com.server.app.dto.request;
+package com.server.app.dto.request.orderDetail;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDetailSaveRequest {
+public class OrderDetailUpdateRequest {
     private Long orderId;
     private Long productId;
     private Double unitPrice;

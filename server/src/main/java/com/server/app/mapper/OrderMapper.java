@@ -1,8 +1,8 @@
 package com.server.app.mapper;
 
-import com.server.app.dto.OrderDto;
-import com.server.app.dto.request.OrderSaveRequest;
-import com.server.app.dto.request.OrderUpdateRequest;
+import com.server.app.dto.response.OrderDto;
+import com.server.app.dto.request.order.OrderSaveRequest;
+import com.server.app.dto.request.order.OrderUpdateRequest;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.model.Customer;
