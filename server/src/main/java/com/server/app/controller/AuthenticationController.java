@@ -1,8 +1,8 @@
 package com.server.app.controller;
 
-import com.server.app.dto.JwtAuthResponse;
-import com.server.app.dto.RefreshTokenRequest;
-import com.server.app.dto.UserRequestDto;
+import com.server.app.dto.response.JwtAuthResponse;
+import com.server.app.dto.request.userAndToken.RefreshTokenRequest;
+import com.server.app.dto.request.userAndToken.UserRequestDto;
 import com.server.app.service.AuthenticationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
