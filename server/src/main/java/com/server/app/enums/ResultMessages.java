@@ -23,7 +23,7 @@ public class ResultMessages {
     public static final String REGION_NOT_FOUND = "Bu ID ile Bölge bulunamadı";
     public static final String STATE_NOT_FOUND = "Bu ID ile Eyalet bulunamadı";
     public static final String CUSTOMER_DEMOGRAPHICS_NOT_FOUND = "Bu ID ile Müşteri tipi bulunamadı";
-    public static final String TERRITORY_NOT_FOUND = "Bu ID ile Bölge(Territory) bulunamadı";
+    public static final String TERRITORY_NOT_FOUND = "Bu ID ile Arazi bulunamadı";
     public static final String WRONG_CITY_FORMAT = "Şehir alanı yalnızca harflerden oluşmalı";
     public static final String WRONG_COUNTRY_FORMAT = "Ülke alanı yalnızca harflerden oluşmalı";
     public static final String WRONG_FAX_FORMAT = "Geçersiz fax formatı";
@@ -66,8 +66,9 @@ public class ResultMessages {
     //endregion
 
     //region Territory
-    public static final String EMPTY_TERRITORY_ID = "Bölge ID alanı boş veya null olamaz";
-    public static final String EMPTY_T_DESCRIPTION = "Bölge açıklaması boş olamaz";
+    public static final String EMPTY_TERRITORY_ID = "Arazi ID alanı boş veya null olamaz";
+    public static final String EMPTY_T_DESCRIPTION = "Arazi açıklaması boş olamaz";
+    public static final String TERRITORY_ID_OUT_OF_RANGE = "Arazi ID'si 20 karakterden uzun olamaz";
     //endregion
 
     //region Region
@@ -98,5 +99,11 @@ public class ResultMessages {
 
     //region Category
     public static final String C_NAME_OUT_OF_RANGE = "Kategori adı 15 karakterden uzun olamaz";
+    //endregion
+
+    //region UsStates
+    public static final String STATE_NAME_OUT_OF_RANGE = "Eyalet adı 100 karakterden uzun olamaz";
+    public static final String STATE_ABBR_OUT_OF_RANGE = "Eyalet kısaltması 2 karakterden uzun olamaz";
+    public static final String STATE_REGION_OUT_OF_RANGE = "Eyalet bölgesi 50 karakterden uzun olamaz";
     //endregion
 }

@@ -1,5 +1,6 @@
 package com.server.app.service.srvImpl;
 
+import com.google.common.base.Strings;
 import com.server.app.dto.response.UsStateDto;
 import com.server.app.dto.request.usState.UsStateSaveRequest;
 import com.server.app.dto.request.usState.UsStateUpdateRequest;
@@ -29,7 +30,11 @@ public class UsStateSrvImpl implements UsStateService {
     public GenericResponse add(UsStateSaveRequest request) {
         UsState usState = mapper.saveEntityFromRequest(request);
 
-        BusinessRules.validate(checkUsStateForGeneralValidations(usState));
+        BusinessRules.validate(
+                checkUsStateForGeneralValidations(usState),
+                checkNameValidation(usState.getStateName()),
+                checkAbbrValidation(usState.getStateAbbr())
+        );
 
         repository.save(usState);
         return new GenericResponse();
@@ -39,7 +44,11 @@ public class UsStateSrvImpl implements UsStateService {
     public GenericResponse update(UsStateUpdateRequest request) {
         UsState usState = mapper.toEntity(request);
 
-        BusinessRules.validate(checkUsStateForGeneralValidations(usState));
+        BusinessRules.validate(
+                checkUsStateForGeneralValidations(usState),
+                checkNameValidation(usState.getStateName()),
+                checkAbbrValidation(usState.getStateAbbr())
+        );
 
         repository.save(usState);
         return GenericResponse.builder().message(ResultMessages.RECORD_UPDATED).build();
@@ -86,6 +95,27 @@ public class UsStateSrvImpl implements UsStateService {
     private String checkUsStateForGeneralValidations(UsState request) {
         if (request.getStateId() == null || request.getStateId() == 0) {
             return ResultMessages.ID_IS_NOT_DELIVERED;
+        }
+        return null;
+    }
+
+    private String checkNameValidation(String name) {
+        if (!Strings.isNullOrEmpty(name) && name.length() > 100) {
+            return ResultMessages.STATE_NAME_OUT_OF_RANGE;
+        }
+        return null;
+    }
+
+    private String checkAbbrValidation(String abbr) {
+        if (!Strings.isNullOrEmpty(abbr) && abbr.length() > 2) {
+            return ResultMessages. STATE_ABBR_OUT_OF_RANGE;
+        }
+        return null;
+    }
+
+    private String checkRegionValidation(String region) {
+        if (!Strings.isNullOrEmpty(region) && region.length() > 100) {
+            return ResultMessages.STATE_REGION_OUT_OF_RANGE;
         }
         return null;
     }
