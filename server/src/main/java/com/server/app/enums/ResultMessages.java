@@ -12,7 +12,7 @@ public class ResultMessages {
     public static final String NULL_POINTER_REFERENCE = "Var Olmayan bir değişken girdiniz";
     public static final String VALUES_NOT_MATCHED = "Veri getirilemedi";
     public static final String ILLEGAL_ELEMENT_DELIVERED = "Tip Uyuşmazlığı Oluştu";
-    public static final String WRONG_PHONE_FORMAT = "Geçersiz telefon format";
+    public static final String WRONG_PHONE_FORMAT = "Geçerli Bir Telefon Giriniz. Ex: 0555 444 22 11";
     public static final String SUPPLIER_NOT_FOUND = "Bu ID ile Tedarikçi bulunamadı";
     public static final String CATEGORY_NOT_FOUND = "Bu ID ile Kategori bulunamadı";
     public static final String EMPLOYEE_NOT_FOUND = "Bu ID ile Employee bulunamadı";
@@ -26,7 +26,7 @@ public class ResultMessages {
     public static final String TERRITORY_NOT_FOUND = "Bu ID ile Arazi bulunamadı";
     public static final String WRONG_CITY_FORMAT = "Şehir alanı yalnızca harflerden oluşmalı";
     public static final String WRONG_COUNTRY_FORMAT = "Ülke alanı yalnızca harflerden oluşmalı";
-    public static final String WRONG_FAX_FORMAT = "Geçersiz fax formatı";
+    public static final String WRONG_FAX_FORMAT = "Geçerli Bir Fax Telefonu Giriniz. Ex: 0555 444 22 11";
     public static final String WRONG_POSTAL_CODE_FORMAT = "Geçersiz posta kodu formatı";
     //endregion
 

@@ -35,7 +35,7 @@ public class CustomerDemoMapper {
                 .customerTypeId(
                         Objects.isNull(request.getCustomerDemographics())
                         ? null
-                                :request.getCustomerDemographics().getCustomerTypeId()
+                                : request.getCustomerDemographics().getCustomerTypeId()
                 )
                 .build();
     }
@@ -52,9 +52,7 @@ public class CustomerDemoMapper {
         }
 
         Customer customer = customerService.getCustomer(request.getCustomerId());
-        if(Objects.isNull(customer)) {
-            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
-        }
+
 
         CustomerDemographics customerDemographics = customerDemographicsService.getCustomerDemographics(request.getCustomerTypeId());
         if(Objects.isNull(customerDemographics)) {
@@ -74,9 +72,6 @@ public class CustomerDemoMapper {
 
     public CustomerDemo saveEntityFromRequest(CustomerDemoSaveRequest request) {
         Customer customer = customerService.getCustomer(request.getCustomerId());
-        if(Objects.isNull(customer)) {
-            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
-        }
 
         CustomerDemographics customerDemographics = customerDemographicsService.getCustomerDemographics(request.getCustomerTypeId());
         if(Objects.isNull(customerDemographics)) {

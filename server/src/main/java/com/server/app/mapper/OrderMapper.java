@@ -66,9 +66,6 @@ public class OrderMapper {
         }
 
         Customer customer = customerService.getCustomer(request.getCustomerId());
-        if (Objects.isNull(customer)) {
-            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
-        }
 
         Employee employee = employeeService.getEmployee(request.getEmployeeId());
         if (Objects.isNull(employee)) {
@@ -104,9 +101,6 @@ public class OrderMapper {
 
     public Order saveEntityFromRequest(OrderSaveRequest request) {
         Customer customer = customerService.getCustomer(request.getCustomerId());
-        if (Objects.isNull(customer)) {
-            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
-        }
 
         Employee employee = employeeService.getEmployee(request.getEmployeeId());
         if (Objects.isNull(employee)) {

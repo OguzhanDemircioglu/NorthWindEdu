@@ -1,14 +1,15 @@
 package com.server.app.service.srvImpl;
 
 import com.google.common.base.Strings;
-import com.server.app.dto.response.CustomerDto;
 import com.server.app.dto.request.customer.CustomerSaveRequest;
 import com.server.app.dto.request.customer.CustomerUpdateRequest;
+import com.server.app.dto.response.CustomerDto;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.helper.BusinessRules;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
+import com.server.app.helper.utils.GenericValidators;
 import com.server.app.mapper.CustomerMapper;
 import com.server.app.model.Customer;
 import com.server.app.repository.CustomerRepository;
@@ -17,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -73,15 +74,8 @@ public class CustomerSrvImpl implements CustomerService {
 
     @Override
     public DataGenericResponse<CustomerDto> findCustomerByCustomerId(String customerId) {
-        Optional<Customer> customer = repository.findCustomerByCustomerId(customerId);
-        if (customer.isEmpty()) {
-            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
-        }
-
-        CustomerDto dto = mapper.toDto(customer.get());
-
         return DataGenericResponse.<CustomerDto>dataBuilder()
-                .data(dto)
+                .data(mapper.toDto(getCustomer(customerId)))
                 .build();
     }
 
@@ -93,7 +87,6 @@ public class CustomerSrvImpl implements CustomerService {
         }
 
         repository.deleteCustomerByCustomerId(customerId);
-
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
@@ -111,100 +104,122 @@ public class CustomerSrvImpl implements CustomerService {
 
     @Override
     public Customer getCustomer(String customerId) {
-        return repository.getCustomerByCustomerId(customerId);
+        Customer customer = repository.getCustomerByCustomerId(customerId);
+        if (Objects.isNull(customer)) {
+            throw new BusinessException(ResultMessages.CUSTOMER_NOT_FOUND);
+        }
+        return customer;
     }
 
     private String checkNameValidation(String name) {
-        if (!Strings.isNullOrEmpty(name) && name.length() > 30) {
+        if(Strings.isNullOrEmpty(name)) return null;
+
+        if (name.length() > 30) {
             return ResultMessages.CONTACT_NAME_OUT_OF_RANGE;
         }
         return null;
     }
 
     private String checkAddressValidation(String address) {
-        if (!Strings.isNullOrEmpty(address) && address.length() > 30) {
+        if(Strings.isNullOrEmpty(address)) return null;
+
+        if (address.length() > 30) {
             return ResultMessages.ADDRESS_OUT_OF_RANGE;
         }
         return null;
     }
 
     private String checkCityValidation(String city) {
-        if (!Strings.isNullOrEmpty(city) && city.length() > 30) {
+        if(Strings.isNullOrEmpty(city)) return null;
+
+        if (city.length() > 30) {
             return ResultMessages.CITY_OUT_OF_RANGE;
         }
 
-        if (!Strings.isNullOrEmpty(city) && !city.matches("^[\\p{L} ]+$")) {
+        if (GenericValidators.isNotValidCountry(city)) {
             return ResultMessages.WRONG_CITY_FORMAT;
         }
         return null;
     }
 
     private String checkCountryValidation(String country) {
-        if (!Strings.isNullOrEmpty(country) && country.length() > 15) {
+        if(Strings.isNullOrEmpty(country)) return null;
+
+        if (country.length() > 15) {
             return ResultMessages.COUNTRY_OUT_OF_RANGE;
         }
 
-        if (!Strings.isNullOrEmpty(country) && !country.matches("^[\\p{L} ]+$")) {
+        if (GenericValidators.isNotValidCountry(country)) {
             return ResultMessages.WRONG_COUNTRY_FORMAT;
         }
         return null;
     }
 
     private String checkPhoneFormat(String phone) {
-        if(phone != null && phone.length() > 24) {
+        if(Strings.isNullOrEmpty(phone)) return null;
+
+        if(phone.length() > 24) {
             return ResultMessages.PHONE_OUT_OF_RANGE;
         }
 
-        if(phone != null && !phone.matches("^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$")) {
+        if(GenericValidators.isInvalidPhoneNumber(phone)) {
             return ResultMessages.WRONG_PHONE_FORMAT;
         }
         return null;
     }
 
     private String checkFaxFormat(String fax) {
-        if(fax != null && fax.length() > 24) {
+        if(Strings.isNullOrEmpty(fax)) return null;
+
+        if(fax.length() > 24) {
             return ResultMessages.FAX_OUT_OF_RANGE;
         }
 
-        if(fax != null && !fax.matches("^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$")) {
+        if(GenericValidators.isInvalidPhoneNumber(fax)) {
             return ResultMessages.WRONG_FAX_FORMAT;
         }
         return null;
     }
 
     private String checkRegionValidation(String region) {
-        if (region != null && region.length() > 15) {
+        if(Strings.isNullOrEmpty(region)) return null;
+
+        if (region.length() > 15) {
             return ResultMessages.REGION_OUT_OF_RANGE;
         }
         return null;
     }
 
     private String checkTitleValidation(String title) {
-        if (title != null && title.length() > 30) {
+        if(Strings.isNullOrEmpty(title)) return null;
+
+        if (title.length() > 30) {
             return ResultMessages.C_TITLE_OUT_OF_RANGE;
         }
         return null;
     }
 
     private String checkPostalCodeValidation(String postalCode) {
-        if(postalCode != null && postalCode.length() > 10) {
+        if(Strings.isNullOrEmpty(postalCode)) return null;
+
+        if(postalCode.length() > 10) {
             return ResultMessages.POSTAL_CODE_OUT_OF_RANGE;
         }
 
-        if (postalCode != null && !postalCode.matches("^[0-9]+$")) {
+        if (GenericValidators.isNotContainsNumbers(postalCode)) {
             return ResultMessages.WRONG_POSTAL_CODE_FORMAT;
         }
         return null;
     }
 
     private String checkCompanyValidation(String name) {
-        if (!Strings.isNullOrEmpty(name) && name.length() > 40) {
+        if(Strings.isNullOrEmpty(name)) return null;
+
+        if (name.length() > 40) {
             return ResultMessages.COMPANY_NAME_OUT_OF_RANGE;
         }
         return null;
     }
-
-
 
     private String checkCustomerForGeneralValidations(Customer request) {
         if(Strings.isNullOrEmpty(request.getCustomerId())) {
