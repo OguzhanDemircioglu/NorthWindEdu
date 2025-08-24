@@ -4,9 +4,11 @@ import com.server.app.enums.ResultMessages;
 import com.server.app.helper.results.GenericResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -68,6 +70,17 @@ public class GlobalExceptionHandler {
                 GenericResponse.builder()
                         .success(false)
                         .message(ResultMessages.ILLEGAL_ELEMENT_DELIVERED)
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<GenericResponse> handleNoHandlerFoundException(NoHandlerFoundException exception) {
+        log.warn("No handler found for URL: {}", exception.getRequestURL());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                GenericResponse.builder()
+                        .success(false)
+                        .message(ResultMessages.URL_NOT_FOUND)
                         .build()
         );
     }

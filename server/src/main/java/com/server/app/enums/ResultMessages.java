@@ -12,6 +12,7 @@ public class ResultMessages {
     public static final String NULL_POINTER_REFERENCE = "Var Olmayan bir değişken girdiniz";
     public static final String VALUES_NOT_MATCHED = "Veri getirilemedi";
     public static final String ILLEGAL_ELEMENT_DELIVERED = "Tip Uyuşmazlığı Oluştu";
+    public static final String URL_NOT_FOUND = "Url Bulunamadi";
     public static final String WRONG_PHONE_FORMAT = "Geçerli Bir Telefon Giriniz. Ex: 0555 444 22 11";
     public static final String SUPPLIER_NOT_FOUND = "Bu ID ile Tedarikçi bulunamadı";
     public static final String CATEGORY_NOT_FOUND = "Bu ID ile Kategori bulunamadı";
