@@ -171,7 +171,7 @@ class CategorySrvImplTest {
         }
 
         @Test
-        void success() {
+        void isSuccess() {
             Category category = new Category();
             category.setCategoryId(1L);
             category.setCategoryName("Elektronik");
@@ -186,7 +186,7 @@ class CategorySrvImplTest {
     }
 
     @Nested
-    class deleteCategory {
+    class delete {
 
         @Test
         void isCategoryNotFound() {
@@ -201,7 +201,7 @@ class CategorySrvImplTest {
         }
 
         @Test
-        void success() {
+        void isSuccess() {
             when(categoryRepository.existsCategoryByCategoryId(1L)).thenReturn(true);
 
             GenericResponse response = categorySrv.deleteCategoryByCategoryId(1L);
@@ -215,7 +215,7 @@ class CategorySrvImplTest {
     class findAllCategories {
 
         @Test
-        void success() {
+        void isSuccess() {
             Category cat1 = new Category();
             cat1.setCategoryId(1L);
             cat1.setCategoryName("Elektronik");
@@ -249,7 +249,7 @@ class CategorySrvImplTest {
         }
 
         @Test
-        void success() {
+        void isSuccess() {
             Category category = new Category();
             category.setCategoryId(1L);
             category.setCategoryName("Elektronik");
