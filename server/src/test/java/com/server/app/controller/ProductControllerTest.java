@@ -79,6 +79,22 @@ class ProductControllerTest {
     }
 
     @Nested
+    class general{
+        @Test
+        void isNoRequest() throws Exception {
+            doThrow(new BusinessException(ResultMessages.PROCESS_FAILED))
+                    .when(productService).add(Mockito.any(ProductSaveRequest.class));
+
+            mockMvc.perform(post("/api/products/add")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
+                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.PROCESS_FAILED)));
+
+        }
+    }
+
+    @Nested
     class add {
         @Test
         void isSuccess() throws Exception {
@@ -96,19 +112,6 @@ class ProductControllerTest {
                     .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.SUCCESS)));
 
             verify(productService, times(1)).add(Mockito.any(ProductSaveRequest.class));
-        }
-
-        @Test
-        void isNoRequest() throws Exception {
-            doThrow(new BusinessException(ResultMessages.PROCESS_FAILED))
-                    .when(productService).add(Mockito.any(ProductSaveRequest.class));
-
-            mockMvc.perform(post("/api/products/add")
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
-                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.PROCESS_FAILED)));
-
         }
 
         @Test
