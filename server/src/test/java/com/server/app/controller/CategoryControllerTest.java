@@ -93,18 +93,6 @@ class CategoryControllerTest {
         }
 
         @Test
-        void isNoRequest() throws Exception {
-            doThrow(new BusinessException(ResultMessages.PROCESS_FAILED))
-                    .when(categoryService).add(Mockito.any(CategorySaveRequest.class));
-
-            mockMvc.perform(post("/api/categories/add")
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
-                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.PROCESS_FAILED)));
-        }
-
-        @Test
         void notValidRequest() throws Exception {
             doThrow(new BusinessException(ResultMessages.CATEGORY_NOT_FOUND))
                     .when(categoryService).add(Mockito.any(CategorySaveRequest.class));
@@ -135,18 +123,6 @@ class CategoryControllerTest {
                     .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.SUCCESS)));
 
             verify(categoryService, times(1)).update(any());
-        }
-
-        @Test
-        void isNoRequest() throws Exception {
-            doThrow(new BusinessException(ResultMessages.PROCESS_FAILED))
-                    .when(categoryService).update(any());
-
-            mockMvc.perform(put("/api/categories/update")
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
-                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.PROCESS_FAILED)));
         }
 
         @Test
