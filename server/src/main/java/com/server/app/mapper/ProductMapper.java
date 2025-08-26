@@ -60,9 +60,6 @@ public class ProductMapper {
         }
 
         Category category = categoryService.getCategory(request.getCategoryId());
-        if (Objects.isNull(category)) {
-            throw new BusinessException(ResultMessages.CATEGORY_NOT_FOUND);
-        }
 
         return updateEntityFromRequest(request, supplier, category);
     }
@@ -89,9 +86,6 @@ public class ProductMapper {
         }
 
         Category category = categoryService.getCategory(request.getCategoryId());
-        if (Objects.isNull(category)) {
-            throw new BusinessException(ResultMessages.CATEGORY_NOT_FOUND);
-        }
 
         return Product.builder()
                 .productName(request.getProductName())

@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -92,11 +93,15 @@ public class CategorySrvImpl implements CategoryService {
 
     @Override
     public Category getCategory(Long categoryId) {
-        return repository.getCategoryByCategoryId(categoryId);
+        Category category = repository.getCategoryByCategoryId(categoryId);
+        if (Objects.isNull(category)) {
+            throw new BusinessException(ResultMessages.CATEGORY_NOT_FOUND);
+        }
+        return category;
     }
 
     private String checkNameValidation(String name) {
-        if (!Strings.isNullOrEmpty(name) && name.length() > 15) {
+        if (name.length() > 15) {
             return ResultMessages.C_NAME_OUT_OF_RANGE;
         }
         return null;
