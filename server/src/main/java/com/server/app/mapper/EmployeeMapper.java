@@ -38,15 +38,17 @@ public class EmployeeMapper {
     }
 
     public Employee toEntity(EmployeeUpdateRequest request) {
-        Employee existingEmployee = repository.findEmployeeByEmployeeId(request.getEmployeeId())
-                .orElseThrow(() -> new BusinessException(ResultMessages.RECORD_NOT_FOUND));
+        boolean isExist = repository.existsEmployeeByEmployeeId(request.getEmployeeId());
+        if (!isExist) {
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
+        }
 
-        return updateEntityFromRequest(request, existingEmployee);
+        return updateEntityFromRequest(request);
     }
 
-    private Employee updateEntityFromRequest(EmployeeUpdateRequest request, Employee existingEmployee) {
+    private Employee updateEntityFromRequest(EmployeeUpdateRequest request) {
         return Employee.builder()
-                .employeeId(existingEmployee.getEmployeeId())
+                .employeeId(request.getEmployeeId())
                 .lastName(request.getLastName())
                 .firstName(request.getFirstName())
                 .title(request.getTitle())
