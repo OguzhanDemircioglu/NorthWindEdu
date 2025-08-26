@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "employees") // tablo adı çoğul kalabilir, problem değil
+@Table(name = "employees")
 @Data
 @Builder
 @NoArgsConstructor

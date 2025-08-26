@@ -2,6 +2,7 @@ package com.server.app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.server.app.dto.request.product.ProductSaveRequest;
+import com.server.app.dto.request.product.ProductUpdateRequest;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.helper.results.GenericResponse;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,6 +48,7 @@ class ProductControllerTest {
     private UserService userService;
 
     ProductSaveRequest request = new ProductSaveRequest();
+    ProductUpdateRequest requestUpdate = new ProductUpdateRequest();
 
     @BeforeEach
     void setUp() {
@@ -55,11 +58,19 @@ class ProductControllerTest {
         request.setQuantityPerUnit("10 units");
         request.setUnitPrice(1000.0);
         request.setDiscontinued(1);
+
+        requestUpdate.setProductName("Laptop");
+        requestUpdate.setSupplierId(1L);
+        requestUpdate.setCategoryId(1L);
+        requestUpdate.setQuantityPerUnit("10 units");
+        requestUpdate.setUnitPrice(1000.0);
+        requestUpdate.setDiscontinued(1);
     }
 
     @AfterEach
     void tearDown() {
         request = null;
+        requestUpdate = null;
         productService = null;
         jwtService = null;
         userService = null;
@@ -125,6 +136,27 @@ class ProductControllerTest {
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
                     .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.CATEGORY_NOT_FOUND)));
+        }
+    }
+
+    @Nested
+    class update {
+        @Test
+        void isSuccess() throws Exception {
+
+            GenericResponse mockResponse = GenericResponse.builder().message(ResultMessages.RECORD_UPDATED).success(true).build();
+
+            BDDMockito.given(productService.update(Mockito.any(ProductUpdateRequest.class)))
+                    .willReturn(mockResponse);
+
+            mockMvc.perform(put("/api/products/update")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestUpdate)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success", CoreMatchers.is(true)))
+                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.RECORD_UPDATED)));
+
+            verify(productService, times(1)).update(Mockito.any(ProductUpdateRequest.class));
         }
     }
 }
