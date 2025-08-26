@@ -74,7 +74,7 @@ public class EmployeeSrvImpl implements EmployeeService {
 
     @Override
     public GenericResponse deleteEmployeeByEmployeeId(Long employeeId) {
-        boolean exists = repository.existsById(employeeId);
+        boolean exists = repository.existsEmployeeByEmployeeId(employeeId);
         if (!exists) {
             throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
         }
