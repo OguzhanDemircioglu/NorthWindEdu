@@ -47,9 +47,6 @@ public class TerritoryMapper {
 
     private Territory updateEntityFromRequest(TerritoryUpdateRequest request) {
         Region region = regionService.getRegion(request.getRegionId());
-        if (Objects.isNull(region)) {
-            throw new BusinessException(ResultMessages.REGION_NOT_FOUND);
-        }
 
         return Territory.builder()
                 .territoryId(request.getTerritoryId())
@@ -60,9 +57,6 @@ public class TerritoryMapper {
 
     public Territory saveEntityFromRequest(TerritorySaveRequest request) {
         Region region = regionService.getRegion(request.getRegionId());
-        if (Objects.isNull(region)) {
-            throw new BusinessException(ResultMessages.REGION_NOT_FOUND);
-        }
 
         return Territory.builder()
                 .territoryId(request.getTerritoryId())
