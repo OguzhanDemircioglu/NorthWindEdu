@@ -77,7 +77,7 @@ class CustomerControllerTest {
 
         @Test
         void isSuccess() throws Exception {
-            GenericResponse mockResponse = new GenericResponse(); // success=true, message=ResultMessages.SUCCESS
+            GenericResponse mockResponse = new GenericResponse();
 
             BDDMockito.given(customerService.add(Mockito.any(CustomerSaveRequest.class)))
                     .willReturn(mockResponse);
