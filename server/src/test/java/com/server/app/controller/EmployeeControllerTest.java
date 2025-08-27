@@ -100,9 +100,9 @@ class EmployeeControllerTest {
                     .when(employeeService).add(Mockito.any(EmployeeSaveRequest.class));
 
             mockMvc.perform(post("/api/employees/add")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(saveRequest)))
-            .andExpect(status().isBadRequest())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(saveRequest)))
+                    .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
                     .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.EMPLOYEE_NOT_FOUND)));
         }
@@ -150,6 +150,23 @@ class EmployeeControllerTest {
     }
 
     @Nested
+    class delete {
+        @Test
+        void isSuccess() throws Exception {
+            GenericResponse mockResponse = GenericResponse.builder().message(ResultMessages.RECORD_DELETED).success(true).build();
+
+            BDDMockito.given(employeeService.deleteEmployeeByEmployeeId(1L))
+                    .willReturn(mockResponse);
+
+            mockMvc.perform(delete("/api/employees/{id}", 1L)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+
+            verify(employeeService, times(1)).deleteEmployeeByEmployeeId(1L);
+        }
+    }
+
+    @Nested
     class findAll {
         @Test
         void isSuccess() throws Exception {
@@ -157,10 +174,10 @@ class EmployeeControllerTest {
 
             EmployeeDto emp2 = new EmployeeDto();
 
-            List<EmployeeDto> employeeList = List.of(emp1, emp2);
+            List<EmployeeDto> empDtoList = List.of(emp1, emp2);
 
             DataGenericResponse<List<EmployeeDto>> mockResponse = DataGenericResponse.<List<EmployeeDto>>dataBuilder()
-                    .data(employeeList)
+                    .data(empDtoList)
                     .build();
 
             BDDMockito.given(employeeService.findAllEmployees())
