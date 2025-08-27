@@ -31,9 +31,9 @@ public class UsStateSrvImpl implements UsStateService {
         UsState usState = mapper.saveEntityFromRequest(request);
 
         BusinessRules.validate(
-                checkUsStateForGeneralValidations(usState),
                 checkNameValidation(usState.getStateName()),
-                checkAbbrValidation(usState.getStateAbbr())
+                checkAbbrValidation(usState.getStateAbbr()),
+                checkRegionValidation(usState.getStateRegion())
         );
 
         repository.save(usState);
@@ -47,7 +47,8 @@ public class UsStateSrvImpl implements UsStateService {
         BusinessRules.validate(
                 checkUsStateForGeneralValidations(usState),
                 checkNameValidation(usState.getStateName()),
-                checkAbbrValidation(usState.getStateAbbr())
+                checkAbbrValidation(usState.getStateAbbr()),
+                checkRegionValidation(usState.getStateRegion())
         );
 
         repository.save(usState);
@@ -58,7 +59,7 @@ public class UsStateSrvImpl implements UsStateService {
     public DataGenericResponse<UsStateDto> findStateByStateId(Long id) {
         Optional<UsState> state = repository.findStateByStateId(id);
         if (state.isEmpty()) {
-            throw new RuntimeException(ResultMessages.STATE_NOT_FOUND);
+            throw new BusinessException(ResultMessages.STATE_NOT_FOUND);
         }
 
         UsStateDto dto = mapper.toDto(state.get());
@@ -114,7 +115,7 @@ public class UsStateSrvImpl implements UsStateService {
     }
 
     private String checkRegionValidation(String region) {
-        if (!Strings.isNullOrEmpty(region) && region.length() > 100) {
+        if (!Strings.isNullOrEmpty(region) && region.length() > 50) {
             return ResultMessages.STATE_REGION_OUT_OF_RANGE;
         }
         return null;
