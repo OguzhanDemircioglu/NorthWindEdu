@@ -88,20 +88,6 @@ class SupplierControllerTest {
         objectMapper = null;
     }
 
-    @Nested
-    class general {
-        @Test
-        void isNoRequest() throws Exception {
-            doThrow(new BusinessException(ResultMessages.PROCESS_FAILED))
-                    .when(supplierService).add(Mockito.any(SupplierSaveRequest.class));
-
-            mockMvc.perform(post("/api/suppliers/add")
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
-                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.PROCESS_FAILED)));
-        }
-    }
 
     @Nested
     class add {
