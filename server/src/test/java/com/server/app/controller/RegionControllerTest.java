@@ -1,15 +1,15 @@
 package com.server.app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.server.app.dto.request.employee.EmployeeSaveRequest;
-import com.server.app.dto.request.employee.EmployeeUpdateRequest;
-import com.server.app.dto.response.EmployeeDto;
+import com.server.app.dto.request.region.RegionSaveRequest;
+import com.server.app.dto.request.region.RegionUpdateRequest;
+import com.server.app.dto.response.RegionDto;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
-import com.server.app.service.EmployeeService;
 import com.server.app.service.JWTService;
+import com.server.app.service.RegionService;
 import com.server.app.service.UserService;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterEach;
@@ -25,15 +25,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.xml.crypto.Data;
+
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = EmployeeController.class, excludeAutoConfiguration =  SecurityAutoConfiguration.class)
-class EmployeeControllerTest {
+@WebMvcTest(controllers =  RegionController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
+class RegionControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,7 +45,7 @@ class EmployeeControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private EmployeeService employeeService;
+    private RegionService regionService;
 
     @MockBean
     private JWTService jwtService;
@@ -50,24 +53,22 @@ class EmployeeControllerTest {
     @MockBean
     private UserService userService;
 
-    EmployeeSaveRequest saveRequest = new EmployeeSaveRequest();
-    EmployeeUpdateRequest updateRequest = new EmployeeUpdateRequest();
+    RegionSaveRequest saveRequest = new RegionSaveRequest();
+    RegionUpdateRequest updateRequest = new RegionUpdateRequest();
 
     @BeforeEach
     void setUp() {
-        saveRequest.setFirstName("Ahmet");
-        saveRequest.setLastName("Yılmaz");
+        saveRequest.setRegionDescription("ilk bölge");
 
-        updateRequest.setFirstName("Mehmet");
-        updateRequest.setLastName("Yıldız");
-        updateRequest.setEmployeeId(1L);
+        updateRequest.setRegionId(1L);
+        updateRequest.setRegionDescription("ikinci bölge");
     }
 
     @AfterEach
     void tearDown() {
         saveRequest = null;
         updateRequest = null;
-        employeeService = null;
+        regionService = null;
         jwtService = null;
         userService = null;
         mockMvc = null;
@@ -76,55 +77,83 @@ class EmployeeControllerTest {
 
     @Nested
     class add {
+
         @Test
         void isSuccess() throws Exception {
 
             GenericResponse mockResponse = new GenericResponse();
 
-            BDDMockito.given(employeeService.add(Mockito.any(EmployeeSaveRequest.class)))
+            BDDMockito.given(regionService.add(Mockito.any(RegionSaveRequest.class)))
                     .willReturn(mockResponse);
 
-            mockMvc.perform(post("/api/employees/add")
+            mockMvc.perform(post("/api/regions/add")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(saveRequest)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success", CoreMatchers.is(true)))
                     .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.SUCCESS)));
 
-            verify(employeeService, times(1)).add(Mockito.any(EmployeeSaveRequest.class));
+            verify(regionService, times(1)).add(Mockito.any(RegionSaveRequest.class));
         }
 
         @Test
-        void isEmployeeNotFound() throws Exception {
-            doThrow(new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND))
-                    .when(employeeService).add(Mockito.any(EmployeeSaveRequest.class));
+        void isEmptyDescription() throws Exception {
+            doThrow(new BusinessException(ResultMessages.EMPTY_DESCRIPTION))
+                    .when(regionService).add(Mockito.any(RegionSaveRequest.class));
 
-            mockMvc.perform(post("/api/employees/add")
+            mockMvc.perform(post("/api/regions/add")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(saveRequest)))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
-                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.EMPLOYEE_NOT_FOUND)));
+                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.EMPTY_DESCRIPTION)));
+        }
+
+        @Test
+        void isRegionNotFound() throws Exception {
+            doThrow(new BusinessException(ResultMessages.REGION_NOT_FOUND))
+                .when(regionService).add(Mockito.any(RegionSaveRequest.class));
+
+            mockMvc.perform(post("/api/regions/add")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(saveRequest)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
+                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.REGION_NOT_FOUND)));
         }
     }
 
     @Nested
     class update {
+
         @Test
         void isSuccess() throws Exception {
             GenericResponse mockResponse = GenericResponse.builder().message(ResultMessages.RECORD_UPDATED).success(true).build();
 
-            BDDMockito.given(employeeService.update(Mockito.any(EmployeeUpdateRequest.class)))
+            BDDMockito.given(regionService.update(Mockito.any(RegionUpdateRequest.class)))
                     .willReturn(mockResponse);
 
-            mockMvc.perform(put("/api/employees/update")
+            mockMvc.perform(put("/api/regions/update")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(updateRequest)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success", CoreMatchers.is(true)))
                     .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.RECORD_UPDATED)));
 
-            verify(employeeService, times(1)).update(Mockito.any(EmployeeUpdateRequest.class));
+            verify(regionService, times(1)).update(Mockito.any(RegionUpdateRequest.class));
+        }
+
+        @Test
+        void isEmptyId() throws Exception {
+            doThrow(new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED))
+                    .when(regionService).update(Mockito.any(RegionUpdateRequest.class));
+
+            mockMvc.perform(put("/api/regions/update")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(updateRequest)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.success", CoreMatchers.is(false)))
+                    .andExpect(jsonPath("$.message", CoreMatchers.is(ResultMessages.ID_IS_NOT_DELIVERED)));
         }
     }
 
@@ -132,20 +161,20 @@ class EmployeeControllerTest {
     class findById {
         @Test
         void isSuccess() throws Exception {
-            EmployeeDto employeeDto = new EmployeeDto();
+            RegionDto regionDto = new RegionDto();
 
-            DataGenericResponse<EmployeeDto> mockResponse = DataGenericResponse.<EmployeeDto>dataBuilder()
-                    .data(employeeDto)
+            DataGenericResponse<RegionDto> mockResponse = DataGenericResponse.<RegionDto>dataBuilder()
+                    .data(regionDto)
                     .build();
 
-            BDDMockito.given(employeeService.findEmployeeByEmployeeId(1L))
+            BDDMockito.given(regionService.findRegionByRegionId(1L))
                     .willReturn(mockResponse);
 
-            mockMvc.perform(get("/api/employees/{id}", 1L)
+            mockMvc.perform(get("/api/regions/{id}", 1L)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
 
-            verify(employeeService, times(1)).findEmployeeByEmployeeId(1L);
+            verify(regionService, times(1)).findRegionByRegionId(1L);
         }
     }
 
@@ -155,14 +184,14 @@ class EmployeeControllerTest {
         void isSuccess() throws Exception {
             GenericResponse mockResponse = GenericResponse.builder().message(ResultMessages.RECORD_DELETED).success(true).build();
 
-            BDDMockito.given(employeeService.deleteEmployeeByEmployeeId(1L))
+            BDDMockito.given(regionService.deleteRegionByRegionId(1L))
                     .willReturn(mockResponse);
 
-            mockMvc.perform(delete("/api/employees/{id}", 1L)
+            mockMvc.perform(delete("/api/regions/{id}", 1L)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
 
-            verify(employeeService, times(1)).deleteEmployeeByEmployeeId(1L);
+            verify(regionService, times(1)).deleteRegionByRegionId(1L);
         }
     }
 
@@ -170,24 +199,25 @@ class EmployeeControllerTest {
     class findAll {
         @Test
         void isSuccess() throws Exception {
-            EmployeeDto emp1 = new EmployeeDto();
+            RegionDto reg1 = new RegionDto();
 
-            EmployeeDto emp2 = new EmployeeDto();
+            RegionDto reg2 = new RegionDto();
 
-            List<EmployeeDto> empDtoList = List.of(emp1, emp2);
+            List<RegionDto> regDtoList = List.of(reg1, reg2);
 
-            DataGenericResponse<List<EmployeeDto>> mockResponse = DataGenericResponse.<List<EmployeeDto>>dataBuilder()
-                    .data(empDtoList)
+            DataGenericResponse<List<RegionDto>> mockResponse = DataGenericResponse.<List<RegionDto>>dataBuilder()
+                    .data(regDtoList)
                     .build();
 
-            BDDMockito.given(employeeService.findAllEmployees())
+            BDDMockito.given(regionService.findAllRegions())
                     .willReturn(mockResponse);
 
-            mockMvc.perform(get("/api/employees")
+            mockMvc.perform(get("/api/regions")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
 
-            verify(employeeService, times(1)).findAllEmployees();
+            verify(regionService, times(1)).findAllRegions();
         }
     }
+
 }

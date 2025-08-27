@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -66,7 +67,7 @@ public class RegionSrvImpl implements RegionService {
     public GenericResponse deleteRegionByRegionId(Long id) {
         boolean isExist = repository.existsRegionByRegionId(id);
         if (!isExist) {
-            throw new BusinessException(ResultMessages.REGION_NOT_FOUND);
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
 
         repository.deleteRegionByRegionId(id);
@@ -88,7 +89,11 @@ public class RegionSrvImpl implements RegionService {
 
     @Override
     public Region getRegion(Long regionId) {
-        return repository.getRegionByRegionId(regionId);
+        Region region = repository.getRegionByRegionId(regionId);
+        if(Objects.isNull(region)) {
+            throw new BusinessException(ResultMessages.REGION_NOT_FOUND);
+        }
+        return region;
     }
 
     private String checkRegionForDescription(Region request) {
