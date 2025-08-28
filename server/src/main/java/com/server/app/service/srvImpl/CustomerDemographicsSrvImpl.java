@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -86,7 +87,11 @@ public class CustomerDemographicsSrvImpl implements CustomerDemographicsService 
 
     @Override
     public CustomerDemographics getCustomerDemographics(String customerTypeId) {
-        return repository.getCustomerDemographicsByCustomerTypeId(customerTypeId);
+        CustomerDemographics customerDemographic = repository.getCustomerDemographicsByCustomerTypeId(customerTypeId);
+        if(Objects.isNull(customerDemographic)) {
+            throw new BusinessException(ResultMessages.CUSTOMER_DEMOGRAPHICS_NOT_FOUND);
+        }
+        return customerDemographic;
     }
 
     private String checkGeneralValidations(CustomerDemographics request) {

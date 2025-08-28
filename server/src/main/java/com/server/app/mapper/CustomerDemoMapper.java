@@ -55,9 +55,6 @@ public class CustomerDemoMapper {
 
 
         CustomerDemographics customerDemographics = customerDemographicsService.getCustomerDemographics(request.getCustomerTypeId());
-        if(Objects.isNull(customerDemographics)) {
-            throw new BusinessException(ResultMessages.CUSTOMER_DEMOGRAPHICS_NOT_FOUND);
-        }
 
         return updateEntityFromRequest(request, customer, customerDemographics);
     }
@@ -74,9 +71,6 @@ public class CustomerDemoMapper {
         Customer customer = customerService.getCustomer(request.getCustomerId());
 
         CustomerDemographics customerDemographics = customerDemographicsService.getCustomerDemographics(request.getCustomerTypeId());
-        if(Objects.isNull(customerDemographics)) {
-            throw new BusinessException(ResultMessages.CUSTOMER_DEMOGRAPHICS_NOT_FOUND);
-        }
 
         return CustomerDemo.builder()
                 .customerDemoId(new CustomerDemoId(request.getCustomerId(), request.getCustomerTypeId()))

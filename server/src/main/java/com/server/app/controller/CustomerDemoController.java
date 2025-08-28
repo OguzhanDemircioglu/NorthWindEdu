@@ -32,7 +32,7 @@ public class CustomerDemoController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<GenericResponse> get(
+    public ResponseEntity<DataGenericResponse<CustomerDemoDto>> get(
             @RequestParam String customerId,
             @RequestParam String customerTypeId) {
         CustomerDemoId id = new CustomerDemoId(customerId, customerTypeId);
