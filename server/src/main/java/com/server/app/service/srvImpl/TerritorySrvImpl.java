@@ -5,6 +5,7 @@ import com.server.app.dto.response.TerritoryDto;
 import com.server.app.dto.request.territory.TerritorySaveRequest;
 import com.server.app.dto.request.territory.TerritoryUpdateRequest;
 import com.server.app.enums.ResultMessages;
+import com.server.app.helper.BusinessException;
 import com.server.app.helper.BusinessRules;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
@@ -49,7 +50,7 @@ public class TerritorySrvImpl implements TerritoryService {
     public DataGenericResponse<TerritoryDto> findTerritoryByTerritoryId(String id) {
         Optional<Territory> territory = repository.findTerritoryByTerritoryId(id);
         if (territory.isEmpty()) {
-            throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
+            throw new BusinessException(ResultMessages.TERRITORY_NOT_FOUND);
         }
 
         TerritoryDto dto = mapper.toDto(territory.get());
@@ -63,7 +64,7 @@ public class TerritorySrvImpl implements TerritoryService {
     public GenericResponse deleteTerritoryByTerritoryId(String id) {
         boolean isExist = repository.existsTerritoryByTerritoryId(id);
         if (!isExist) {
-            throw new RuntimeException(ResultMessages.RECORD_NOT_FOUND);
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
         repository.deleteTerritoryByTerritoryId(id);
 
