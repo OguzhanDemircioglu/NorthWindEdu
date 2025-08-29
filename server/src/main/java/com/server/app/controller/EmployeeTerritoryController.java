@@ -32,7 +32,7 @@ public class EmployeeTerritoryController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<GenericResponse> get(
+    public ResponseEntity<DataGenericResponse<EmployeeTerritoryDto>> get(
             @RequestParam Long employeeId,
             @RequestParam String territoryId) {
 
