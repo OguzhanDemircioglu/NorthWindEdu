@@ -92,6 +92,26 @@ public class OrderDetailSrvImpl implements OrderDetailService {
                 .build();
     }
 
+    @Override
+    public List<OrderDetailDto> getOrderDetails(Long orderId) {
+        List<OrderDetail> details = orderDetailRepository.getOrderDetailById_OrderId(orderId);
+
+        if (details.isEmpty()) {
+            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
+        }
+
+        List<OrderDetailDto> dtos = details.stream()
+                .map(od -> OrderDetailDto.builder()
+                        .productId(od.getProduct().getProductId())
+                        .quantity(od.getQuantity())
+                        .unitPrice(od.getUnitPrice())
+                        .discount(od.getDiscount())
+                        .build())
+                .toList();
+
+        return dtos;
+    }
+
 
     private String checkOrderDetailForGeneralValidations(OrderDetail request) {
         if (request == null) {

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -27,4 +28,5 @@ public class OrderDto {
     private String shipRegion;
     private String shipPostalCode;
     private String shipCountry;
+    private List<OrderDetailDto> orderDetails;
 }

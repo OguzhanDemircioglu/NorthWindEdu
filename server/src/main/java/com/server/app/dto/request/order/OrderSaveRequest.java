@@ -13,9 +13,9 @@ import java.time.LocalDate;
 @Builder
 public class OrderSaveRequest {
 
-    private String customerId;      // Customer FK
-    private Long employeeId;     // Employee FK
-    private Long shipViaId;        // Shipper FK
+    private String customerId;
+    private Long employeeId;
+    private Long shipViaId;
 
     private LocalDate orderDate;
     private LocalDate requiredDate;
