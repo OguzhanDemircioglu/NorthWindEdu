@@ -18,4 +18,6 @@ public interface OrderDetailService {
     GenericResponse deleteOrderDetailById(Long orderId, Long productId);
 
     DataGenericResponse<List<OrderDetailDto>> findAllOrderDetails();
+
+    List<OrderDetailDto> getOrderDetails(Long orderId);
 }

@@ -12,6 +12,7 @@ import com.server.app.model.Shipper;
 import com.server.app.repository.OrderRepository;
 import com.server.app.service.CustomerService;
 import com.server.app.service.EmployeeService;
+import com.server.app.service.OrderDetailService;
 import com.server.app.service.ShipperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,8 +27,10 @@ public class OrderMapper {
     private final CustomerService customerService;
     private final EmployeeService employeeService;
     private final ShipperService shipperService;
+    private final OrderDetailService orderDetailService;
 
     public OrderDto toDto(Order request) {
+
         return OrderDto.builder()
                 .orderId(request.getOrderId())
                 .customerId(
@@ -52,6 +55,7 @@ public class OrderMapper {
                 .shipRegion(request.getShipRegion())
                 .shipPostalCode(request.getShipPostalCode())
                 .shipCountry(request.getShipCountry())
+                .orderDetails(orderDetailService.getOrderDetails(request.getOrderId()))
                 .build();
     }
 
