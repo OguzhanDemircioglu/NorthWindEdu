@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -87,6 +88,16 @@ public class ProductSrvImpl implements ProductService {
         return DataGenericResponse.<List<ProductDto>>dataBuilder()
                 .data(dtos)
                 .build();
+    }
+
+    @Override
+    public Product getProduct(Long id) {
+        Product product = productRepository.getProductByProductId(id);
+        if (Objects.isNull(product)) {
+            throw new BusinessException(ResultMessages.PRODUCT_NOT_FOUND);
+        }
+
+        return product;
     }
 
     private String checkNameValidation(String name) {

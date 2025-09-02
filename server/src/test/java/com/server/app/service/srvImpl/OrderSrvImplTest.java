@@ -259,10 +259,6 @@ class OrderSrvImplTest {
             assertThat(response).isNotNull();
             assertThat(response.isSuccess()).isTrue();
             assertThat(response.getMessage()).isEqualTo(ResultMessages.SUCCESS);
-
-
-
-
         }
     }
 
@@ -322,8 +318,6 @@ class OrderSrvImplTest {
 
             assertThat(response).isNotNull();
             assertThat(response.getData().getOrderId()).isEqualTo(1L);
-
-
         }
     }
 
@@ -374,5 +368,4 @@ class OrderSrvImplTest {
             assertThat(response.getData().size()).isEqualTo(2);
         }
     }
-
 }
