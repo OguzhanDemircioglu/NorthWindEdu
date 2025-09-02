@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -83,6 +84,17 @@ public class OrderSrvImpl implements OrderService {
         return DataGenericResponse.<List<OrderDto>>dataBuilder()
                 .data(dtos)
                 .build();
+    }
+
+    @Override
+    public Order getOrder(Long id) {
+
+        Order order = orderRepository.getOrderByOrderId(id);
+        if (Objects.isNull(order)) {
+            throw new BusinessException(ResultMessages.ORDER_NOT_FOUND);
+        }
+
+        return order;
     }
 
     private String checkOrderForGeneralValidations(Order request) {
