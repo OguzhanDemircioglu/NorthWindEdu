@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class OrderSrvImpl implements OrderService {
 
