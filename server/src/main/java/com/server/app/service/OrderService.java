@@ -5,6 +5,7 @@ import com.server.app.dto.request.order.OrderUpdateRequest;
 import com.server.app.dto.response.OrderDto;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
+import com.server.app.model.Order;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface OrderService {
     GenericResponse deleteOrderByOrderId(Long orderId);
 
     DataGenericResponse<List<OrderDto>> findAllOrders();
+
+    Order getOrder(Long id);
 }
