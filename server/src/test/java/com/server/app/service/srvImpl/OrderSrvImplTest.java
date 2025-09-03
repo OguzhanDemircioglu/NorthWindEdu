@@ -1,19 +1,19 @@
 package com.server.app.service.srvImpl;
 
-import com.server.app.dto.request.orderDetail.OrderDetailSaveRequest;
-import com.server.app.dto.request.orderDetail.OrderDetailUpdateRequest;
-import com.server.app.dto.response.OrderDetailDto;
+import com.server.app.dto.request.order.OrderSaveRequest;
+import com.server.app.dto.request.order.OrderUpdateRequest;
+import com.server.app.dto.response.OrderDto;
 import com.server.app.enums.ResultMessages;
 import com.server.app.helper.BusinessException;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
-import com.server.app.mapper.OrderDetailMapper;
-import com.server.app.model.Order;
-import com.server.app.model.OrderDetail;
-import com.server.app.model.Product;
-import com.server.app.model.embedded.OrderDetailId;
-import com.server.app.repository.OrderDetailRepository;
-import com.server.app.service.*;
+import com.server.app.mapper.OrderMapper;
+import com.server.app.model.*;
+import com.server.app.repository.OrderRepository;
+import com.server.app.service.CustomerService;
+import com.server.app.service.EmployeeService;
+import com.server.app.service.OrderDetailService;
+import com.server.app.service.ShipperService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -23,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,162 +36,225 @@ import static org.mockito.Mockito.when;
 class OrderSrvImplTest {
 
     @Mock
-    private OrderDetailRepository orderDetailRepository;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderService orderService;
+    private CustomerService customerService;
 
     @Mock
-    private ProductService productService;
+    private EmployeeService employeeService;
+
+    @Mock
+    private ShipperService shipperService;
+
+    @Mock
+    private OrderDetailService orderDetailService;
 
     @InjectMocks
-    private OrderDetailMapper orderDetailMapper;
+    private OrderMapper orderMapper;
 
     @InjectMocks
-    private OrderDetailSrvImpl orderDetailSrv;
+    private OrderSrvImpl orderSrv;
 
-    OrderDetailSaveRequest saveRequest = new OrderDetailSaveRequest();
-    OrderDetailUpdateRequest updateRequest = new OrderDetailUpdateRequest();
+    OrderSaveRequest saveRequest= new OrderSaveRequest();
+    OrderUpdateRequest updateRequest= new OrderUpdateRequest();
 
     @BeforeEach
     void setUp() {
-        saveRequest.setOrderId(1L);
-        saveRequest.setProductId(1L);
-        saveRequest.setUnitPrice(1.0);
-        saveRequest.setQuantity(1L);
-        saveRequest.setDiscount(0.0);
+        saveRequest.setCustomerId("cus1");
+        saveRequest.setEmployeeId(1L);
 
-        updateRequest.setOrderId(1L);
-        updateRequest.setProductId(1L);
-        updateRequest.setUnitPrice(2.0);
-        updateRequest.setQuantity(2L);
-        updateRequest.setDiscount(1.0);
+        updateRequest.setCustomerId("cus2");
+        updateRequest.setEmployeeId(2L);
 
-        orderDetailMapper = new OrderDetailMapper(orderDetailRepository, orderService, productService);
-        orderDetailSrv = new OrderDetailSrvImpl(orderDetailRepository, orderDetailMapper);
+        orderMapper = new OrderMapper(orderRepository, customerService, employeeService, shipperService, orderDetailService);
+        orderSrv = new OrderSrvImpl(orderRepository, orderMapper);
     }
 
     @AfterEach
     void tearDown() {
         saveRequest = null;
         updateRequest = null;
-        orderDetailMapper = null;
-        orderDetailSrv = null;
+        orderMapper = null;
+        orderSrv = null;
     }
 
     @Nested
     class add {
 
         @Test
-        void isEmptyOrderId() {
-            saveRequest.setOrderId(null);
+        void isInvalidFreight() {
+            saveRequest.setFreight(-1.0);
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.add(saveRequest)
+                    () -> orderSrv.add(saveRequest)
             );
 
             assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.ID_IS_NOT_DELIVERED);
+                    .isEqualTo(ResultMessages.FREIGHT_NEGATIVE);
         }
 
         @Test
-        void isEmptyProductId() {
-            saveRequest.setProductId(null);
+        void isInvalidShipName() {
+            saveRequest.setShipName("s".repeat(41));
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.add(saveRequest)
+                    () -> orderSrv.add(saveRequest)
             );
 
             assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.ID_IS_NOT_DELIVERED);
+                    .isEqualTo(ResultMessages.SHIP_NAME_OUT_OF_RANGE);
         }
 
         @Test
-        void isEmptyQuantity() {
-            saveRequest.setQuantity(null);
+        void isInvalidAddress() {
+            saveRequest.setShipAddress("a".repeat(61));
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.add(saveRequest)
+                    () -> orderSrv.add(saveRequest)
             );
 
             assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.OD_QUANTITY_EMPTY);
+                    .isEqualTo(ResultMessages.SHIP_ADDRESS_OUT_OF_RANGE);
         }
 
         @Test
-        void isEmptyDiscount() {
-            saveRequest.setDiscount(null);
+        void isInvalidCity() {
+            saveRequest.setShipCity("c".repeat(16));
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.add(saveRequest)
+                    () -> orderSrv.add(saveRequest)
             );
 
             assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.OD_DISCOUNT_EMPTY);
+                    .isEqualTo(ResultMessages.SHIP_CITY_OUT_OF_RANGE);
         }
 
         @Test
-        void isEmptyUnitPrice() {
-            saveRequest.setUnitPrice(null);
+        void isInvalidRegion() {
+            saveRequest.setShipRegion("r".repeat(16));
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.add(saveRequest)
+                    () -> orderSrv.add(saveRequest)
             );
 
             assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.OD_UNIT_PRICE_EMPTY);
+                    .isEqualTo(ResultMessages.SHIP_REGION_OUT_OF_RANGE);
         }
 
         @Test
-        void isInvalidQuantity() {
-            saveRequest.setQuantity(-1L);
+        void isInvalidPostalCode() {
+            saveRequest.setShipPostalCode("p".repeat(11));
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.add(saveRequest)
+                    () -> orderSrv.add(saveRequest)
             );
 
             assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.OD_QUANTITY_NEGATIVE);
+                    .isEqualTo(ResultMessages.SHIP_POSTAL_CODE_OUT_OF_RANGE);
         }
 
         @Test
-        void isInvalidUnitPrice() {
-            saveRequest.setUnitPrice(-1.0);
+        void isInvalidCountry() {
+            saveRequest.setShipCountry("c".repeat(16));
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.add(saveRequest)
+                    () -> orderSrv.add(saveRequest)
             );
 
             assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.OD_UNIT_PRICE_NEGATIVE);
+                    .isEqualTo(ResultMessages.SHIP_COUNTRY_OUT_OF_RANGE);
         }
 
         @Test
-        void isInvalidDiscount() {
-            saveRequest.setDiscount(2.0);
+        void isInvalidRequiredDate() {
+            saveRequest.setOrderDate(LocalDate.of(2025, 8, 5));
+            saveRequest.setRequiredDate(LocalDate.of(2025, 8, 1));
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.add(saveRequest)
+                    () -> orderSrv.add(saveRequest)
             );
 
             assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.OD_DISCOUNT_OUT_OF_RANGE);
+                    .isEqualTo(ResultMessages.REQUIRED_DATE_INVALID);
+        }
+
+        @Test
+        void isInvalidShippedDate() {
+            saveRequest.setOrderDate(LocalDate.of(2025, 8, 5));
+            saveRequest.setShippedDate(LocalDate.of(2025, 8, 1));
+
+            when(employeeService.getEmployee(saveRequest.getEmployeeId())).thenReturn(new Employee());
+            when(customerService.getCustomer(saveRequest.getCustomerId())).thenReturn(new Customer());
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(new Shipper());
+
+            BusinessException exception = assertThrows(
+                    BusinessException.class,
+                    () -> orderSrv.add(saveRequest)
+            );
+
+            assertThat(exception.getMessage())
+                    .isEqualTo(ResultMessages.SHIPPED_DATE_INVALID);
         }
 
         @Test
         void isSuccess() {
-            when(orderService.getOrder(saveRequest.getOrderId())).thenReturn(new Order());
-            when(productService.getProduct(saveRequest.getProductId())).thenReturn(new Product());
+            Employee employee = new Employee();
+            employee.setEmployeeId(1L);
+            Shipper shipper = new Shipper();
+            shipper.setShipperId(1L);
+            saveRequest.setShipViaId(1L);
+            Customer customer = new Customer();
+            customer.setCustomerId("cus1");
 
-            GenericResponse response = orderDetailSrv.add(saveRequest);
+            when(employeeService.getEmployee(1L)).thenReturn(employee);
+            when(shipperService.getShipper(saveRequest.getShipViaId())).thenReturn(shipper);
+            when(customerService.getCustomer("cus1")).thenReturn(customer);
+
+            when(orderRepository.save(any(Order.class)))
+                    .thenAnswer(invocation -> invocation.getArgument(0));
+
+            GenericResponse response = orderSrv.add(saveRequest);
 
             assertThat(response).isNotNull();
             assertThat(response.isSuccess()).isTrue();
@@ -202,30 +266,26 @@ class OrderSrvImplTest {
     class update {
 
         @Test
-        void isOrderDetailNotFound() {
-            OrderDetailId orderDetailId = new OrderDetailId(updateRequest.getOrderId(), updateRequest.getProductId());
-            when(orderDetailRepository.findOrderDetailById(orderDetailId)).thenReturn(Optional.empty());
-
-            BusinessException exception = assertThrows(
-                    BusinessException.class,
-                    () -> orderDetailSrv.findOrderDetailById(updateRequest.getOrderId(), updateRequest.getProductId())
-            );
-
-            assertThat(exception.getMessage()).isEqualTo(ResultMessages.RECORD_NOT_FOUND);
-        }
-
-        @Test
         void isSuccess() {
-            OrderDetailId orderDetailId = new OrderDetailId(updateRequest.getOrderId(), updateRequest.getProductId());
-            when(orderDetailRepository.existsOrderDetailById(orderDetailId)).thenReturn(true);
+            updateRequest.setOrderId(1L);
+            Employee employee = new Employee();
+            employee.setEmployeeId(2L);
+            Shipper shipper = new Shipper();
+            shipper.setShipperId(2L);
+            updateRequest.setShipViaId(2L);
+            Customer customer = new Customer();
+            customer.setCustomerId("cus2");
 
-            when(orderService.getOrder(updateRequest.getOrderId())).thenReturn(new Order());
-            when(productService.getProduct(updateRequest.getProductId())).thenReturn(new Product());
+            when(employeeService.getEmployee(2L)).thenReturn(employee);
+            when(shipperService.getShipper(2L)).thenReturn(shipper);
+            when(customerService.getCustomer("cus2")).thenReturn(customer);
 
-            when(orderDetailRepository.save(any(OrderDetail.class)))
+            when(orderRepository.existsOrderByOrderId(updateRequest.getOrderId())).thenReturn(true);
+
+            when((orderRepository.save(any(Order.class))))
                     .thenAnswer(invocation -> invocation.getArgument(0));
 
-            GenericResponse response = orderDetailSrv.update(updateRequest);
+            GenericResponse response = orderSrv.update(updateRequest);
 
             assertThat(response).isNotNull();
             assertThat(response.isSuccess()).isTrue();
@@ -234,30 +294,30 @@ class OrderSrvImplTest {
     }
 
     @Nested
-    class findOrderDetailById {
+    class findOrderById {
 
+        @Test
+        void isOrderNotFound() {
+            when(orderRepository.findOrderByOrderId(1L)).thenReturn(Optional.empty());
+
+            BusinessException exception = assertThrows(
+                    BusinessException.class,
+                    () -> orderSrv.findOrderByOrderId(1L)
+            );
+
+            assertThat(exception.getMessage()).isEqualTo(ResultMessages.RECORD_NOT_FOUND);
+        }
         @Test
         void isSuccess() {
             Order order = new Order();
             order.setOrderId(1L);
 
-            Product product = new Product();
-            product.setProductId(1L);
+            when(orderRepository.findOrderByOrderId(order.getOrderId())).thenReturn(Optional.of(order));
 
-            OrderDetailId orderDetailId = new OrderDetailId(1L, 1L);
-
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setId(orderDetailId);
-            orderDetail.setOrder(order);
-            orderDetail.setProduct(product);
-
-            when(orderDetailRepository.findOrderDetailById(orderDetailId)).thenReturn(Optional.of(orderDetail));
-
-            DataGenericResponse<OrderDetailDto> response = orderDetailSrv.findOrderDetailById(1L, 1L);
+            DataGenericResponse<OrderDto> response = orderSrv.findOrderByOrderId(order.getOrderId());
 
             assertThat(response).isNotNull();
             assertThat(response.getData().getOrderId()).isEqualTo(1L);
-            assertThat(response.getData().getProductId()).isEqualTo(1L);
         }
     }
 
@@ -265,14 +325,12 @@ class OrderSrvImplTest {
     class delete {
 
         @Test
-        void isOrderDetailNotFound() {
-            OrderDetailId orderDetailId = new OrderDetailId(1L, 1L);
-
-            when(orderDetailRepository.existsOrderDetailById(orderDetailId)).thenReturn(false);
+        void isOrderNotFound() {
+            when(orderRepository.existsOrderByOrderId(1L)).thenReturn(false);
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> orderDetailSrv.deleteOrderDetailById(1L, 1L)
+                    () -> orderSrv.deleteOrderByOrderId(1L)
             );
 
             assertThat(exception.getMessage()).isEqualTo(ResultMessages.RECORD_NOT_FOUND);
@@ -280,11 +338,9 @@ class OrderSrvImplTest {
 
         @Test
         void isSuccess() {
-            OrderDetailId orderDetailId = new OrderDetailId(1L, 1L);
+            when(orderRepository.existsOrderByOrderId(1L)).thenReturn(true);
 
-            when(orderDetailRepository.existsOrderDetailById(orderDetailId)).thenReturn(true);
-
-            GenericResponse response = orderDetailSrv.deleteOrderDetailById(1L, 1L);
+            GenericResponse response = orderSrv.deleteOrderByOrderId(1L);
 
             assertThat(response).isNotNull();
             assertThat(response.isSuccess()).isTrue();
@@ -293,16 +349,19 @@ class OrderSrvImplTest {
     }
 
     @Nested
-    class findAllOrderDetails {
+    class findALlOrders {
 
         @Test
         void isSuccess() {
-            OrderDetail orderDetail1 = new OrderDetail();
-            OrderDetail orderDetail2 = new OrderDetail();
+            Order order1 = new Order();
+            order1.setOrderId(1L);
 
-            when(orderDetailRepository.findAll()).thenReturn(List.of(orderDetail1, orderDetail2));
+            Order order2 = new Order();
+            order2.setOrderId(2L);
 
-            DataGenericResponse<List<OrderDetailDto>> response = orderDetailSrv.findAllOrderDetails();
+            when(orderRepository.findAll()).thenReturn(List.of(order1, order2));
+
+            DataGenericResponse<List<OrderDto>> response = orderSrv.findAllOrders();
 
             assertThat(response).isNotNull();
             assertThat(response.isSuccess()).isTrue();

@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class OrderSrvImpl implements OrderService {
 
