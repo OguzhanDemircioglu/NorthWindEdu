@@ -67,7 +67,7 @@ class OrderDetailSrvImplTest {
         updateRequest.setDiscount(1.0);
 
         orderDetailMapper = new OrderDetailMapper(orderDetailRepository, orderService, productService);
-        orderDetailSrv = new OrderDetailSrvImpl(orderDetailRepository, orderDetailMapper);
+        orderDetailSrv = new OrderDetailSrvImpl(orderDetailMapper, orderDetailRepository );
     }
 
     @AfterEach
