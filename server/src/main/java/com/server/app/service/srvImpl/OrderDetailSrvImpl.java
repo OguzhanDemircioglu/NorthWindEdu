@@ -13,18 +13,22 @@ import com.server.app.model.OrderDetail;
 import com.server.app.model.embedded.OrderDetailId;
 import com.server.app.repository.OrderDetailRepository;
 import com.server.app.service.OrderDetailService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class OrderDetailSrvImpl implements OrderDetailService {
 
     private final OrderDetailRepository orderDetailRepository;
     private final OrderDetailMapper mapper;
+
+    public OrderDetailSrvImpl(@Lazy OrderDetailMapper mapper, OrderDetailRepository orderDetailRepository) {
+        this.mapper = mapper;
+        this.orderDetailRepository = orderDetailRepository;
+    }
 
     @Override
     public GenericResponse add(OrderDetailSaveRequest request) {

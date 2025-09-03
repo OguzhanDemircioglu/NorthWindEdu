@@ -7,7 +7,7 @@ import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.OrderDetailService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/order-details")
-@RequiredArgsConstructor
 public class OrderDetailController {
 
     private final OrderDetailService orderDetailService;
+    public OrderDetailController(@Lazy OrderDetailService orderDetailService) {
+        this.orderDetailService = orderDetailService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<GenericResponse> add(@RequestBody OrderDetailSaveRequest request) {

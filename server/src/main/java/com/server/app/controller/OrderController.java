@@ -1,13 +1,13 @@
 package com.server.app.controller;
 
-import com.server.app.dto.response.OrderDto;
 import com.server.app.dto.request.order.OrderSaveRequest;
 import com.server.app.dto.request.order.OrderUpdateRequest;
+import com.server.app.dto.response.OrderDto;
 import com.server.app.helper.results.DataGenericResponse;
 import com.server.app.helper.results.GenericResponse;
 import com.server.app.service.OrderService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
+    public OrderController(@Lazy OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<GenericResponse> add(@RequestBody OrderSaveRequest request) {
