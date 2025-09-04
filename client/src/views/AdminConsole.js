@@ -10,26 +10,22 @@ const AdminConsole = () => {
     const [searchKey, setSearchKey] = useState(null);
     const [editID, setEditID] = useState(null);
 
-    const [formData, setFormData] = useState({
+    const initialFormState = {
         id: '',
         username: '',
-        password:'',
+        password: '',
         email: '',
         role: ''
-    });
-    const [formUpdateData, setFormUpdateData] = useState({
-        id: '',
-        username: '',
-        password:'',
-        email: '',
-        role: ''
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormState);
+    const [formUpdateData, setFormUpdateData] = useState(initialFormState);
 
     useEffect(() => {
         AuthService.findAllUsers((responseData) => setItems(responseData))
     }, []);
 
-    function insertUser(e) {
+    async function insertUser(e) {
         e.preventDefault();
         if (formData.username === '' ||
             formData.password === '' ||
@@ -38,20 +34,37 @@ const AdminConsole = () => {
             alert("Alanların hepsi dolu olmalı")
             return;
         }
-        AuthService.insertUser(formData);
-        window.location.reload();
+
+        try {
+            await AuthService.insertUser(formData);
+            await AuthService.findAllUsers((responseData) => setItems(responseData))
+            setFormData(initialFormState);
+        } catch (error) {
+            console.error("Kullanıcı eklenmedi:", error);
+        }
     }
 
-    function deleteUserById(id) {
-        AuthService.deleteUserById(id);
-        window.location.reload();
+    async function deleteUserById(id) {
+        try {
+            await AuthService.deleteUserById(id);
+            await AuthService.findAllUsers((responseData) => setItems(responseData))
+            setFormData(initialFormState);
+        } catch (error) {
+            console.error("Kullanıcı silinemedi:", error);
+        }
     }
 
-    function updateUser() {
+    async function updateUser() {
         formUpdateData.id = editID;
 
-        AuthService.updateUser(formUpdateData);
-        window.location.reload();
+        try {
+            await AuthService.updateUser(formUpdateData);
+            setEditID(null);
+            await AuthService.findAllUsers((responseData) => setItems(responseData))
+            setFormUpdateData(initialFormState);
+        } catch (error) {
+            console.error("Kullanıcı update edilmedi:", error);
+        }
     }
 
     const handleInsert = (e) => {
