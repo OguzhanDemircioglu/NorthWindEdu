@@ -17,6 +17,7 @@ public class EmployeeMapper {
 
     public EmployeeDto toDto(Employee request) {
         return EmployeeDto.builder()
+                .employeeId(request.getEmployeeId())
                 .lastName(request.getLastName())
                 .firstName(request.getFirstName())
                 .title(request.getTitle())

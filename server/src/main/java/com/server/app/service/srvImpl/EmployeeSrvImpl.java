@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -98,7 +99,11 @@ public class EmployeeSrvImpl implements EmployeeService {
 
     @Override
     public Employee getEmployee(Long employeeId) {
-        return repository.getEmployeeByEmployeeId(employeeId);
+        Employee employee = repository.getEmployeeByEmployeeId(employeeId);
+        if (Objects.isNull(employee)) {
+            throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
+        }
+        return employee;
     }
 
     // ===== Helpers =====

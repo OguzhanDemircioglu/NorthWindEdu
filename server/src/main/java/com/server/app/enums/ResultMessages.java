@@ -95,6 +95,7 @@ public class ResultMessages {
     public static final String OD_UNIT_PRICE_NEGATIVE = "UnitPrice negatif olamaz";
     public static final String OD_DISCOUNT_EMPTY = "Discount boş olamaz";
     public static final String OD_DISCOUNT_OUT_OF_RANGE = "Discount 0..1 aralığında olmalı";
+    public static final String ORDER_DETAIL_NOT_FOUND = "Sipariş detayları bulunamadı";
 
     //endregion
 

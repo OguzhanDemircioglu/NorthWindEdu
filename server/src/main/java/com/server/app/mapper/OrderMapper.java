@@ -17,8 +17,6 @@ import com.server.app.service.ShipperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
 @RequiredArgsConstructor
 public class OrderMapper {
@@ -33,18 +31,9 @@ public class OrderMapper {
 
         return OrderDto.builder()
                 .orderId(request.getOrderId())
-                .customerId(
-                        Objects.isNull(request.getCustomer())
-                                ? null
-                                : request.getCustomer().getCustomerId())
-                .employeeId(
-                        Objects.isNull(request.getEmployee())
-                                ? null
-                                : request.getEmployee().getEmployeeId())
-                .shipViaId(
-                        Objects.isNull(request.getShipVia())
-                                ? null
-                                : request.getShipVia().getShipperId())
+                .customerId(request.getCustomer().getCustomerId())
+                .employeeId(request.getEmployee().getEmployeeId())
+                .shipViaId(request.getShipVia().getShipperId())
                 .orderDate(request.getOrderDate())
                 .requiredDate(request.getRequiredDate())
                 .shippedDate(request.getShippedDate())
@@ -64,7 +53,7 @@ public class OrderMapper {
             throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
         }
 
-        boolean isExist = orderRepository.existsOrderByOrderId(Long.valueOf(request.getOrderId()));
+        boolean isExist = orderRepository.existsOrderByOrderId(request.getOrderId());
         if (!isExist) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
@@ -72,14 +61,8 @@ public class OrderMapper {
         Customer customer = customerService.getCustomer(request.getCustomerId());
 
         Employee employee = employeeService.getEmployee(request.getEmployeeId());
-        if (Objects.isNull(employee)) {
-            throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
-        }
 
         Shipper shipper = shipperService.getShipper(request.getShipViaId());
-        if (Objects.isNull(shipper)) {
-            throw new BusinessException(ResultMessages.SHIPPER_NOT_FOUND);
-        }
 
         return updateEntityFromRequest(request, customer, employee, shipper);
     }
@@ -107,14 +90,8 @@ public class OrderMapper {
         Customer customer = customerService.getCustomer(request.getCustomerId());
 
         Employee employee = employeeService.getEmployee(request.getEmployeeId());
-        if (Objects.isNull(employee)) {
-            throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
-        }
 
         Shipper shipper = shipperService.getShipper(request.getShipViaId());
-        if (Objects.isNull(shipper)) {
-            throw new BusinessException(ResultMessages.SHIPPER_NOT_FOUND);
-        }
 
         return Order.builder()
                 .customer(customer)
