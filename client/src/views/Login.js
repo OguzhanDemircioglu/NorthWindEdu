@@ -21,7 +21,6 @@ const Login = () => {
             dispatch(setCurrentUser(returnVal));
             if (token) {
                 navigate('/');
-                window.location.reload();
             }
         });
     };
