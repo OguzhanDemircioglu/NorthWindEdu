@@ -58,32 +58,31 @@ public class OrderMapper {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
 
-        Customer customer = customerService.getCustomer(request.getCustomerId());
-
-        Employee employee = employeeService.getEmployee(request.getEmployeeId());
-
-        Shipper shipper = shipperService.getShipper(request.getShipViaId());
-
-        return updateEntityFromRequest(request, customer, employee, shipper);
+        return updateEntityFromRequest(request);
     }
 
-    private Order updateEntityFromRequest(OrderUpdateRequest request, Customer customer, Employee employee, Shipper shipper) {
-        return Order.builder()
-                .orderId(Long.valueOf(request.getOrderId()))
-                .customer(customer)
-                .employee(employee)
-                .shipVia(shipper)
-                .orderDate(request.getOrderDate())
-                .requiredDate(request.getRequiredDate())
-                .shippedDate(request.getShippedDate())
-                .freight(request.getFreight())
-                .shipName(request.getShipName())
-                .shipAddress(request.getShipAddress())
-                .shipCity(request.getShipCity())
-                .shipRegion(request.getShipRegion())
-                .shipPostalCode(request.getShipPostalCode())
-                .shipCountry(request.getShipCountry())
-                .build();
+    private Order updateEntityFromRequest(OrderUpdateRequest request) {
+        Order order = orderRepository.getOrderByOrderId(request.getOrderId());
+
+        Customer customer = customerService.getCustomer(request.getCustomerId());
+        Employee employee = employeeService.getEmployee(request.getEmployeeId());
+        Shipper shipper = shipperService.getShipper(request.getShipViaId());
+
+        order.setCustomer(customer);
+        order.setEmployee(employee);
+        order.setShipVia(shipper);
+        order.setOrderDate(request.getOrderDate());
+        order.setRequiredDate(request.getRequiredDate());
+        order.setShippedDate(request.getShippedDate());
+        order.setFreight(request.getFreight());
+        order.setShipName(request.getShipName());
+        order.setShipAddress(request.getShipAddress());
+        order.setShipCity(request.getShipCity());
+        order.setShipRegion(request.getShipRegion());
+        order.setShipPostalCode(request.getShipPostalCode());
+        order.setShipCountry(request.getShipCountry());
+
+        return orderRepository.save(order);
     }
 
     public Order saveEntityFromRequest(OrderSaveRequest request) {
