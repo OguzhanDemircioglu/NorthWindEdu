@@ -4,7 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import AdminConsole from "./views/AdminConsole";
 import Home from "./views/Home";
 import HorizontalMenu from "./components/HorizontalMenu";
-import VerticalMenu from "./components/VerticalMenu"; // vertical menuyu import ettik
+import VerticalMenu from "./components/VerticalMenu";
 import Login from "./views/Login";
 import NextTopic from "./views/NextTopic";
 import Register from "./views/Register";
