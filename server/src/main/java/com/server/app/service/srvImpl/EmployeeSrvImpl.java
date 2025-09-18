@@ -80,6 +80,9 @@ public class EmployeeSrvImpl implements EmployeeService {
             throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
         }
         repository.deleteEmployeeByEmployeeId(employeeId);
+        if (repository.count() == 0) {
+            repository.resetEmployeeSequence();
+        }
         return GenericResponse.builder()
                 .message(ResultMessages.RECORD_DELETED)
                 .build();

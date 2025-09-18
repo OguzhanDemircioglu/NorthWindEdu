@@ -69,6 +69,9 @@ public class OrderSrvImpl implements OrderService {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
         orderRepository.deleteOrderByOrderId(orderId);
+        if (orderRepository.count() == 0) {
+            orderRepository.resetOrderSequence();
+        }
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 

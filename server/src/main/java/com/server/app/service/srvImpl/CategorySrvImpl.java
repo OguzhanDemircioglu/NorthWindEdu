@@ -76,6 +76,10 @@ public class CategorySrvImpl implements CategoryService {
 
         repository.deleteCategoryByCategoryId(id);
 
+        if (repository.count() == 0) {
+            repository.resetCategorySequence();
+        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
