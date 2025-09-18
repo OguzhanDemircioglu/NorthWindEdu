@@ -1,6 +1,21 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { getCategories, addCategory, deleteCategory, getCategoryById, updateCategory } from "../services/CategoryService";
+import {
+    getCategories,
+    addCategory,
+    deleteCategory,
+    updateCategory,
+} from "../services/CategoryService";
 import { Button, Table, Form } from "react-bootstrap";
+import {
+    faAdd,
+    faArrowsRotate,
+    faCancel,
+    faRotateRight,
+    faSave,
+    faSearch,
+    faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialState = [];
 
@@ -8,16 +23,6 @@ function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
             return action.payload;
-        case "UPDATE_FIELD":
-            return state.map(category =>
-                category.categoryId === action.categoryId
-                    ? { ...category, [action.field]: action.value }
-                    : category
-            );
-        case "ADD_NEW":
-            return [action.payload, ...state];
-        case "REMOVE_NEW":
-            return state.filter(category => category.categoryId !== action.categoryId);
         default:
             return state;
     }
@@ -25,16 +30,29 @@ function reducer(state, action) {
 
 export default function CategoryList() {
     const [categories, dispatch] = useReducer(reducer, initialState);
-    const [newCategoryId, setNewCategoryId] = useState(null);
-    const [searchId, setSearchId] = useState("");
     const [updateId, setUpdateId] = useState(null);
+    const [editingCategory, setEditingCategory] = useState(null);
+    const [searchColumn, setSearchColumn] = useState(null);
+    const [searchText, setSearchText] = useState("");
+    const [allCategories, setAllCategories] = useState([]);
+
+    const allowedFields = ["categoryId", "categoryName", "description"];
 
     const loadCategories = async () => {
         try {
             const response = await getCategories();
-            dispatch({ type: "SET_ALL", payload: response.data });
+            const cleanedCategories = response.data.map((c) => {
+                const filtered = {};
+                allowedFields.forEach((f) => {
+                    if (c.hasOwnProperty(f)) filtered[f] = c[f];
+                });
+                return filtered;
+            });
+
+            setAllCategories(cleanedCategories);
+            dispatch({ type: "SET_ALL", payload: cleanedCategories });
         } catch (error) {
-            alert(error.message);
+            dispatch({ type: "SET_ALL", payload: [] });
         }
     };
 
@@ -42,41 +60,48 @@ export default function CategoryList() {
         loadCategories();
     }, []);
 
-    const handleChange = (categoryId, field, value) => {
-        dispatch({ type: "UPDATE_FIELD", categoryId, field, value });
+    const handleChange = (field, value) => {
+        setEditingCategory((prev) => ({ ...prev, [field]: value }));
     };
 
     const handleAdd = () => {
-        const tempId = "new-" + Math.random();
-        const newCategory = { categoryId: tempId, categoryName: "", description: "", picture: "" };
-        dispatch({ type: "ADD_NEW", payload: newCategory });
-        setNewCategoryId(tempId);
+        if (editingCategory) return;
+
+        setEditingCategory({
+            categoryName: "",
+            description: "",
+        });
+        setUpdateId(null);
     };
 
-    const handleCancel = () => {
-        if (newCategoryId) {
-            dispatch({ type: "REMOVE_NEW", categoryId: newCategoryId });
-            setNewCategoryId(null);
-        }
-    };
-
-    const handleUpdate = (id) => {
-        setUpdateId(id);
+    const handleUpdate = (category) => {
+        const cleanedCategory = {};
+        allowedFields.forEach((f) => {
+            if (category.hasOwnProperty(f)) cleanedCategory[f] = category[f];
+        });
+        setEditingCategory(cleanedCategory);
+        setUpdateId(category.categoryId);
     };
 
     const handleSave = async (category) => {
         try {
-            if (category.categoryId === newCategoryId) {
-                await addCategory(category);
-                setNewCategoryId(null);
+            if (!updateId) {
+                const { categoryId, ...newCategory } = category;
+                await addCategory(newCategory);
             } else {
                 await updateCategory(category);
-                setUpdateId(null);
             }
+            setEditingCategory(null);
+            setUpdateId(null);
             loadCategories();
         } catch (error) {
             alert(error.message);
         }
+    };
+
+    const handleCancel = () => {
+        setEditingCategory(null);
+        setUpdateId(null);
     };
 
     const handleDelete = async (id) => {
@@ -90,19 +115,21 @@ export default function CategoryList() {
         }
     };
 
-    const handleSearch = async (e) => {
+    const handleSearch = (e) => {
         e.preventDefault();
-        if (!searchId) {
-            loadCategories();
+        if (!searchText) {
+            dispatch({ type: "SET_ALL", payload: allCategories });
             return;
         }
-        try {
-            const response = await getCategoryById(searchId);
-            dispatch({ type: "SET_ALL", payload: response.data ? [response.data] : [] });
-        } catch (error) {
-            alert(error.message);
-            dispatch({ type: "SET_ALL", payload: [] });
-        }
+
+        const filtered = allCategories.filter((cat) =>
+            cat[searchColumn]
+                ?.toString()
+                .toLowerCase()
+                .includes(searchText.toLowerCase())
+        );
+
+        dispatch({ type: "SET_ALL", payload: filtered });
     };
 
     return (
@@ -110,28 +137,40 @@ export default function CategoryList() {
             <h3>Categories</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
+                <Form.Select
+                    value={searchColumn}
+                    onChange={(e) => setSearchColumn(e.target.value)}
+                    style={{ maxWidth: "150px", marginRight: "10px" }}
+                >
+                    <option value="categoryId">ID</option>
+                    <option value="categoryName">Name</option>
+                    <option value="description">Description</option>
+                </Form.Select>
+
                 <Form.Control
-                    type="number"
-                    placeholder="Search by ID"
-                    value={searchId}
-                    onChange={(e) => setSearchId(e.target.value)}
+                    type="text"
+                    placeholder={`Search`}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
                     style={{ maxWidth: "200px", marginRight: "10px" }}
                 />
-                <Button type="submit" variant="info">Search</Button>
+                <Button type="submit" variant="info">
+                    <FontAwesomeIcon icon={faSearch} />
+                </Button>
                 <Button
                     variant="secondary"
                     className="ms-2"
                     onClick={() => {
-                        setSearchId("");
-                        loadCategories();
+                        setSearchText("");
+                        dispatch({ type: "SET_ALL", payload: allCategories });
                     }}
                 >
-                    Reset
+                    <FontAwesomeIcon icon={faRotateRight} />
                 </Button>
             </Form>
 
             <Button variant="success" className="mb-3" onClick={handleAdd}>
-                + Add Category
+                <FontAwesomeIcon icon={faAdd} />
             </Button>
 
             <Table striped bordered hover>
@@ -140,68 +179,109 @@ export default function CategoryList() {
                     <th>ID</th>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Picture</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {categories.map(category => {
-                    const isEditing = updateId === category.categoryId || newCategoryId === category.categoryId;
-                    return (
-                        <tr key={category.categoryId}>
-                            <td>{category.categoryId.toString().startsWith("new-") ? "-" : category.categoryId}</td>
-                            <td>
-                                {isEditing ? (
-                                    <input
-                                        value={category.categoryName}
-                                        onChange={(e) => handleChange(category.categoryId, "categoryName", e.target.value)}
-                                    />
-                                ) : category.categoryName}
-                            </td>
-                            <td>
-                                {isEditing ? (
-                                    <input
-                                        value={category.description}
-                                        onChange={(e) => handleChange(category.categoryId, "description", e.target.value)}
-                                    />
-                                ) : category.description}
-                            </td>
-                            <td>
-                                {isEditing ? (
-                                    <input
-                                        value={category.picture}
-                                        onChange={(e) => handleChange(category.categoryId, "picture", e.target.value)}
-                                    />
-                                ) : category.picture ? (
-                                    <img src={category.picture} alt="category" width="50" />
-                                ) : "-"}
-                            </td>
-                            <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button variant="primary" size="sm" onClick={() => handleSave(category)}>
-                                            Save
-                                        </Button>
-                                        {category.categoryId === newCategoryId && (
-                                            <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}>
-                                                Cancel
-                                            </Button>
-                                        )}
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button variant="warning" size="sm" className="me-2" onClick={() => handleUpdate(category.categoryId)}>
-                                            Update
-                                        </Button>
-                                        <Button variant="danger" size="sm" onClick={() => handleDelete(category.categoryId)}>
-                                            Delete
-                                        </Button>
-                                    </>
-                                )}
-                            </td>
-                        </tr>
-                    );
-                })}
+                {editingCategory && !updateId && (
+                    <tr>
+                        <td>-</td>
+                        <td>
+                            <input
+                                value={editingCategory.categoryName}
+                                onChange={(e) => handleChange("categoryName", e.target.value)}
+                            />
+                        </td>
+                        <td>
+                            <input
+                                value={editingCategory.description}
+                                onChange={(e) => handleChange("description", e.target.value)}
+                            />
+                        </td>
+                        <td>
+                            <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={() => handleSave(editingCategory)}
+                            >
+                                <FontAwesomeIcon icon={faSave} />
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                className="ms-2"
+                                onClick={handleCancel}
+                            >
+                                <FontAwesomeIcon icon={faCancel} />
+                            </Button>
+                        </td>
+                    </tr>
+                )}
+
+                {categories.map((category) => (
+                    <tr key={category.categoryId}>
+                        <td>{category.categoryId}</td>
+                        <td>
+                            {updateId === category.categoryId ? (
+                                <input
+                                    value={editingCategory.categoryName}
+                                    onChange={(e) => handleChange("categoryName", e.target.value)}
+                                />
+                            ) : (
+                                category.categoryName
+                            )}
+                        </td>
+                        <td>
+                            {updateId === category.categoryId ? (
+                                <input
+                                    value={editingCategory.description}
+                                    onChange={(e) => handleChange("description", e.target.value)}
+                                />
+                            ) : (
+                                category.description
+                            )}
+                        </td>
+                        <td>
+                            {updateId === category.categoryId ? (
+                                <>
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={() => handleSave(editingCategory)}
+                                    >
+                                        <FontAwesomeIcon icon={faSave} />
+                                    </Button>
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        className="ms-2"
+                                        onClick={handleCancel}
+                                    >
+                                        <FontAwesomeIcon icon={faCancel} />
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        className="me-2"
+                                        onClick={() => handleUpdate(category)}
+                                    >
+                                        <FontAwesomeIcon icon={faArrowsRotate} />
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => handleDelete(category.categoryId)}
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </>
+                            )}
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </Table>
         </div>

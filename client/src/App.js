@@ -6,7 +6,6 @@ import Home from "./views/Home";
 import HorizontalMenu from "./components/HorizontalMenu";
 import VerticalMenu from "./components/VerticalMenu";
 import Login from "./views/Login";
-import NextTopic from "./views/NextTopic";
 import Register from "./views/Register";
 import CategoryList from "./views/CategoryList";
 import CustomerList from "./views/CustomerList";
@@ -50,7 +49,6 @@ function App() {
                         </>
                     ) : (
                         <>
-                            <Route path="/nextTopic" element={<NextTopic />} />
                             <Route path="/adminConsole" element={<AdminConsole />} />
                             <Route path="/*" element={<Home />} />
 
