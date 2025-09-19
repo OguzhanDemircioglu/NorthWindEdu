@@ -13,11 +13,6 @@ export const getCategories = async () => {
     return handleResponse(response);
 };
 
-export const getCategoryById = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`);
-    return handleResponse(response);
-};
-
 export const addCategory = async (data) => {
     const response = await fetch(`${API_URL}/add`, {
         method: "POST",

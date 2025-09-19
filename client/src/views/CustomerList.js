@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
-import {getCustomers, addCustomer, deleteCustomer, updateCustomer,} from "../services/CustomerService";
+import { getCustomers, addCustomer, deleteCustomer, updateCustomer } from "../services/CustomerService";
 import { Button, Table, Form } from "react-bootstrap";
-import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash,} from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialState = [];
@@ -14,6 +14,13 @@ function reducer(state, action) {
             return state;
     }
 }
+
+const formatPhone = (phone) => {
+    if (!phone) return "";
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length < 11) return phone;
+    return digits.replace(/(\d{4})(\d{3})(\d{2})(\d{2})/, "$1-$2-$3-$4");
+};
 
 export default function CustomerList() {
     const [customers, dispatch] = useReducer(reducer, initialState);
@@ -28,7 +35,6 @@ export default function CustomerList() {
         "companyName",
         "contactName",
         "contactTitle",
-        "address",
         "city",
         "region",
         "postalCode",
@@ -58,7 +64,16 @@ export default function CustomerList() {
     }, []);
 
     const handleChange = (field, value) => {
-        setEditingCustomer((prev) => ({ ...prev, [field]: value }));
+        if (field === "phone") {
+            const digits = value.replace(/\D/g, "").slice(0, 11);
+            let formatted = digits;
+            if (digits.length > 4) formatted = digits.slice(0, 4) + "-" + digits.slice(4);
+            if (digits.length > 7) formatted = formatted.slice(0, 8) + "-" + digits.slice(7, 9);
+            if (digits.length > 9) formatted = formatted.slice(0, 11) + "-" + digits.slice(9, 11);
+            setEditingCustomer(prev => ({ ...prev, [field]: formatted }));
+        } else {
+            setEditingCustomer((prev) => ({ ...prev, [field]: value }));
+        }
     };
 
     const handleAdd = () => {
@@ -68,7 +83,6 @@ export default function CustomerList() {
             companyName: "",
             contactName: "",
             contactTitle: "",
-            address: "",
             city: "",
             region: "",
             postalCode: "",
@@ -148,7 +162,7 @@ export default function CustomerList() {
 
                 <Form.Control
                     type="text"
-                    placeholder={`Search by ${searchColumn}`}
+                    placeholder={`Search`}
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     style={{ maxWidth: "200px", marginRight: "10px" }}
@@ -179,7 +193,6 @@ export default function CustomerList() {
                     <th>Company</th>
                     <th>Contact</th>
                     <th>Title</th>
-                    <th>Address</th>
                     <th>City</th>
                     <th>Region</th>
                     <th>Postal Code</th>
@@ -196,6 +209,8 @@ export default function CustomerList() {
                                 <input
                                     type={field === "phone" || field === "postalCode" ? "tel" : "text"}
                                     value={editingCustomer[field] || ""}
+                                    placeholder={field === "phone" ? "0xxx-xxx-xx-xx"
+                                        : field === "postalCode" ? "12345" :""}
                                     onChange={(e) => handleChange(field, e.target.value)}
                                 />
                             </td>
@@ -232,6 +247,8 @@ export default function CustomerList() {
                                             value={editingCustomer[field] || ""}
                                             onChange={(e) => handleChange(field, e.target.value)}
                                         />
+                                    ) : field === "phone" ? (
+                                        formatPhone(customer[field])
                                     ) : (
                                         customer[field]
                                     )}

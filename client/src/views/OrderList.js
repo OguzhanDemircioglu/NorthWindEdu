@@ -1,8 +1,8 @@
 import React, { useEffect, useReducer, useState } from "react";
-import {addOrder, deleteOrder, getOrders, updateOrder,} from "../services/OrderService";
+import { addOrder, deleteOrder, getOrders, updateOrder } from "../services/OrderService";
 import { Button, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash,} from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const initialState = [];
 
@@ -42,6 +42,22 @@ export default function OrderList() {
         setEditingOrder((prev) => ({ ...prev, [field]: value }));
     };
 
+    const handleDateChange = (field, value) => {
+        let digits = value.replace(/\D/g, "");
+
+        if (digits.length > 4) digits = digits.slice(0, 4) + "-" + digits.slice(4);
+        if (digits.length > 7) digits = digits.slice(0, 7) + "-" + digits.slice(7, 11);
+
+        setEditingOrder(prev => ({ ...prev, [field]: digits }));
+    };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+        const digits = dateStr.replace(/\D/g, "");
+        if (digits.length !== 8) return dateStr;
+        return digits.slice(0,4) + "-" + digits.slice(4,6) + "-" + digits.slice(6,8);
+    };
+
     const handleAdd = () => {
         if (editingOrder) return;
 
@@ -55,9 +71,6 @@ export default function OrderList() {
             shippedDate: "",
             freight: "",
             shipName: "",
-            shipAddress: "",
-            shipCity: "",
-            shipRegion: "",
             shipPostalCode: "",
             shipCountry: "",
             orderDetails: [],
@@ -135,13 +148,12 @@ export default function OrderList() {
                     <option value="customerId">Customer</option>
                     <option value="employeeId">Employee</option>
                     <option value="shipViaId">Shipper</option>
-                    <option value="shipCity">Ship City</option>
                     <option value="shipCountry">Ship Country</option>
                 </Form.Select>
 
                 <Form.Control
                     type="text"
-                    placeholder={`Search by ${searchColumn}`}
+                    placeholder={`Search`}
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     style={{ maxWidth: "200px", marginRight: "10px" }}
@@ -177,9 +189,6 @@ export default function OrderList() {
                     <th>Shipped Date</th>
                     <th>Freight</th>
                     <th>Name</th>
-                    <th>Address</th>
-                    <th>City</th>
-                    <th>Region</th>
                     <th>Postal Code</th>
                     <th>Country</th>
                     <th>Details</th>
@@ -199,17 +208,23 @@ export default function OrderList() {
                             "shippedDate",
                             "freight",
                             "shipName",
-                            "shipAddress",
-                            "shipCity",
-                            "shipRegion",
                             "shipPostalCode",
                             "shipCountry",
                         ].map((field) => (
                             <td key={field}>
-                                <input
-                                    value={editingOrder[field] || ""}
-                                    onChange={(e) => handleChange(field, e.target.value)}
-                                />
+                                {["orderDate", "requiredDate", "shippedDate"].includes(field) ? (
+                                    <input
+                                        value={editingOrder[field] || ""}
+                                        onChange={(e) => handleDateChange(field, e.target.value)}
+                                        placeholder="yyyy-mm-dd"
+                                        maxLength={10}
+                                    />
+                                ) : (
+                                    <input
+                                        value={editingOrder[field] || ""}
+                                        onChange={(e) => handleChange(field, e.target.value)}
+                                    />
+                                )}
                             </td>
                         ))}
                         <td>-</td>
@@ -248,9 +263,6 @@ export default function OrderList() {
                             <td>{order.shippedDate}</td>
                             <td>{order.freight}</td>
                             <td>{order.shipName}</td>
-                            <td>{order.shipAddress}</td>
-                            <td>{order.shipCity}</td>
-                            <td>{order.shipRegion}</td>
                             <td>{order.shipPostalCode}</td>
                             <td>{order.shipCountry}</td>
                             <td>

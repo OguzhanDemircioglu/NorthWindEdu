@@ -13,11 +13,6 @@ export const getEmployees = async () => {
     return handleResponse(response);
 };
 
-export const getEmployeeById = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`);
-    return handleResponse(response);
-};
-
 export const addEmployee = async (data) => {
     const response = await fetch(`${API_URL}/add`, {
         method: "POST",

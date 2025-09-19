@@ -13,11 +13,6 @@ export const getOrders = async () => {
     return handleResponse(response);
 };
 
-export const getOrderById = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`);
-    return handleResponse(response);
-};
-
 export const addOrder = async (data) => {
     const response = await fetch(`${API_URL}/add`, {
         method: "POST",

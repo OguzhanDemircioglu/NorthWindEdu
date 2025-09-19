@@ -13,11 +13,6 @@ export const getCustomers = async () => {
     return handleResponse(response);
 };
 
-export const getCustomerById = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`);
-    return handleResponse(response);
-};
-
 export const addCustomer = async (data) => {
     const response = await fetch(`${API_URL}/add`, {
         method: "POST",
