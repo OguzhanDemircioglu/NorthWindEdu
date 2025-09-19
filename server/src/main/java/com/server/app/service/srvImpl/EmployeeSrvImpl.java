@@ -125,8 +125,17 @@ public class EmployeeSrvImpl implements EmployeeService {
     }
 
     private String checkUniqueConstraints(Employee request) {
-        if (repository.existsByFirstNameAndLastName(request.getFirstName(), request.getLastName())) {
-            return ResultMessages.NAME_SURNAME_EXIST;
+        if (request.getEmployeeId() == null) {
+            if (repository.existsByFirstNameAndLastName(request.getFirstName(), request.getLastName())) {
+                return ResultMessages.NAME_SURNAME_EXIST;
+            }
+        } else {
+            if (repository.existsByFirstNameAndLastNameAndEmployeeIdNot(
+                    request.getFirstName(),
+                    request.getLastName(),
+                    request.getEmployeeId())) {
+                return ResultMessages.NAME_SURNAME_EXIST;
+            }
         }
         return null;
     }

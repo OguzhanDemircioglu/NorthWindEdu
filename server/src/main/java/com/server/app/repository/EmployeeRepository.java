@@ -22,6 +22,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Employee getEmployeeByEmployeeId(Long employeeId);
 
+    boolean existsByFirstNameAndLastNameAndEmployeeIdNot(String firstName, String lastName, Long employeeId);
+
     @Modifying
     @Transactional
     @Query(value = "ALTER SEQUENCE employee_seq RESTART WITH 1", nativeQuery = true)
