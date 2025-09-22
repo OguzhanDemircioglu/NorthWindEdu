@@ -1,20 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
-import {
-    getCategories,
-    addCategory,
-    deleteCategory,
-    updateCategory,
-} from "../services/CategoryService";
+import {getCategories, addCategory, deleteCategory, updateCategory,} from "../services/CategoryService";
 import { Button, Table, Form } from "react-bootstrap";
-import {
-    faAdd,
-    faArrowsRotate,
-    faCancel,
-    faRotateRight,
-    faSave,
-    faSearch,
-    faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash,} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialState = [];

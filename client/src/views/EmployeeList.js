@@ -274,7 +274,7 @@ export default function EmployeeList() {
                             .map((field) => (
                                 <td key={field}>
                                     {field === "titleOfCourtesy" ? (
-                                        <select
+                                        <Form.Select
                                             value={editingEmployee[field] || ""}
                                             onChange={(e) => handleChange(field, e.target.value)}
                                         >
@@ -283,7 +283,7 @@ export default function EmployeeList() {
                                             <option value="Mrs.">Mrs.</option>
                                             <option value="Ms.">Ms.</option>
                                             <option value="Dr.">Dr.</option>
-                                        </select>
+                                        </Form.Select>
                                     ) : (
                                         <input
                                             type={field === "homePhone" ? "tel" : "text"}
@@ -333,7 +333,7 @@ export default function EmployeeList() {
                                     <td key={field}>
                                         {isEditing ? (
                                             field === "titleOfCourtesy" ? (
-                                                <select
+                                                <Form.Select
                                                     value={editingEmployee[field] || ""}
                                                     onChange={(e) => handleChange(field, e.target.value)}
                                                 >
@@ -342,7 +342,7 @@ export default function EmployeeList() {
                                                     <option value="Mrs.">Mrs.</option>
                                                     <option value="Ms.">Ms.</option>
                                                     <option value="Dr.">Dr.</option>
-                                                </select>
+                                                </Form.Select>
                                             ) : (
                                                 <input
                                                     type={field === "homePhone" ? "tel" : "text"}
