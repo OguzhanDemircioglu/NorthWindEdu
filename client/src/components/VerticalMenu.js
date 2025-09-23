@@ -26,6 +26,9 @@ export default function VerticalMenu() {
                         <NavLink className="nav-link" href="/territories">
                             Territory
                         </NavLink>
+                        <NavLink className="nav-link" href="/products">
+                            Product
+                        </NavLink>
                     </Nav>
                 </Container>
             </Navbar>

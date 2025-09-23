@@ -114,7 +114,7 @@ export default function EmployeeTerritoryList() {
             </Form>
 
             <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} /> Add
+                <FontAwesomeIcon icon={faAdd} />
             </Button>
 
             <Table striped bordered hover>
