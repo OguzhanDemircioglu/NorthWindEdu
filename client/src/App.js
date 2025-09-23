@@ -12,6 +12,8 @@ import CustomerList from "./views/CustomerList";
 import EmployeeList from "./views/EmployeeList";
 import OrderList from "./views/OrderList";
 import OrderDetailList from "./views/OrderDetailList";
+import CustomerDemographicsList from "./views/CustomerDemographicsList";
+import CustomerDemoList from "./views/CustomerDemoList";
 
 function App() {
     const currentUser = useSelector((state) => state.user);
@@ -58,6 +60,8 @@ function App() {
                             <Route path="/employees" element={<EmployeeList />} />
                             <Route path="/orders" element={<OrderList />} />
                             <Route path="/order-details" element={<OrderDetailList />} />
+                            <Route path="/customer-demographics" element={<CustomerDemographicsList />} />
+                            <Route path="/customer-demos" element={<CustomerDemoList />} />
                         </>
                     )}
                 </Routes>

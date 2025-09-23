@@ -49,7 +49,7 @@ export default function OrderDetailList() {
             productId: "",
             unitPrice: "",
             quantity: "",
-            discount: "",
+            discount: "0",
         });
         setUpdateKey(null);
     };
