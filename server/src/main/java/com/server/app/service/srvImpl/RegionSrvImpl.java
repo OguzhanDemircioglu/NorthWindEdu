@@ -26,6 +26,7 @@ public class RegionSrvImpl implements RegionService {
 
     private final RegionRepository repository;
     private final RegionMapper mapper;
+    private final RegionRepository regionRepository;
 
     @Override
     public GenericResponse add(RegionSaveRequest request) {
@@ -71,6 +72,10 @@ public class RegionSrvImpl implements RegionService {
         }
 
         repository.deleteRegionByRegionId(id);
+
+        if (repository.count() == 0) {
+            repository.resetRegionSequence();
+        }
 
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }

@@ -91,6 +91,10 @@ public class SupplierSrvImpl implements SupplierService {
         }
         repository.deleteSupplierBySupplierId(supplierId);
 
+        if (repository.count() == 0) {
+            repository.resetSupplierSequence();
+        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 

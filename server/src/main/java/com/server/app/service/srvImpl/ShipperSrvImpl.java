@@ -74,6 +74,11 @@ public class ShipperSrvImpl implements ShipperService {
         }
 
         repository.deleteShipperByShipperId(id);
+
+        if (repository.count() == 0) {
+            repository.resetShipperSequence();
+        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 

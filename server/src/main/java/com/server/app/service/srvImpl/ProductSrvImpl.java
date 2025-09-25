@@ -75,6 +75,10 @@ public class ProductSrvImpl implements ProductService {
         }
         productRepository.deleteProductByProductId(productId);
 
+        if (productRepository.count() == 0) {
+            productRepository.resetProductSequence();
+        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
