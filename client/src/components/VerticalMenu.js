@@ -35,6 +35,9 @@ export default function VerticalMenu() {
                         <NavLink className="nav-link" href="/shippers">
                             Shipper
                         </NavLink>
+                        <NavLink className="nav-link" href="/suppliers">
+                            Supplier
+                        </NavLink>
                     </Nav>
                 </Container>
             </Navbar>

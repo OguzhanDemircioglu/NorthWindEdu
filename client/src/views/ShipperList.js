@@ -1,21 +1,8 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faAdd,
-    faArrowsRotate,
-    faSave,
-    faTrash,
-    faCancel,
-    faSearch,
-    faRotateRight
-} from "@fortawesome/free-solid-svg-icons";
-import {
-    getAllShippers,
-    addShipper,
-    updateShipper,
-    deleteShipper
-} from "../services/ShipperService";
+import {faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
+import {getAllShippers, addShipper, updateShipper, deleteShipper} from "../services/ShipperService";
 
 const initialState = [];
 
