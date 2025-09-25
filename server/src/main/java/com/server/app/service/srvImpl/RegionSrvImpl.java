@@ -26,7 +26,6 @@ public class RegionSrvImpl implements RegionService {
 
     private final RegionRepository repository;
     private final RegionMapper mapper;
-    private final RegionRepository regionRepository;
 
     @Override
     public GenericResponse add(RegionSaveRequest request) {
