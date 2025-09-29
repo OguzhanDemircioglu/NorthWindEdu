@@ -42,21 +42,49 @@ export default function OrderList() {
         setEditingOrder((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleDateChange = (field, value) => {
-        let digits = value.replace(/\D/g, "");
+    const formatDate = (value) => {
+        if (!value) return "";
 
-        if (digits.length > 4) digits = digits.slice(0, 4) + "-" + digits.slice(4);
-        if (digits.length > 7) digits = digits.slice(0, 7) + "-" + digits.slice(7, 11);
+        if (value instanceof Date) {
+            const yyyy = value.getFullYear();
+            const mm = String(value.getMonth() + 1).padStart(2, "0");
+            const dd = String(value.getDate()).padStart(2, "0");
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
-        setEditingOrder(prev => ({ ...prev, [field]: digits }));
+        const strValue = value.toString().trim();
+
+        if (strValue.includes("-")) {
+            const parts = strValue.split("-");
+            if (parts.length === 3) {
+                const year = parts[0].padStart(4, "0");
+                const month = parts[1].padStart(2, "0");
+                const day = parts[2].padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+        }
+
+        if (strValue.includes(",")) {
+            const parts = strValue.split(",");
+            if (parts.length === 3) {
+                const year = parts[0].trim().padStart(4, "0");
+                const month = parts[1].trim().padStart(2, "0");
+                const day = parts[2].trim().padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+        }
+
+        const digits = strValue.replace(/\D/g, "").slice(0, 8);
+        if (digits.length === 8) {
+            const year = digits.slice(0, 4);
+            const month = digits.slice(4, 6);
+            const day = digits.slice(6, 8);
+            return `${year}-${month}-${day}`;
+        }
+
+        return strValue;
     };
 
-    const formatDate = (dateStr) => {
-        if (!dateStr) return "";
-        const digits = dateStr.replace(/\D/g, "");
-        if (digits.length !== 8) return dateStr;
-        return digits.slice(0,4) + "-" + digits.slice(4,6) + "-" + digits.slice(6,8);
-    };
 
     const handleAdd = () => {
         if (editingOrder) return;
@@ -214,10 +242,9 @@ export default function OrderList() {
                             <td key={field}>
                                 {["orderDate", "requiredDate", "shippedDate"].includes(field) ? (
                                     <input
+                                        type="date"
                                         value={editingOrder[field] || ""}
-                                        onChange={(e) => handleDateChange(field, e.target.value)}
-                                        placeholder="yyyy-mm-dd"
-                                        maxLength={10}
+                                        onChange={(e) => handleChange(field, e.target.value)}
                                     />
                                 ) : (
                                     <input
@@ -258,9 +285,9 @@ export default function OrderList() {
                             <td>{order.customerId}</td>
                             <td>{order.employeeId}</td>
                             <td>{order.shipViaId}</td>
-                            <td>{order.orderDate}</td>
-                            <td>{order.requiredDate}</td>
-                            <td>{order.shippedDate}</td>
+                            <td>{formatDate(order.orderDate)}</td>
+                            <td>{formatDate(order.requiredDate)}</td>
+                            <td>{formatDate(order.shippedDate)}</td>
                             <td>{order.freight}</td>
                             <td>{order.shipName}</td>
                             <td>{order.shipPostalCode}</td>
