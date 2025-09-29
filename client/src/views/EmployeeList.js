@@ -75,17 +75,47 @@ export default function EmployeeList() {
 
     const formatDate = (value) => {
         if (!value) return "";
-        let digits = value.replace(/\D/g, "").slice(0, 8);
-        const year = digits.slice(0, 4);
-        const month = digits.slice(4, 6);
-        const day = digits.slice(6, 8);
 
-        let result = year;
-        if (month) result += "-" + month;
-        if (day) result += "-" + day;
+        if (value instanceof Date) {
+            const yyyy = value.getFullYear();
+            const mm = String(value.getMonth() + 1).padStart(2, "0");
+            const dd = String(value.getDate()).padStart(2, "0");
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
-        return result;
+        const strValue = value.toString().trim();
+
+        if (strValue.includes("-")) {
+            const parts = strValue.split("-");
+            if (parts.length === 3) {
+                const year = parts[0].padStart(4, "0");
+                const month = parts[1].padStart(2, "0");
+                const day = parts[2].padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+        }
+
+        if (strValue.includes(",")) {
+            const parts = strValue.split(",");
+            if (parts.length === 3) {
+                const year = parts[0].trim().padStart(4, "0");
+                const month = parts[1].trim().padStart(2, "0");
+                const day = parts[2].trim().padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+        }
+
+        const digits = strValue.replace(/\D/g, "").slice(0, 8);
+        if (digits.length === 8) {
+            const year = digits.slice(0, 4);
+            const month = digits.slice(4, 6);
+            const day = digits.slice(6, 8);
+            return `${year}-${month}-${day}`;
+        }
+
+        return strValue;
     };
+
 
     const formatPhone = (value) => {
         if (!value) return "";
@@ -108,11 +138,6 @@ export default function EmployeeList() {
             setEditingEmployee((prev) => ({
                 ...prev,
                 [field]: formatPhone(value),
-            }));
-        } else if (field === "birthDate" || field === "hireDate") {
-            setEditingEmployee((prev) => ({
-                ...prev,
-                [field]: formatDate(value),
             }));
         } else {
             setEditingEmployee((prev) => ({ ...prev, [field]: value }));
@@ -284,17 +309,17 @@ export default function EmployeeList() {
                                             <option value="Ms.">Ms.</option>
                                             <option value="Dr.">Dr.</option>
                                         </Form.Select>
+                                    ) : field === "birthDate" || field === "hireDate" ? (
+                                        <input
+                                            type="date"
+                                            value={editingEmployee[field] || ""}
+                                            onChange={(e) => handleChange(field, e.target.value)}
+                                        />
                                     ) : (
                                         <input
                                             type={field === "homePhone" ? "tel" : "text"}
                                             value={editingEmployee[field] || ""}
-                                            placeholder={
-                                                field === "homePhone"
-                                                    ? "0xxx-xxx-xx-xx"
-                                                    : field === "birthDate" || field === "hireDate"
-                                                        ? "yyyy-mm-dd"
-                                                        : ""
-                                            }
+                                            placeholder={field === "homePhone" ? "0xxx-xxx-xx-xx" : ""}
                                             onChange={(e) => handleChange(field, e.target.value)}
                                         />
                                     )}
@@ -343,20 +368,22 @@ export default function EmployeeList() {
                                                     <option value="Ms.">Ms.</option>
                                                     <option value="Dr.">Dr.</option>
                                                 </Form.Select>
+                                            ) : field === "birthDate" || field === "hireDate" ? (
+                                                <input
+                                                    type="date"
+                                                    value={editingEmployee[field] || ""}
+                                                    onChange={(e) => handleChange(field, e.target.value)}
+                                                />
                                             ) : (
                                                 <input
                                                     type={field === "homePhone" ? "tel" : "text"}
                                                     value={editingEmployee[field] || ""}
-                                                    placeholder={
-                                                        field === "homePhone"
-                                                            ? "0xxx-xxx-xx-xx"
-                                                            : field === "birthDate" || field === "hireDate"
-                                                                ? "yyyy-mm-dd"
-                                                                : ""
-                                                    }
+                                                    placeholder={field === "homePhone" ? "0xxx-xxx-xx-xx" : ""}
                                                     onChange={(e) => handleChange(field, e.target.value)}
                                                 />
                                             )
+                                        ) : field === "birthDate" || field === "hireDate" ? (
+                                            formatDate(employee[field])
                                         ) : (
                                             employee[field]
                                         )}
@@ -406,7 +433,6 @@ export default function EmployeeList() {
                     );
                 })}
                 </tbody>
-
             </Table>
         </div>
     );
