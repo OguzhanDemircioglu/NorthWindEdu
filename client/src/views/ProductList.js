@@ -21,7 +21,6 @@ export default function ProductList() {
     const [updateKey, setUpdateKey] = useState(null);
     const [allData, setAllData] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const [searchColumn, setSearchColumn] = useState("productId");
 
     const loadData = async () => {
         try {
@@ -95,11 +94,11 @@ export default function ProductList() {
             dispatch({ type: "SET_ALL", payload: allData });
             return;
         }
-        const filtered = allData.filter((p) => {
-            const value = p[searchColumn];
-            if (value === null || value === undefined) return false;
-            return value.toString().toLowerCase().includes(searchText.toLowerCase());
-        });
+        const filtered = allData.filter((p) =>
+            Object.values(p).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
         dispatch({ type: "SET_ALL", payload: filtered });
     };
 
@@ -108,22 +107,6 @@ export default function ProductList() {
             <h3>Products</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    style={{ maxWidth: "150px", marginRight: "10px" }}
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                >
-                    <option value="productId">Product ID</option>
-                    <option value="productName">Name</option>
-                    <option value="supplierId">Supplier ID</option>
-                    <option value="categoryId">Category ID</option>
-                    <option value="quantityPerUnit">Quantity</option>
-                    <option value="unitPrice">Price</option>
-                    <option value="unitsInStock">Stock</option>
-                    <option value="reorderLevel">Reorder Level</option>
-                    <option value="discontinued">Discontinued</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder="Search"

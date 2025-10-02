@@ -20,7 +20,6 @@ export default function OrderList() {
     const [editingOrder, setEditingOrder] = useState(null);
     const [allOrders, setAllOrders] = useState([]);
     const [updateId, setUpdateId] = useState(null);
-    const [searchColumn, setSearchColumn] = useState(null);
     const [searchText, setSearchText] = useState("");
 
     const loadOrders = async () => {
@@ -153,10 +152,9 @@ export default function OrderList() {
         }
 
         const filtered = allOrders.filter((order) =>
-            order[searchColumn]
-                ?.toString()
-                .toLowerCase()
-                .includes(searchText.toLowerCase())
+            Object.values(order).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
         );
 
         dispatch({ type: "SET_ALL", payload: filtered });
@@ -167,18 +165,6 @@ export default function OrderList() {
             <h3>Orders</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "150px", marginRight: "10px" }}
-                >
-                    <option value="orderId">Order ID</option>
-                    <option value="customerId">Customer</option>
-                    <option value="employeeId">Employee</option>
-                    <option value="shipViaId">Shipper</option>
-                    <option value="shipCountry">Ship Country</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder={`Search`}

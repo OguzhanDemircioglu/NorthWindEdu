@@ -27,7 +27,6 @@ export default function CustomerList() {
     const [updateId, setUpdateId] = useState(null);
     const [editingCustomer, setEditingCustomer] = useState(null);
     const [allCustomers, setAllCustomers] = useState([]);
-    const [searchColumn, setSearchColumn] = useState(null);
     const [searchText, setSearchText] = useState("");
 
     const allowedFields = [
@@ -137,7 +136,9 @@ export default function CustomerList() {
         }
 
         const filtered = allCustomers.filter((c) =>
-            c[searchColumn]?.toString().toLowerCase().includes(searchText.toLowerCase())
+            Object.values(c).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
         );
 
         dispatch({ type: "SET_ALL", payload: filtered });
@@ -148,18 +149,6 @@ export default function CustomerList() {
             <h3>Customers</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "150px", marginRight: "10px" }}
-                >
-                    <option value="customerId">ID</option>
-                    <option value="companyName">Company</option>
-                    <option value="contactName">Contact</option>
-                    <option value="city">City</option>
-                    <option value="country">Country</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder={`Search`}

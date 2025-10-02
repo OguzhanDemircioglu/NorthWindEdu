@@ -9,7 +9,6 @@ export default function TerritoryList() {
     const [editing, setEditing] = useState(null);
     const [updateKey, setUpdateKey] = useState(null);
     const [searchText, setSearchText] = useState("");
-    const [searchColumn, setSearchColumn] = useState("territoryId");
     const [allData, setAllData] = useState([]);
 
     const loadData = async () => {
@@ -75,10 +74,11 @@ export default function TerritoryList() {
             setTerritories(allData);
             return;
         }
-        const filtered = allData.filter((d) => {
-            const value = d[searchColumn]?.toString().toLowerCase() || "";
-            return value.includes(searchText.toLowerCase());
-        });
+        const filtered = allData.filter((d) =>
+            Object.values(d).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
         setTerritories(filtered);
     };
 
@@ -87,16 +87,6 @@ export default function TerritoryList() {
             <h3>Territories</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "180px", marginRight: "10px" }}
-                >
-                    <option value="territoryId">Territory ID</option>
-                    <option value="territoryDescription">Description</option>
-                    <option value="regionId">Region ID</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder="Search"

@@ -21,7 +21,6 @@ export default function OrderDetailList() {
     const [allDetails, setAllDetails] = useState([]);
     const [updateKey, setUpdateKey] = useState(null);
     const [searchText, setSearchText] = useState("");
-    const [searchColumn, setSearchColumn] = useState(null);
 
     const loadDetails = async () => {
         try {
@@ -99,7 +98,9 @@ export default function OrderDetailList() {
         }
 
         const filtered = allDetails.filter((detail) =>
-            detail[searchColumn]?.toString().toLowerCase().includes(searchText.toLowerCase())
+            Object.values(detail).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
         );
 
         dispatch({ type: "SET_ALL", payload: filtered });
@@ -111,18 +112,6 @@ export default function OrderDetailList() {
             <h3>Order Details</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "150px", marginRight: "10px" }}
-                >
-                    <option value="orderId">Order ID</option>
-                    <option value="productId">Product ID</option>
-                    <option value="unitPrice">Unit Price</option>
-                    <option value="quantity">Quantity</option>
-                    <option value="discount">Discount</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder={`Search`}

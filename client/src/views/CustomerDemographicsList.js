@@ -10,7 +10,6 @@ export default function CustomerDemographicsList() {
     const [updateKey, setUpdateKey] = useState(null);
     const [searchText, setSearchText] = useState("");
     const [allData, setAllData] = useState([]);
-    const [searchColumn, setSearchColumn] = useState("customerTypeId");
 
     const loadData = async () => {
         try {
@@ -76,25 +75,19 @@ export default function CustomerDemographicsList() {
             return;
         }
         const filtered = allData.filter((d) =>
-            d[searchColumn]?.toString().toLowerCase().includes(searchText.toLowerCase())
+            Object.values(d).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
         );
         setDemographics(filtered);
     };
+
 
     return (
         <div style={{ padding: "20px" }}>
             <h3>Customer Demographics</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "150px", marginRight: "10px" }}
-                >
-                    <option value="customerTypeId">Customer Type ID</option>
-                    <option value="customerDesc">Description</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder="Search"

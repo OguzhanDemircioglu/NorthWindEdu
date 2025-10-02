@@ -8,7 +8,6 @@ export default function EmployeeTerritoryList() {
     const [territories, setTerritories] = useState([]);
     const [editing, setEditing] = useState(null);
     const [searchText, setSearchText] = useState("");
-    const [searchColumn, setSearchColumn] = useState("employeeId");
     const [allData, setAllData] = useState([]);
 
     const loadData = async () => {
@@ -69,10 +68,9 @@ export default function EmployeeTerritoryList() {
         }
 
         const filtered = allData.filter((d) =>
-            d[searchColumn]
-                ?.toString()
-                .toLowerCase()
-                .includes(searchText.toLowerCase())
+            Object.values(d).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
         );
 
         setTerritories(filtered);
@@ -83,14 +81,6 @@ export default function EmployeeTerritoryList() {
             <h3>Employee Territories</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "150px", marginRight: "10px" }}
-                >
-                    <option value="employeeId">Employee ID</option>
-                    <option value="territoryId">Territory ID</option>
-                </Form.Select>
                 <Form.Control
                     type="text"
                     placeholder={`Search`}

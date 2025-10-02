@@ -28,7 +28,6 @@ export default function ShipperList() {
     const [updateKey, setUpdateKey] = useState(null);
     const [allData, setAllData] = useState([]);
     const [searchText, setSearchText] = useState("");
-    const [searchColumn, setSearchColumn] = useState("shipperId");
 
     const loadData = async () => {
         try {
@@ -118,11 +117,11 @@ export default function ShipperList() {
             dispatch({ type: "SET_ALL", payload: allData });
             return;
         }
-        const filtered = allData.filter((shipper) => {
-            const value = shipper[searchColumn];
-            if (value === null || value === undefined) return false;
-            return value.toString().toLowerCase().includes(searchText.toLowerCase());
-        });
+        const filtered = allData.filter((shipper) =>
+            Object.values(shipper).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
         dispatch({ type: "SET_ALL", payload: filtered });
     };
 
@@ -131,16 +130,6 @@ export default function ShipperList() {
             <h3>Shippers</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "180px", marginRight: "10px" }}
-                >
-                    <option value="shipperId">ID</option>
-                    <option value="companyName">Company Name</option>
-                    <option value="phone">Phone</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder="Search"

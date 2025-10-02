@@ -19,7 +19,6 @@ export default function CategoryList() {
     const [categories, dispatch] = useReducer(reducer, initialState);
     const [updateId, setUpdateId] = useState(null);
     const [editingCategory, setEditingCategory] = useState(null);
-    const [searchColumn, setSearchColumn] = useState(null);
     const [searchText, setSearchText] = useState("");
     const [allCategories, setAllCategories] = useState([]);
 
@@ -110,10 +109,9 @@ export default function CategoryList() {
         }
 
         const filtered = allCategories.filter((cat) =>
-            cat[searchColumn]
-                ?.toString()
-                .toLowerCase()
-                .includes(searchText.toLowerCase())
+            Object.values(cat).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
         );
 
         dispatch({ type: "SET_ALL", payload: filtered });
@@ -124,16 +122,6 @@ export default function CategoryList() {
             <h3>Categories</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "150px", marginRight: "10px" }}
-                >
-                    <option value="categoryId">ID</option>
-                    <option value="categoryName">Name</option>
-                    <option value="description">Description</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder={`Search`}

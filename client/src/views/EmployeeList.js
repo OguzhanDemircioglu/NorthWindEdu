@@ -32,7 +32,6 @@ export default function EmployeeList() {
     const [employees, dispatch] = useReducer(reducer, initialState);
     const [updateId, setUpdateId] = useState(null);
     const [editingEmployee, setEditingEmployee] = useState(null);
-    const [searchColumn, setSearchColumn] = useState(null);
     const [searchText, setSearchText] = useState("");
     const [allEmployees, setAllEmployees] = useState([]);
 
@@ -217,10 +216,9 @@ export default function EmployeeList() {
         }
 
         const filtered = allEmployees.filter((emp) =>
-            emp[searchColumn]
-                ?.toString()
-                .toLowerCase()
-                .includes(searchText.toLowerCase())
+            Object.values(emp).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
         );
 
         dispatch({ type: "SET_ALL", payload: filtered });
@@ -231,20 +229,6 @@ export default function EmployeeList() {
             <h3>Employees</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "150px", marginRight: "10px" }}
-                >
-                    <option value="employeeId">ID</option>
-                    <option value="lastName">Last Name</option>
-                    <option value="firstName">First Name</option>
-                    <option value="title">Title</option>
-                    <option value="titleOfCourtesy">Courtesy</option>
-                    <option value="city">City</option>
-                    <option value="country">Country</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder={`Search`}

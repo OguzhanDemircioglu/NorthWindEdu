@@ -21,7 +21,6 @@ export default function RegionList() {
     const [editing, setEditing] = useState(null);
     const [updateKey, setUpdateKey] = useState(null);
     const [searchText, setSearchText] = useState("");
-    const [searchColumn, setSearchColumn] = useState("regionId");
 
     const loadData = async () => {
         try {
@@ -83,11 +82,11 @@ export default function RegionList() {
             dispatch({ type: "SET_ALL", payload: allData });
             return;
         }
-        const filtered = allData.filter((r) => {
-            const value = r[searchColumn];
-            if (!value) return false;
-            return value.toString().toLowerCase().includes(searchText.toLowerCase());
-        });
+        const filtered = allData.filter((r) =>
+            Object.values(r).some((value) =>
+                value?.toString().toLowerCase().includes(searchText.toLowerCase())
+            )
+        );
         dispatch({ type: "SET_ALL", payload: filtered });
     };
 
@@ -96,15 +95,6 @@ export default function RegionList() {
             <h3>Regions</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Select
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                    style={{ maxWidth: "180px", marginRight: "10px" }}
-                >
-                    <option value="regionId">Region ID</option>
-                    <option value="regionDescription">Description</option>
-                </Form.Select>
-
                 <Form.Control
                     type="text"
                     placeholder={`Search`}
