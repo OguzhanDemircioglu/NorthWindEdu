@@ -1,8 +1,12 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { addOrder, deleteOrder, getOrders, updateOrder } from "../services/OrderService";
+import {addOrder, deleteOrder, getOrders, updateOrder,} from "../services/OrderService";
+import { getCustomers } from "../services/CustomerService";
+import { getEmployees } from "../services/EmployeeService";
+import { getAllShippers } from "../services/ShipperService";
+
 import { Button, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash,} from "@fortawesome/free-solid-svg-icons";
 
 const initialState = [];
 
@@ -22,6 +26,10 @@ export default function OrderList() {
     const [updateId, setUpdateId] = useState(null);
     const [searchText, setSearchText] = useState("");
 
+    const [customers, setCustomers] = useState([]);
+    const [employees, setEmployees] = useState([]);
+    const [shippers, setShippers] = useState([]);
+
     const loadOrders = async () => {
         try {
             const response = await getOrders();
@@ -33,8 +41,25 @@ export default function OrderList() {
         }
     };
 
+    const loadLookups = async () => {
+        try {
+            const [customer, employee, shipper] = await Promise.all([
+                getCustomers(),
+                getEmployees(),
+                getAllShippers(),
+            ]);
+
+            setCustomers(customer.data || customer);
+            setEmployees(employee.data || employee);
+            setShippers(shipper.data || shipper);
+        } catch (err) {
+            console.error("Cannot retrieve data:", err);
+        }
+    };
+
     useEffect(() => {
         loadOrders();
+        loadLookups();
     }, []);
 
     const handleChange = (field, value) => {
@@ -43,51 +68,16 @@ export default function OrderList() {
 
     const formatDate = (value) => {
         if (!value) return "";
-
-        if (value instanceof Date) {
-            const yyyy = value.getFullYear();
-            const mm = String(value.getMonth() + 1).padStart(2, "0");
-            const dd = String(value.getDate()).padStart(2, "0");
-            return `${yyyy}-${mm}-${dd}`;
-        }
-
-        const strValue = value.toString().trim();
-
-        if (strValue.includes("-")) {
-            const parts = strValue.split("-");
-            if (parts.length === 3) {
-                const year = parts[0].padStart(4, "0");
-                const month = parts[1].padStart(2, "0");
-                const day = parts[2].padStart(2, "0");
-                return `${year}-${month}-${day}`;
-            }
-        }
-
-        if (strValue.includes(",")) {
-            const parts = strValue.split(",");
-            if (parts.length === 3) {
-                const year = parts[0].trim().padStart(4, "0");
-                const month = parts[1].trim().padStart(2, "0");
-                const day = parts[2].trim().padStart(2, "0");
-                return `${year}-${month}-${day}`;
-            }
-        }
-
-        const digits = strValue.replace(/\D/g, "").slice(0, 8);
-        if (digits.length === 8) {
-            const year = digits.slice(0, 4);
-            const month = digits.slice(4, 6);
-            const day = digits.slice(6, 8);
-            return `${year}-${month}-${day}`;
-        }
-
-        return strValue;
+        const d = new Date(value);
+        if (isNaN(d)) return value;
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        return `${yyyy}-${mm}-${dd}`;
     };
-
 
     const handleAdd = () => {
         if (editingOrder) return;
-
         setEditingOrder({
             orderId: null,
             customerId: "",
@@ -118,7 +108,6 @@ export default function OrderList() {
             } else {
                 await updateOrder({ ...order, orderId: updateId });
             }
-
             setEditingOrder(null);
             setUpdateId(null);
             loadOrders();
@@ -156,7 +145,6 @@ export default function OrderList() {
                 value?.toString().toLowerCase().includes(searchText.toLowerCase())
             )
         );
-
         dispatch({ type: "SET_ALL", payload: filtered });
     };
 
@@ -202,7 +190,7 @@ export default function OrderList() {
                     <th>Required Date</th>
                     <th>Shipped Date</th>
                     <th>Freight</th>
-                    <th>Name</th>
+                    <th>ShipName</th>
                     <th>Postal Code</th>
                     <th>Country</th>
                     <th>Details</th>
@@ -232,6 +220,44 @@ export default function OrderList() {
                                         value={editingOrder[field] || ""}
                                         onChange={(e) => handleChange(field, e.target.value)}
                                     />
+                                ) : ["customerId", "employeeId", "shipViaId"].includes(
+                                    field
+                                ) ? (
+                                    <select
+                                        value={editingOrder[field] || ""}
+                                        onChange={(e) =>
+                                            handleChange(field, e.target.value)
+                                        }
+                                    >
+                                        <option value="">Select...</option>
+                                        {field === "customerId" &&
+                                            customers.map((c) => (
+                                                <option
+                                                    key={c.customerId}
+                                                    value={c.customerId}
+                                                >
+                                                    {c.contactName || c.customerId}
+                                                </option>
+                                            ))}
+                                        {field === "employeeId" &&
+                                            employees.map((e) => (
+                                                <option
+                                                    key={e.employeeId}
+                                                    value={e.employeeId}
+                                                >
+                                                    {e.firstName} {e.lastName}
+                                                </option>
+                                            ))}
+                                        {field === "shipViaId" &&
+                                            shippers.map((s) => (
+                                                <option
+                                                    key={s.shipperId}
+                                                    value={s.shipperId}
+                                                >
+                                                    {s.companyName}
+                                                </option>
+                                            ))}
+                                    </select>
                                 ) : (
                                     <input
                                         value={editingOrder[field] || ""}
@@ -268,9 +294,33 @@ export default function OrderList() {
                     return (
                         <tr key={order.orderId}>
                             <td>{order.orderId}</td>
-                            <td>{order.customerId}</td>
-                            <td>{order.employeeId}</td>
-                            <td>{order.shipViaId}</td>
+                            <td>
+                                {customers.find(
+                                    (c) => c.customerId === order.customerId
+                                )?.contactName || order.customerId}
+                            </td>
+                            <td>
+                                {employees.find(
+                                    (e) => e.employeeId === order.employeeId
+                                )
+                                    ? `${
+                                        employees.find(
+                                            (e) =>
+                                                e.employeeId === order.employeeId
+                                        ).firstName
+                                    } ${
+                                        employees.find(
+                                            (e) =>
+                                                e.employeeId === order.employeeId
+                                        ).lastName
+                                    }`
+                                    : order.employeeId}
+                            </td>
+                            <td>
+                                {shippers.find(
+                                    (s) => s.shipperId === order.shipViaId
+                                )?.companyName || order.shipViaId}
+                            </td>
                             <td>{formatDate(order.orderDate)}</td>
                             <td>{formatDate(order.requiredDate)}</td>
                             <td>{formatDate(order.shippedDate)}</td>
