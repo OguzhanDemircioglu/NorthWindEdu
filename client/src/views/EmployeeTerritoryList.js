@@ -3,12 +3,17 @@ import { Table, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAdd, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
 import {getAllEmployeeTerritories, addEmployeeTerritory, updateEmployeeTerritory, deleteEmployeeTerritory} from "../services/EmployeeTerritoryService";
+import { getEmployees } from "../services/EmployeeService";
+import { getAllTerritories } from "../services/TerritoryService";
 
 export default function EmployeeTerritoryList() {
     const [territories, setTerritories] = useState([]);
+    const [allData, setAllData] = useState([]);
     const [editing, setEditing] = useState(null);
     const [searchText, setSearchText] = useState("");
-    const [allData, setAllData] = useState([]);
+
+    const [employees, setEmployees] = useState([]);
+    const [territoryOptions, setTerritoryOptions] = useState([]);
 
     const loadData = async () => {
         try {
@@ -20,8 +25,22 @@ export default function EmployeeTerritoryList() {
         }
     };
 
+    const loadLookups = async () => {
+        try {
+            const [employee, territory] = await Promise.all([
+                getEmployees(),
+                getAllTerritories(),
+            ]);
+            setEmployees(employee.data || []);
+            setTerritoryOptions(territory.data || []);
+        } catch (err) {
+            console.error("Error loading data:", err);
+        }
+    };
+
     useEffect(() => {
         loadData();
+        laodLookups();
     }, []);
 
     const handleAdd = () => {
@@ -110,8 +129,8 @@ export default function EmployeeTerritoryList() {
             <Table striped bordered hover>
                 <thead>
                 <tr>
-                    <th>Employee ID</th>
-                    <th>Territory ID</th>
+                    <th>Employee</th>
+                    <th>Territory</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -119,21 +138,34 @@ export default function EmployeeTerritoryList() {
                 {editing && (
                     <tr>
                         <td>
-                            <input
-                                type="text"
-                                value={editing.employeeId}
+                            <Form.Select
+                                value={editing.employeeId || ""}
                                 onChange={(e) =>
                                     setEditing({ ...editing, employeeId: e.target.value })
                                 }
-                            />
+                            >
+                                <option value="">Select employee...</option>
+                                {employees.map((emp) => (
+                                    <option key={emp.employeeId} value={emp.employeeId}>
+                                        {emp.firstName} {emp.lastName}
+                                    </option>
+                                ))}
+                            </Form.Select>
                         </td>
                         <td>
-                            <input
-                                value={editing.territoryId}
+                            <Form.Select
+                                value={editing.territoryId || ""}
                                 onChange={(e) =>
                                     setEditing({ ...editing, territoryId: e.target.value })
                                 }
-                            />
+                            >
+                                <option value="">Select territory...</option>
+                                {territoryOptions.map((t) => (
+                                    <option key={t.territoryId} value={t.territoryId}>
+                                        {t.territoryDescription}
+                                    </option>
+                                ))}
+                            </Form.Select>
                         </td>
                         <td>
                             <Button
@@ -154,23 +186,26 @@ export default function EmployeeTerritoryList() {
                         </td>
                     </tr>
                 )}
-                {territories.map((t, i) => (
-                    <tr key={i}>
-                        <td>{t.employeeId}</td>
-                        <td>{t.territoryId}</td>
-                        <td>
-                            <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() =>
-                                    handleDelete(t.employeeId, t.territoryId)
-                                }
-                            >
-                                <FontAwesomeIcon icon={faTrash} />
-                            </Button>
-                        </td>
-                    </tr>
-                ))}
+                {territories.map((t, i) => {
+                    const emp = employees.find((e) => e.employeeId === t.employeeId);
+                    const terr = territoryOptions.find((x) => x.territoryId === t.territoryId);
+
+                    return (
+                        <tr key={i}>
+                            <td>{emp ? `${emp.firstName} ${emp.lastName}` : t.employeeId}</td>
+                            <td>{terr ? terr.territoryDescription : t.territoryId}</td>
+                            <td>
+                                <Button
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={() => handleDelete(t.employeeId, t.territoryId)}
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </Button>
+                            </td>
+                        </tr>
+                    );
+                })}
                 </tbody>
             </Table>
         </div>
