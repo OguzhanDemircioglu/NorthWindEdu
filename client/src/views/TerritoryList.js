@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight } from "@fortawesome/free-solid-svg-icons";
-import { getAllTerritories, addTerritory, updateTerritory, deleteTerritory } from "../services/TerritoryService";
+import {faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
+import {getAllTerritories, addTerritory, updateTerritory, deleteTerritory} from "../services/TerritoryService";
+import { getAllRegions } from "../services/RegionService";
 
 export default function TerritoryList() {
     const [territories, setTerritories] = useState([]);
+    const [regions, setRegions] = useState([]);
     const [editing, setEditing] = useState(null);
     const [updateKey, setUpdateKey] = useState(null);
     const [searchText, setSearchText] = useState("");
@@ -22,8 +24,19 @@ export default function TerritoryList() {
         }
     };
 
+    const loadLookups = async () => {
+        try {
+            const region = await getAllRegions();
+            setRegions(region.data || []);
+        } catch (err) {
+            console.error("Error loading data:", err);
+            setRegions([]);
+        }
+    };
+
     useEffect(() => {
         loadData();
+        loadLookups();
     }, []);
 
     const handleAdd = () => {
@@ -82,6 +95,9 @@ export default function TerritoryList() {
         setTerritories(filtered);
     };
 
+    const getRegionName = (id) =>
+        regions.find((r) => r.regionId === id)?.regionDescription || "";
+
     return (
         <div style={{ padding: "20px" }}>
             <h3>Territories</h3>
@@ -119,7 +135,7 @@ export default function TerritoryList() {
                 <tr>
                     <th>Territory ID</th>
                     <th>Description</th>
-                    <th>Region ID</th>
+                    <th>Region</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -149,15 +165,21 @@ export default function TerritoryList() {
                             </td>
                             <td>
                                 {isEditing ? (
-                                    <input
-                                        type="number"
+                                    <Form.Select
                                         value={editing.regionId || ""}
                                         onChange={(e) =>
                                             setEditing({ ...editing, regionId: Number(e.target.value) })
                                         }
-                                    />
+                                    >
+                                        <option value="">Select region</option>
+                                        {regions.map((r) => (
+                                            <option key={r.regionId} value={r.regionId}>
+                                                {r.regionDescription}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
                                 ) : (
-                                    d.regionId
+                                    getRegionName(d.regionId)
                                 )}
                             </td>
                             <td>
@@ -218,13 +240,19 @@ export default function TerritoryList() {
                             />
                         </td>
                         <td>
-                            <input
-                                type="number"
+                            <Form.Select
                                 value={editing.regionId || ""}
                                 onChange={(e) =>
                                     setEditing({ ...editing, regionId: Number(e.target.value) })
                                 }
-                            />
+                            >
+                                <option value="">Select region</option>
+                                {regions.map((r) => (
+                                    <option key={r.regionId} value={r.regionId}>
+                                        {r.regionDescription}
+                                    </option>
+                                ))}
+                            </Form.Select>
                         </td>
                         <td>
                             <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
