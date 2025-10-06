@@ -1,5 +1,10 @@
 import React, { useEffect, useReducer, useState } from "react";
 import {addOrderDetail, deleteOrderDetail, getOrderDetails, updateOrderDetail,} from "../services/OrderDetailService";
+import { getOrders } from "../services/OrderService";
+import { getCustomers } from "../services/CustomerService";
+import { getAllProducts } from "../services/ProductService";
+import { getEmployees} from "../services/EmployeeService";
+import { getAllShippers} from "../services/ShipperService";
 import { Button, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash,} from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +26,11 @@ export default function OrderDetailList() {
     const [allDetails, setAllDetails] = useState([]);
     const [updateKey, setUpdateKey] = useState(null);
     const [searchText, setSearchText] = useState("");
-
+    const [orders, setOrders] = useState([]);
+    const [customers, setCustomers] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [employees, setEmployees] = useState([]);
+    const [shippers, setShippers] = useState([]);
     const loadDetails = async () => {
         try {
             const response = await getOrderDetails();
@@ -33,8 +42,28 @@ export default function OrderDetailList() {
         }
     };
 
+    const loadLookups = async () => {
+        try {
+            const [order, customer, product, employee, shipper] = await Promise.all([
+                getOrders(),
+                getCustomers(),
+                getAllProducts(),
+                getEmployees(),
+                getAllShippers(),
+            ]);
+            setOrders(order.data || []);
+            setCustomers(customer.data || []);
+            setProducts(product.data || []);
+            setEmployees(employee.data || []);
+            setShippers(shipper.data || []);
+        } catch (err) {
+            console.error("Error loading data:", err);
+        }
+    };
+
     useEffect(() => {
         loadDetails();
+        loadLookups();
     }, []);
 
     const handleChange = (field, value) => {
@@ -106,7 +135,6 @@ export default function OrderDetailList() {
         dispatch({ type: "SET_ALL", payload: filtered });
     };
 
-
     return (
         <div style={{ padding: "20px" }}>
             <h3>Order Details</h3>
@@ -135,7 +163,6 @@ export default function OrderDetailList() {
                 </Button>
             </Form>
 
-
             <Button variant="success" className="mb-3" onClick={handleAdd}>
                 <FontAwesomeIcon icon={faAdd} />
             </Button>
@@ -143,8 +170,8 @@ export default function OrderDetailList() {
             <Table striped bordered hover>
                 <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Product ID</th>
+                    <th>Order</th>
+                    <th>Product</th>
                     <th>Unit Price</th>
                     <th>Quantity</th>
                     <th>Discount</th>
@@ -154,24 +181,69 @@ export default function OrderDetailList() {
                 <tbody>
                 {editingDetail && (
                     <tr>
-                        {["orderId", "productId", "unitPrice", "quantity", "discount"].map((field) => (
-                            <td key={field}>
-                                {field === "discount" ? (
-                                    <Form.Select
-                                        value={editingDetail[field] || "0"}
-                                        onChange={(e) => handleChange(field, e.target.value)}
-                                    >
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                    </Form.Select>
-                                ) : (
-                                    <input
-                                        value={editingDetail[field] || ""}
-                                        onChange={(e) => handleChange(field, e.target.value)}
-                                    />
-                                )}
-                            </td>
-                        ))}
+                        <td>
+                            <Form.Select
+                                value={editingDetail.orderId || ""}
+                                onChange={(e) => handleChange("orderId", e.target.value)}
+                            >
+                                <option value="">Select order...</option>
+                                {orders.map((o) => {
+                                    const customer = customers.find(
+                                        (c) => c.customerId === o.customerId
+                                    );
+                                    const employee = employees.find(
+                                        (e) => e.employeeId === o.employeeId
+                                    );
+                                    const shipper = shippers.find(
+                                        (s) => s.shipperId === o.shipViaId
+                                    );
+                                    return (
+                                        <option key={o.orderId} value={o.orderId}>
+                                            {o.orderId} - {customer?.contactName || "Unknown"}, {employee?.firstName || "Unknown"} {employee?.lastName || "Unknown"}, {shipper?.companyName || "Unknown"}
+                                        </option>
+                                    );
+                                })}
+                            </Form.Select>
+                        </td>
+
+                        <td>
+                            <Form.Select
+                                value={editingDetail.productId || ""}
+                                onChange={(e) => handleChange("productId", e.target.value)}
+                            >
+                                <option value="">Select product...</option>
+                                {products.map((p) => (
+                                    <option key={p.productId} value={p.productId}>
+                                        {p.productName}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </td>
+
+                        <td>
+                            <Form.Control
+                                type="number"
+                                value={editingDetail.unitPrice || ""}
+                                onChange={(e) => handleChange("unitPrice", e.target.value)}
+                            />
+                        </td>
+                        <td>
+                            <Form.Control
+                                type="number"
+                                value={editingDetail.quantity || ""}
+                                onChange={(e) => handleChange("quantity", e.target.value)}
+                            />
+                        </td>
+                        <td>
+                            <Form.Select
+                                value={editingDetail.discount || "0"}
+                                onChange={(e) => handleChange("discount", e.target.value)}
+                            >
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                            </Form.Select>
+                        </td>
+
                         <td>
                             <Button
                                 variant="primary"
@@ -199,10 +271,26 @@ export default function OrderDetailList() {
                         updateKey.productId === detail.productId;
                     if (isEditing) return null;
 
+                    const order = orders.find((o) => o.orderId === detail.orderId);
+                    const customer = customers.find(
+                        (c) => c.customerId === order?.customerId
+                    );
+                    const employee = employees.find(
+                        (e) => e.employeeId === order?.employeeId
+                    );
+                    const shipper = shippers.find(
+                        (s) => s.shipperId === order?.shipViaId
+                    );
+                    const product = products.find(
+                        (p) => p.productId === detail.productId
+                    );
+
                     return (
                         <tr key={i}>
-                            <td>{detail.orderId}</td>
-                            <td>{detail.productId}</td>
+                            <td>
+                                {order?.orderId} - {customer?.contactName || "Unknown"}, {employee?.firstName || "Unknown"} {employee?.lastName || "Unknown"}, {shipper?.companyName || "Unknown"}
+                            </td>
+                            <td>{product?.productName || detail.productId}</td>
                             <td>{detail.unitPrice}</td>
                             <td>{detail.quantity}</td>
                             <td>{detail.discount}</td>

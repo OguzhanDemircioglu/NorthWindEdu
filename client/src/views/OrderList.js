@@ -223,7 +223,7 @@ export default function OrderList() {
                                 ) : ["customerId", "employeeId", "shipViaId"].includes(
                                     field
                                 ) ? (
-                                    <select
+                                    <Form.Select
                                         value={editingOrder[field] || ""}
                                         onChange={(e) =>
                                             handleChange(field, e.target.value)
@@ -257,7 +257,7 @@ export default function OrderList() {
                                                     {s.companyName}
                                                 </option>
                                             ))}
-                                    </select>
+                                    </Form.Select>
                                 ) : (
                                     <input
                                         value={editingOrder[field] || ""}
