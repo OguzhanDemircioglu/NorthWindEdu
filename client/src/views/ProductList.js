@@ -1,8 +1,10 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight } from "@fortawesome/free-solid-svg-icons";
-import { getAllProducts, addProduct, updateProduct, deleteProduct } from "../services/ProductService";
+import {faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
+import {getAllProducts, addProduct, updateProduct, deleteProduct} from "../services/ProductService";
+import { getAllSuppliers } from "../services/SupplierService";
+import { getCategories } from "../services/CategoryService";
 
 const initialState = [];
 
@@ -17,6 +19,8 @@ function reducer(state, action) {
 
 export default function ProductList() {
     const [products, dispatch] = useReducer(reducer, initialState);
+    const [suppliers, setSuppliers] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [editing, setEditing] = useState(null);
     const [updateKey, setUpdateKey] = useState(null);
     const [allData, setAllData] = useState([]);
@@ -33,7 +37,25 @@ export default function ProductList() {
         }
     };
 
-    useEffect(() => { loadData(); }, []);
+    const loadLookups = async () => {
+        try {
+            const [supplier, category] = await Promise.all([
+                getAllSuppliers(),
+                getCategories(),
+            ]);
+            setSuppliers(supplier.data || []);
+            setCategories(category.data || []);
+        } catch (e) {
+            console.error("Error loading data:", e);
+            setSuppliers([]);
+            setCategories([]);
+        }
+    };
+
+    useEffect(() => {
+        loadData();
+        loadLookups();
+    }, []);
 
     const handleAdd = () => {
         if (editing) return;
@@ -102,6 +124,12 @@ export default function ProductList() {
         dispatch({ type: "SET_ALL", payload: filtered });
     };
 
+    const getSupplierName = (id) =>
+        suppliers.find((s) => s.supplierId === id)?.companyName || "";
+
+    const getCategoryName = (id) =>
+        categories.find((c) => c.categoryId === id)?.categoryName || "";
+
     return (
         <div style={{ padding: "20px" }}>
             <h3>Products</h3>
@@ -139,8 +167,8 @@ export default function ProductList() {
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Supplier ID</th>
-                    <th>Category ID</th>
+                    <th>Supplier</th>
+                    <th>Category</th>
                     <th>Quantity per Unit</th>
                     <th>Unit Price</th>
                     <th>Units In Stock</th>
@@ -154,23 +182,111 @@ export default function ProductList() {
                 {editing && !updateKey && (
                     <tr>
                         <td>-</td>
-                        <td><input value={editing.productName} onChange={e => setEditing({...editing, productName: e.target.value})}/></td>
-                        <td><input value={editing.supplierId} onChange={e => setEditing({...editing, supplierId: e.target.value})}/></td>
-                        <td><input value={editing.categoryId} onChange={e => setEditing({...editing, categoryId: e.target.value})}/></td>
-                        <td><input value={editing.quantityPerUnit} onChange={e => setEditing({...editing, quantityPerUnit: e.target.value})}/></td>
-                        <td><input value={editing.unitPrice} onChange={e => setEditing({...editing, unitPrice: e.target.value})}/></td>
-                        <td><input value={editing.unitsInStock} onChange={e => setEditing({...editing, unitsInStock: e.target.value})}/></td>
-                        <td><input value={editing.unitsInOrder} onChange={e => setEditing({...editing, unitsInOrder: e.target.value})}/></td>
-                        <td><input value={editing.reorderLevel} onChange={e => setEditing({...editing, reorderLevel: e.target.value})}/></td>
                         <td>
-                            <Form.Select value={editing.discontinued} onChange={e => setEditing({...editing, discontinued: Number(e.target.value)})}>
+                            <input
+                                value={editing.productName}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, productName: e.target.value })
+                                }
+                            />
+                        </td>
+                        <td>
+                            <Form.Select
+                                value={editing.supplierId || ""}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, supplierId: Number(e.target.value) })
+                                }
+                            >
+                                <option value="">Select supplier</option>
+                                {suppliers.map((s) => (
+                                    <option key={s.supplierId} value={s.supplierId}>
+                                        {s.companyName}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </td>
+                        <td>
+                            <Form.Select
+                                value={editing.categoryId || ""}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, categoryId: Number(e.target.value) })
+                                }
+                            >
+                                <option value="">Select category</option>
+                                {categories.map((c) => (
+                                    <option key={c.categoryId} value={c.categoryId}>
+                                        {c.categoryName}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </td>
+                        <td>
+                            <input
+                                value={editing.quantityPerUnit}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, quantityPerUnit: e.target.value })
+                                }
+                            />
+                        </td>
+                        <td>
+                            <input
+                                value={editing.unitPrice}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, unitPrice: e.target.value })
+                                }
+                            />
+                        </td>
+                        <td>
+                            <input
+                                value={editing.unitsInStock}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, unitsInStock: e.target.value })
+                                }
+                            />
+                        </td>
+                        <td>
+                            <input
+                                value={editing.unitsInOrder}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, unitsInOrder: e.target.value })
+                                }
+                            />
+                        </td>
+                        <td>
+                            <input
+                                value={editing.reorderLevel}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, reorderLevel: e.target.value })
+                                }
+                            />
+                        </td>
+                        <td>
+                            <Form.Select
+                                value={editing.discontinued}
+                                onChange={(e) =>
+                                    setEditing({ ...editing, discontinued: Number(e.target.value) })
+                                }
+                            >
                                 <option value={0}>0</option>
                                 <option value={1}>1</option>
                             </Form.Select>
                         </td>
                         <td>
-                            <Button variant="primary" size="sm" onClick={() => handleSave(editing)}><FontAwesomeIcon icon={faSave} /></Button>
-                            <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}><FontAwesomeIcon icon={faCancel} /></Button>
+                            <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={() => handleSave(editing)}
+                            >
+                                <FontAwesomeIcon icon={faSave} />
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                className="ms-2"
+                                onClick={handleCancel}
+                            >
+                                <FontAwesomeIcon icon={faCancel} />
+                            </Button>
                         </td>
                     </tr>
                 )}
@@ -180,17 +296,139 @@ export default function ProductList() {
                     return (
                         <tr key={i}>
                             <td>{d.productId}</td>
-                            <td>{isEditing ? <input value={editing.productName} onChange={e => setEditing({...editing, productName: e.target.value})}/> : d.productName}</td>
-                            <td>{isEditing ? <input value={editing.supplierId} onChange={e => setEditing({...editing, supplierId: e.target.value})}/> : d.supplierId}</td>
-                            <td>{isEditing ? <input value={editing.categoryId} onChange={e => setEditing({...editing, categoryId: e.target.value})}/> : d.categoryId}</td>
-                            <td>{isEditing ? <input value={editing.quantityPerUnit} onChange={e => setEditing({...editing, quantityPerUnit: e.target.value})}/> : d.quantityPerUnit}</td>
-                            <td>{isEditing ? <input value={editing.unitPrice} onChange={e => setEditing({...editing, unitPrice: e.target.value})}/> : d.unitPrice}</td>
-                            <td>{isEditing ? <input value={editing.unitsInStock} onChange={e => setEditing({...editing, unitsInStock: e.target.value})}/> : d.unitsInStock}</td>
-                            <td>{isEditing ? <input value={editing.unitsInOrder} onChange={e => setEditing({...editing, unitsInOrder: e.target.value})}/> : d.unitsInOrder}</td>
-                            <td>{isEditing ? <input value={editing.reorderLevel} onChange={e => setEditing({...editing, reorderLevel: e.target.value})}/> : d.reorderLevel}</td>
                             <td>
                                 {isEditing ? (
-                                    <Form.Select value={editing.discontinued} onChange={e=>setEditing({...editing, discontinued: Number(e.target.value)})}>
+                                    <input
+                                        value={editing.productName}
+                                        onChange={(e) =>
+                                            setEditing({ ...editing, productName: e.target.value })
+                                        }
+                                    />
+                                ) : (
+                                    d.productName
+                                )}
+                            </td>
+                            <td>
+                                {isEditing ? (
+                                    <Form.Select
+                                        value={editing.supplierId || ""}
+                                        onChange={(e) =>
+                                            setEditing({
+                                                ...editing,
+                                                supplierId: Number(e.target.value),
+                                            })
+                                        }
+                                    >
+                                        <option value="">Select supplier</option>
+                                        {suppliers.map((s) => (
+                                            <option key={s.supplierId} value={s.supplierId}>
+                                                {s.companyName}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                ) : (
+                                    getSupplierName(d.supplierId)
+                                )}
+                            </td>
+                            <td>
+                                {isEditing ? (
+                                    <Form.Select
+                                        value={editing.categoryId || ""}
+                                        onChange={(e) =>
+                                            setEditing({
+                                                ...editing,
+                                                categoryId: Number(e.target.value),
+                                            })
+                                        }
+                                    >
+                                        <option value="">Select category</option>
+                                        {categories.map((c) => (
+                                            <option key={c.categoryId} value={c.categoryId}>
+                                                {c.categoryName}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                ) : (
+                                    getCategoryName(d.categoryId)
+                                )}
+                            </td>
+                            <td>
+                                {isEditing ? (
+                                    <input
+                                        value={editing.quantityPerUnit}
+                                        onChange={(e) =>
+                                            setEditing({
+                                                ...editing,
+                                                quantityPerUnit: e.target.value,
+                                            })
+                                        }
+                                    />
+                                ) : (
+                                    d.quantityPerUnit
+                                )}
+                            </td>
+                            <td>
+                                {isEditing ? (
+                                    <input
+                                        value={editing.unitPrice}
+                                        onChange={(e) =>
+                                            setEditing({ ...editing, unitPrice: e.target.value })
+                                        }
+                                    />
+                                ) : (
+                                    d.unitPrice
+                                )}
+                            </td>
+                            <td>
+                                {isEditing ? (
+                                    <input
+                                        value={editing.unitsInStock}
+                                        onChange={(e) =>
+                                            setEditing({ ...editing, unitsInStock: e.target.value })
+                                        }
+                                    />
+                                ) : (
+                                    d.unitsInStock
+                                )}
+                            </td>
+                            <td>
+                                {isEditing ? (
+                                    <input
+                                        value={editing.unitsInOrder}
+                                        onChange={(e) =>
+                                            setEditing({ ...editing, unitsInOrder: e.target.value })
+                                        }
+                                    />
+                                ) : (
+                                    d.unitsInOrder
+                                )}
+                            </td>
+                            <td>
+                                {isEditing ? (
+                                    <input
+                                        value={editing.reorderLevel}
+                                        onChange={(e) =>
+                                            setEditing({
+                                                ...editing,
+                                                reorderLevel: e.target.value,
+                                            })
+                                        }
+                                    />
+                                ) : (
+                                    d.reorderLevel
+                                )}
+                            </td>
+                            <td>
+                                {isEditing ? (
+                                    <Form.Select
+                                        value={editing.discontinued}
+                                        onChange={(e) =>
+                                            setEditing({
+                                                ...editing,
+                                                discontinued: Number(e.target.value),
+                                            })
+                                        }
+                                    >
                                         <option value={0}>0</option>
                                         <option value={1}>1</option>
                                     </Form.Select>
@@ -201,13 +439,39 @@ export default function ProductList() {
                             <td>
                                 {isEditing ? (
                                     <>
-                                        <Button variant="primary" size="sm" onClick={() => handleSave(editing)}><FontAwesomeIcon icon={faSave} /></Button>
-                                        <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}><FontAwesomeIcon icon={faCancel} /></Button>
+                                        <Button
+                                            variant="primary"
+                                            size="sm"
+                                            onClick={() => handleSave(editing)}
+                                        >
+                                            <FontAwesomeIcon icon={faSave} />
+                                        </Button>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            className="ms-2"
+                                            onClick={handleCancel}
+                                        >
+                                            <FontAwesomeIcon icon={faCancel} />
+                                        </Button>
                                     </>
                                 ) : (
                                     <>
-                                        <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(d)}><FontAwesomeIcon icon={faArrowsRotate} /></Button>
-                                        <Button variant="danger" size="sm" onClick={() => handleDelete(d.productId)}><FontAwesomeIcon icon={faTrash} /></Button>
+                                        <Button
+                                            variant="warning"
+                                            size="sm"
+                                            className="me-2"
+                                            onClick={() => handleEdit(d)}
+                                        >
+                                            <FontAwesomeIcon icon={faArrowsRotate} />
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            onClick={() => handleDelete(d.productId)}
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </Button>
                                     </>
                                 )}
                             </td>
