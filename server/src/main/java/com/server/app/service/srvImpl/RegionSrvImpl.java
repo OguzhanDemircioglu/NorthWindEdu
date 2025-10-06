@@ -72,6 +72,10 @@ public class RegionSrvImpl implements RegionService {
 
         repository.deleteRegionByRegionId(id);
 
+        if (repository.count() == 0) {
+            repository.resetRegionSequence();
+        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 

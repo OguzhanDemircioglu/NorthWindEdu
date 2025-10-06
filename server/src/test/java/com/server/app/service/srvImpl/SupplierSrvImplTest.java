@@ -63,21 +63,6 @@ class SupplierSrvImplTest {
     class add {
 
         @Test
-        void isIdNotDelivered() {
-            when(supplierMapper.saveEntityFromRequest(any(SupplierSaveRequest.class)))
-                    .thenReturn(Supplier.builder()
-                            .supplierId(null)
-                            .companyName("karel")
-                            .build());
-
-            BusinessException ex = assertThrows(
-                    BusinessException.class,
-                    () -> supplierSrv.add(request)
-            );
-            assertThat(ex.getMessage()).isEqualTo(ResultMessages.ID_IS_NOT_DELIVERED);
-        }
-
-        @Test
         void isEmptyCompanyName() {
             request.setCompanyName(null);
             when(supplierMapper.saveEntityFromRequest(any(SupplierSaveRequest.class)))

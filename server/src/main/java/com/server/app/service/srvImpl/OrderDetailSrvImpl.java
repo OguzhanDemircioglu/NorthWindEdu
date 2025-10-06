@@ -101,7 +101,11 @@ public class OrderDetailSrvImpl implements OrderDetailService {
         List<OrderDetail> details = orderDetailRepository.getOrderDetailById_OrderId(orderId);
 
         if (details.isEmpty()) {
-            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
+            List<OrderDetailDto> dtos = details.stream()
+                    .map(od -> OrderDetailDto.builder()
+                            .build())
+                    .toList();
+            return dtos;
         }
 
         List<OrderDetailDto> dtos = details.stream()

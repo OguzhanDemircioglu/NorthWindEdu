@@ -78,6 +78,10 @@ public class UsStateSrvImpl implements UsStateService {
 
         repository.deleteStateByStateId(id);
 
+        if (repository.count() == 0) {
+            repository.resetStateSequence();
+        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 

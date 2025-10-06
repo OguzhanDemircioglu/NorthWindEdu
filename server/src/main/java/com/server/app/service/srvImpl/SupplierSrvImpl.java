@@ -91,6 +91,10 @@ public class SupplierSrvImpl implements SupplierService {
         }
         repository.deleteSupplierBySupplierId(supplierId);
 
+        if (repository.count() == 0) {
+            repository.resetSupplierSequence();
+        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
@@ -112,10 +116,6 @@ public class SupplierSrvImpl implements SupplierService {
     }
 
     private String checkSupplierForGeneralValidations(Supplier request) {
-        if (request.getSupplierId() == null || request.getSupplierId() == 0) {
-            return ResultMessages.ID_IS_NOT_DELIVERED;
-        }
-
         if (Strings.isNullOrEmpty(request.getCompanyName())) {
             return ResultMessages.EMPTY_COMPANY_NAME;
         }

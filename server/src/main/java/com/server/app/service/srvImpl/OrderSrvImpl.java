@@ -13,7 +13,6 @@ import com.server.app.model.Order;
 import com.server.app.repository.OrderRepository;
 import com.server.app.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,7 +54,7 @@ public class OrderSrvImpl implements OrderService {
     public DataGenericResponse<OrderDto> findOrderByOrderId(Long orderId) {
         Optional<Order> order = orderRepository.findOrderByOrderId(orderId);
         if (order.isEmpty()) {
-            throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
+            throw new BusinessException(ResultMessages.ORDER_NOT_FOUND);
         }
         OrderDto dto = mapper.toDto(order.get());
         return DataGenericResponse.<OrderDto>dataBuilder()
@@ -70,6 +69,9 @@ public class OrderSrvImpl implements OrderService {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
         orderRepository.deleteOrderByOrderId(orderId);
+        if (orderRepository.count() == 0) {
+            orderRepository.resetOrderSequence();
+        }
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 

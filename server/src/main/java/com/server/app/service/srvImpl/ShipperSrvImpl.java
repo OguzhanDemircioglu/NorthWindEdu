@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -73,6 +74,11 @@ public class ShipperSrvImpl implements ShipperService {
         }
 
         repository.deleteShipperByShipperId(id);
+
+        if (repository.count() == 0) {
+            repository.resetShipperSequence();
+        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
@@ -90,8 +96,11 @@ public class ShipperSrvImpl implements ShipperService {
 
     @Override
     public Shipper getShipper(Long shipperId) {
-
-        return repository.getShipperByShipperId(shipperId);
+        Shipper shipper = repository.getShipperByShipperId(shipperId);
+        if (Objects.isNull(shipper)) {
+            throw new BusinessException(ResultMessages.SHIPPER_NOT_FOUND);
+        }
+        return shipper;
     }
 
 

@@ -28,9 +28,19 @@ export default function HorizontalMenu() {
                         &nbsp;NorthWind
                     </Navbar.Brand>
                     <Nav style={{flex: "max-content"}}>
-                        <NavLink className="nav-link" href="/nextTopic">
-                            Next Topic
-                        </NavLink>
+                        {isLoggedIn && (
+                            <>
+                                <NavLink className="nav-link" href="/customers">
+                                    Customers
+                                </NavLink>
+                                <NavLink className="nav-link" href="/employees">
+                                    Employees
+                                </NavLink>
+                                <NavLink className="nav-link" href="/orders">
+                                    Orders
+                                </NavLink>
+                            </>
+                        )}
                     </Nav>
                     {currentUser?.role === 'ADMIN' &&
                         <NavLink className="nav-link" style={{color: "cyan",marginRight:"10px"}} href="/adminConsole">

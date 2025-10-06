@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -79,6 +80,9 @@ public class EmployeeSrvImpl implements EmployeeService {
             throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
         }
         repository.deleteEmployeeByEmployeeId(employeeId);
+        if (repository.count() == 0) {
+            repository.resetEmployeeSequence();
+        }
         return GenericResponse.builder()
                 .message(ResultMessages.RECORD_DELETED)
                 .build();
@@ -98,7 +102,11 @@ public class EmployeeSrvImpl implements EmployeeService {
 
     @Override
     public Employee getEmployee(Long employeeId) {
-        return repository.getEmployeeByEmployeeId(employeeId);
+        Employee employee = repository.getEmployeeByEmployeeId(employeeId);
+        if (Objects.isNull(employee)) {
+            throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
+        }
+        return employee;
     }
 
     // ===== Helpers =====
@@ -117,8 +125,17 @@ public class EmployeeSrvImpl implements EmployeeService {
     }
 
     private String checkUniqueConstraints(Employee request) {
-        if (repository.existsByFirstNameAndLastName(request.getFirstName(), request.getLastName())) {
-            return ResultMessages.NAME_SURNAME_EXIST;
+        if (request.getEmployeeId() == null) {
+            if (repository.existsByFirstNameAndLastName(request.getFirstName(), request.getLastName())) {
+                return ResultMessages.NAME_SURNAME_EXIST;
+            }
+        } else {
+            if (repository.existsByFirstNameAndLastNameAndEmployeeIdNot(
+                    request.getFirstName(),
+                    request.getLastName(),
+                    request.getEmployeeId())) {
+                return ResultMessages.NAME_SURNAME_EXIST;
+            }
         }
         return null;
     }
