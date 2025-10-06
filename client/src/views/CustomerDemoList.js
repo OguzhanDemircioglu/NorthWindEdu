@@ -1,8 +1,10 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faAdd, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
-import {getAllCustomerDemos, addCustomerDemo, deleteCustomerDemo} from "../services/CustomerDemoService";
+import {faAdd, faSave, faTrash, faCancel, faSearch, faRotateRight,} from "@fortawesome/free-solid-svg-icons";
+import {getAllCustomerDemos, addCustomerDemo, deleteCustomerDemo,} from "../services/CustomerDemoService";
+import { getCustomers } from "../services/CustomerService";
+import { getAllCustomerDemographics } from "../services/CustomerDemographicsService";
 
 const initialState = [];
 
@@ -17,10 +19,11 @@ function reducer(state, action) {
 
 export default function CustomerDemoList() {
     const [demos, dispatch] = useReducer(reducer, initialState);
-    const [editing, setEditing] = useState(null);
     const [allData, setAllData] = useState([]);
+    const [editing, setEditing] = useState(null);
     const [searchText, setSearchText] = useState("");
-
+    const [customers, setCustomers] = useState([]);
+    const [demographics, setDemographics] = useState([]);
     const loadData = async () => {
         try {
             const res = await getAllCustomerDemos();
@@ -32,8 +35,22 @@ export default function CustomerDemoList() {
         }
     };
 
+    const loadLookups = async () => {
+        try {
+            const [customer, demographic] = await Promise.all([
+                getCustomers(),
+                getAllCustomerDemographics(),
+            ]);
+            setCustomers(customer.data || []);
+            setDemographics(demographic.data || []);
+        } catch (err) {
+            console.error("Error loading dependencies:", err);
+        }
+    };
+
     useEffect(() => {
         loadData();
+        loadLookups();
     }, []);
 
     const handleChange = (field, value) => {
@@ -88,7 +105,7 @@ export default function CustomerDemoList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Customer Demographics</h3>
+            <h3>Customer Demos</h3>
 
             <Form className="d-flex mb-3" onSubmit={handleSearch}>
                 <Form.Control
@@ -120,22 +137,42 @@ export default function CustomerDemoList() {
             <Table striped bordered hover>
                 <thead>
                 <tr>
-                    <th>Customer ID</th>
-                    <th>Customer Type ID</th>
+                    <th>Customer</th>
+                    <th>Customer Type</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {editing && (
                     <tr>
-                        {["customerId", "customerTypeId"].map((field) => (
-                            <td key={field}>
-                                <input
-                                    value={editing[field] || ""}
-                                    onChange={(e) => handleChange(field, e.target.value)}
-                                />
-                            </td>
-                        ))}
+                        <td>
+                            <Form.Select
+                                value={editing.customerId || ""}
+                                onChange={(e) => handleChange("customerId", e.target.value)}
+                            >
+                                <option value="">Select customer...</option>
+                                {customers.map((c) => (
+                                    <option key={c.customerId} value={c.customerId}>
+                                        {c.contactName}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </td>
+
+                        <td>
+                            <Form.Select
+                                value={editing.customerTypeId || ""}
+                                onChange={(e) => handleChange("customerTypeId", e.target.value)}
+                            >
+                                <option value="">Select...</option>
+                                {demographics.map((d) => (
+                                    <option key={d.customerTypeId} value={d.customerTypeId}>
+                                        {d.customerDesc}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </td>
+
                         <td>
                             <Button
                                 variant="primary"
@@ -156,23 +193,30 @@ export default function CustomerDemoList() {
                     </tr>
                 )}
 
-                {demos.map((demo, i) => (
-                    <tr key={i}>
-                        <td>{demo.customerId}</td>
-                        <td>{demo.customerTypeId}</td>
-                        <td>
-                            <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() =>
-                                    handleDelete(demo.customerId, demo.customerTypeId)
-                                }
-                            >
-                                <FontAwesomeIcon icon={faTrash} />
-                            </Button>
-                        </td>
-                    </tr>
-                ))}
+                {demos.map((demo, i) => {
+                    const customer = customers.find((c) => c.customerId === demo.customerId);
+                    const demographic = demographics.find(
+                        (d) => d.customerTypeId === demo.customerTypeId
+                    );
+
+                    return (
+                        <tr key={i}>
+                            <td>{customer?.contactName || demo.customerId}</td>
+                            <td>{demographic?.customerDesc || demo.customerTypeId}</td>
+                            <td>
+                                <Button
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={() =>
+                                        handleDelete(demo.customerId, demo.customerTypeId)
+                                    }
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </Button>
+                            </td>
+                        </tr>
+                    );
+                })}
                 </tbody>
             </Table>
         </div>
