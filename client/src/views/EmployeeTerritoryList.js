@@ -40,7 +40,7 @@ export default function EmployeeTerritoryList() {
 
     useEffect(() => {
         loadData();
-        laodLookups();
+        loadLookups();
     }, []);
 
     const handleAdd = () => {
