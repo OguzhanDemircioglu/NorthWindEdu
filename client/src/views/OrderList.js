@@ -1,12 +1,12 @@
 import React, { useEffect, useReducer, useState } from "react";
-import {addOrder, deleteOrder, getOrders, updateOrder,} from "../services/OrderService";
+import { addOrder, deleteOrder, getOrders, updateOrder } from "../services/OrderService";
 import { getCustomers } from "../services/CustomerService";
 import { getEmployees } from "../services/EmployeeService";
 import { getAllShippers } from "../services/ShipperService";
 
 import { Button, Table, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash,} from "@fortawesome/free-solid-svg-icons";
+import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash} from "@fortawesome/free-solid-svg-icons";
 
 const initialState = [];
 
@@ -88,8 +88,6 @@ export default function OrderList() {
             shippedDate: "",
             freight: "",
             shipName: "",
-            shipPostalCode: "",
-            shipCountry: "",
             orderDetails: [],
         });
         setUpdateId(null);
@@ -190,9 +188,7 @@ export default function OrderList() {
                     <th>Required Date</th>
                     <th>Shipped Date</th>
                     <th>Freight</th>
-                    <th>ShipName</th>
-                    <th>Postal Code</th>
-                    <th>Country</th>
+                    <th>Ship Name</th>
                     <th>Details</th>
                     <th>Actions</th>
                 </tr>
@@ -210,8 +206,6 @@ export default function OrderList() {
                             "shippedDate",
                             "freight",
                             "shipName",
-                            "shipPostalCode",
-                            "shipCountry",
                         ].map((field) => (
                             <td key={field}>
                                 {["orderDate", "requiredDate", "shippedDate"].includes(field) ? (
@@ -326,8 +320,6 @@ export default function OrderList() {
                             <td>{formatDate(order.shippedDate)}</td>
                             <td>{order.freight}</td>
                             <td>{order.shipName}</td>
-                            <td>{order.shipPostalCode}</td>
-                            <td>{order.shipCountry}</td>
                             <td>
                                 {order.orderDetails && order.orderDetails.length > 0 ? (
                                     <ul style={{ paddingLeft: "15px", margin: 0 }}>

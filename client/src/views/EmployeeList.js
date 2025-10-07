@@ -43,10 +43,6 @@ export default function EmployeeList() {
         "titleOfCourtesy",
         "birthDate",
         "hireDate",
-        "city",
-        "region",
-        "postalCode",
-        "country",
         "homePhone",
     ];
 
@@ -81,29 +77,12 @@ export default function EmployeeList() {
             const dd = String(value.getDate()).padStart(2, "0");
             return `${yyyy}-${mm}-${dd}`;
         }
-
         const strValue = value.toString().trim();
-
-        if (strValue.includes("-")) {
-            const parts = strValue.split("-");
-            if (parts.length === 3) {
-                const year = parts[0].padStart(4, "0");
-                const month = parts[1].padStart(2, "0");
-                const day = parts[2].padStart(2, "0");
-                return `${year}-${month}-${day}`;
-            }
+        const parts = strValue.split(/[-,]/);
+        if (parts.length === 3) {
+            const [y, m, d] = parts;
+            return `${y.padStart(4, "0")}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
         }
-
-        if (strValue.includes(",")) {
-            const parts = strValue.split(",");
-            if (parts.length === 3) {
-                const year = parts[0].trim().padStart(4, "0");
-                const month = parts[1].trim().padStart(2, "0");
-                const day = parts[2].trim().padStart(2, "0");
-                return `${year}-${month}-${day}`;
-            }
-        }
-
         const digits = strValue.replace(/\D/g, "").slice(0, 8);
         if (digits.length === 8) {
             const year = digits.slice(0, 4);
@@ -114,7 +93,6 @@ export default function EmployeeList() {
 
         return strValue;
     };
-
 
     const formatPhone = (value) => {
         if (!value) return "";
@@ -153,10 +131,6 @@ export default function EmployeeList() {
             titleOfCourtesy: "",
             birthDate: "",
             hireDate: "",
-            city: "",
-            region: "",
-            postalCode: "",
-            country: "",
             homePhone: "",
         });
         setUpdateId(null);
@@ -265,10 +239,6 @@ export default function EmployeeList() {
                     <th>Courtesy</th>
                     <th>Birth Date</th>
                     <th>Hire Date</th>
-                    <th>City</th>
-                    <th>Region</th>
-                    <th>Postal Code</th>
-                    <th>Country</th>
                     <th>Phone</th>
                     <th>Actions</th>
                 </tr>
@@ -373,7 +343,6 @@ export default function EmployeeList() {
                                         )}
                                     </td>
                                 ))}
-
                             <td>
                                 {isEditing ? (
                                     <>

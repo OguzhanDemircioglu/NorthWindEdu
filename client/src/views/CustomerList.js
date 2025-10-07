@@ -34,10 +34,6 @@ export default function CustomerList() {
         "companyName",
         "contactName",
         "contactTitle",
-        "city",
-        "region",
-        "postalCode",
-        "country",
         "phone",
     ];
 
@@ -82,10 +78,6 @@ export default function CustomerList() {
             companyName: "",
             contactName: "",
             contactTitle: "",
-            city: "",
-            region: "",
-            postalCode: "",
-            country: "",
             phone: "",
         });
         setUpdateId(null);
@@ -101,7 +93,6 @@ export default function CustomerList() {
             const cleaned = {
                 ...customer,
                 phone: customer.phone?.replace(/\D/g, ""),
-                postalCode: customer.postalCode?.replace(/\D/g, ""),
             };
 
             if (!updateId) {
@@ -182,10 +173,6 @@ export default function CustomerList() {
                     <th>Company</th>
                     <th>Contact</th>
                     <th>Title</th>
-                    <th>City</th>
-                    <th>Region</th>
-                    <th>Postal Code</th>
-                    <th>Country</th>
                     <th>Phone</th>
                     <th>Actions</th>
                 </tr>

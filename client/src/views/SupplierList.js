@@ -62,11 +62,8 @@ export default function SupplierList() {
             companyName: "",
             contactName: "",
             contactTitle: "",
-            address: "",
             city: "",
-            region: "",
             postalCode: "",
-            country: "",
             phone: "",
         });
         setUpdateKey(null);
@@ -149,11 +146,8 @@ export default function SupplierList() {
         { label: "Company", key: "companyName" },
         { label: "Contact", key: "contactName" },
         { label: "Title", key: "contactTitle" },
-        { label: "Address", key: "address" },
         { label: "City", key: "city" },
-        { label: "Region", key: "region" },
         { label: "Postal Code", key: "postalCode" },
-        { label: "Country", key: "country" },
         { label: "Phone", key: "phone" },
     ];
 
