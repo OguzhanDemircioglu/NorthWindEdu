@@ -157,3 +157,47 @@ button {
     background-color: green;
     color: white;
 }
+
+.btn-compact {
+    padding: 2px 4px !important;
+    min-width: auto !important;
+    width: auto !important;
+    height: auto !important;
+    line-height: 1 !important;
+}
+
+.btn-compact svg {
+    margin: 0 !important;
+}
+
+.table-compact {
+    max-width: 700px;
+    width: 100%;
+    table-layout: fixed;
+    margin-top: 30px;
+}
+
+.table-compact th.id-col,
+.table-compact td.id-col {
+    width: 50px;
+    text-align: center;
+}
+
+.table-compact th.actions-col,
+.table-compact td.actions-col {
+    width: 90px;
+    text-align: center;
+}
+
+.table-compact th:not(.id-col):not(.actions-col),
+.table-compact td:not(.id-col):not(.actions-col) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
