@@ -105,41 +105,51 @@ export default function CustomerDemoList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Customer Demos</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3>
+                    Customer Demos
+                </h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allData });
-                    }}
+                <Form
+                    className="d-flex justify-content-center mt-3"
+                    onSubmit={handleSearch}
                 >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
-
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Form.Control
+                        type="text"
+                        placeholder="Search"
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "250px", marginRight: "10px" }}
+                    />
+                    <Button type="submit" variant="info">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            dispatch({ type: "SET_ALL", payload: allData });
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button
+                        variant="success"
+                        className="ms-2"
+                        onClick={handleAdd}
+                    >
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </Form>
+            </div>
 
             <Table striped bordered hover>
                 <thead>
                 <tr>
                     <th>Customer</th>
                     <th>Customer Type</th>
-                    <th>Actions</th>
+                    <th className="actions-col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -150,7 +160,7 @@ export default function CustomerDemoList() {
                                 value={editing.customerId || ""}
                                 onChange={(e) => handleChange("customerId", e.target.value)}
                             >
-                                <option value="">Select customer...</option>
+                                <option value="">Select...</option>
                                 {customers.map((c) => (
                                     <option key={c.customerId} value={c.customerId}>
                                         {c.contactName}
@@ -158,7 +168,6 @@ export default function CustomerDemoList() {
                                 ))}
                             </Form.Select>
                         </td>
-
                         <td>
                             <Form.Select
                                 value={editing.customerTypeId || ""}
@@ -172,7 +181,6 @@ export default function CustomerDemoList() {
                                 ))}
                             </Form.Select>
                         </td>
-
                         <td>
                             <Button
                                 variant="primary"
