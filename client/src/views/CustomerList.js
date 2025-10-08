@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { getCustomers, addCustomer, deleteCustomer, updateCustomer } from "../services/CustomerService";
+import {getCustomers, addCustomer, deleteCustomer, updateCustomer} from "../services/CustomerService";
 import { Button, Table, Form } from "react-bootstrap";
-import { faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTrash} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialState = [];
@@ -137,146 +137,155 @@ export default function CustomerList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Customers</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3>Customers</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "200px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allCustomers });
-                    }}
+                <Form
+                    className="d-flex justify-content-center mt-3"
+                    onSubmit={handleSearch}
                 >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                    <Form.Control
+                        type="text"
+                        placeholder={`Search`}
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "250px", marginRight: "10px" }}
+                    />
+                    <Button type="submit" variant="info">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            dispatch({ type: "SET_ALL", payload: allCustomers });
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button variant="success" className="ms-2" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </Form>
+            </div>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
-
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Company</th>
-                    <th>Contact</th>
-                    <th>Title</th>
-                    <th>Phone</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editingCustomer && !updateId && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        {allowedFields.map((field) => (
-                            <td key={field}>
-                                <input
-                                    type={field === "phone" || field === "postalCode" ? "tel" : "text"}
-                                    value={editingCustomer[field] || ""}
-                                    placeholder={field === "phone" ? "0xxx-xxx-xx-xx"
-                                        : field === "postalCode" ? "12345" :""}
-                                    onChange={(e) => handleChange(field, e.target.value)}
-                                />
-                            </td>
-                        ))}
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editingCustomer)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th>ID</th>
+                        <th>Company</th>
+                        <th>Contact</th>
+                        <th>Title</th>
+                        <th>Phone</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-
-                {customers.map((customer) => {
-                    const isEditing = updateId === customer.customerId;
-                    return (
-                        <tr key={customer.customerId}>
+                    </thead>
+                    <tbody>
+                    {editingCustomer && !updateId && (
+                        <tr>
                             {allowedFields.map((field) => (
                                 <td key={field}>
-                                    {isEditing ? (
-                                        <input
-                                            type={field === "phone" || field === "postalCode" ? "tel" : "text"}
-                                            value={editingCustomer[field] || ""}
-                                            onChange={(e) => handleChange(field, e.target.value)}
-                                        />
-                                    ) : field === "phone" ? (
-                                        formatPhone(customer[field])
-                                    ) : (
-                                        customer[field]
-                                    )}
+                                    <input
+                                        type={field === "phone" || field === "postalCode" ? "tel" : "text"}
+                                        value={editingCustomer[field] || ""}
+                                        placeholder={field === "phone" ? "0xxx-xxx-xx-xx"
+                                            : field === "postalCode" ? "12345" :""}
+                                        onChange={(e) => handleChange(field, e.target.value)}
+                                    />
                                 </td>
                             ))}
                             <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button
-                                            variant="primary"
-                                            size="sm"
-                                            onClick={() => handleSave(editingCustomer)}
-                                        >
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            className="ms-2"
-                                            onClick={handleCancel}
-                                        >
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => {
-                                                setUpdateId(customer.customerId);
-                                                setEditingCustomer({ ...customer });
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(customer.customerId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editingCustomer)}
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {customers.map((customer) => {
+                        const isEditing = updateId === customer.customerId;
+                        return (
+                            <tr key={customer.customerId}>
+                                {allowedFields.map((field) => (
+                                    <td key={field}>
+                                        {isEditing ? (
+                                            <input
+                                                type={field === "phone" || field === "postalCode" ? "tel" : "text"}
+                                                value={editingCustomer[field] || ""}
+                                                onChange={(e) => handleChange(field, e.target.value)}
+                                            />
+                                        ) : field === "phone" ? (
+                                            formatPhone(customer[field])
+                                        ) : (
+                                            customer[field]
+                                        )}
+                                    </td>
+                                ))}
+                                <td>
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editingCustomer)}
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => {
+                                                    setUpdateId(customer.customerId);
+                                                    setEditingCustomer({ ...customer });
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(customer.customerId)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
