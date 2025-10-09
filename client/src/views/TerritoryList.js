@@ -100,177 +100,199 @@ export default function TerritoryList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Territories</h3>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
+                <h3 className="me-2">Territories</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
+                <div className="d-flex align-items-center">
+                    <Form className="d-flex" onSubmit={handleSearch}>
+                        <Form.Control
+                            type="text"
+                            placeholder="Search"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ maxWidth: "200px", marginRight: "10px" }}
+                        />
 
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        setTerritories(allData);
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                        <Button type="submit" variant="info">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="ms-2"
+                            onClick={() => {
+                                setSearchText("");
+                                setTerritories(allData);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRotateRight} />
+                        </Button>
+                    </Form>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </div>
+            </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>Territory ID</th>
-                    <th>Description</th>
-                    <th>Region</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {territories.map((d, i) => {
-                    const isEditing = updateKey === d.territoryId;
-                    return (
-                        <tr key={i}>
-                            <td>
-                                {isEditing ? (
-                                    <input value={editing.territoryId} disabled />
-                                ) : (
-                                    d.territoryId
-                                )}
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
+                    <tr>
+                        <th className="id-col">Territory ID</th>
+                        <th>Description</th>
+                        <th>Region</th>
+                        <th className="actions-col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {territories.map((d, i) => {
+                        const isEditing = updateKey === d.territoryId;
+                        return (
+                            <tr key={i}>
+                                <td className="id-col text-center">
+                                    {isEditing ? (
+                                        <input value={editing.territoryId} disabled style={{ width: '100%' }}/>
+                                    ) : (
+                                        d.territoryId
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            value={editing.territoryDescription}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, territoryDescription: e.target.value })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        d.territoryDescription
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <Form.Select
+                                            value={editing.regionId || ""}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, regionId: Number(e.target.value) })
+                                            }
+                                            style={{ width: '100%' }}
+                                        >
+                                            <option value="">Select region</option>
+                                            {regions.map((r) => (
+                                                <option key={r.regionId} value={r.regionId}>
+                                                    {r.regionDescription}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    ) : (
+                                        getRegionName(d.regionId)
+                                    )}
+                                </td>
+                                <td className="actions-col text-center">
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editing)}
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleEdit(d)}
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(d.territoryId)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+
+                    {editing && !updateKey && (
+                        <tr>
+                            <td className="id-col">
+                                <input
+                                    value={editing.territoryId}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, territoryId: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.territoryDescription}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, territoryDescription: e.target.value })
-                                        }
-                                    />
-                                ) : (
-                                    d.territoryDescription
-                                )}
+                                <input
+                                    value={editing.territoryDescription}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, territoryDescription: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <Form.Select
-                                        value={editing.regionId || ""}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, regionId: Number(e.target.value) })
-                                        }
-                                    >
-                                        <option value="">Select region</option>
-                                        {regions.map((r) => (
-                                            <option key={r.regionId} value={r.regionId}>
-                                                {r.regionDescription}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                ) : (
-                                    getRegionName(d.regionId)
-                                )}
+                                <Form.Select
+                                    value={editing.regionId || ""}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, regionId: Number(e.target.value) })
+                                    }
+                                    style={{ width: '100%' }}
+                                >
+                                    <option value="">Select...</option>
+                                    {regions.map((r) => (
+                                        <option key={r.regionId} value={r.regionId}>
+                                            {r.regionDescription}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                             </td>
-                            <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            className="ms-2"
-                                            onClick={handleCancel}
-                                        >
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => handleEdit(d)}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(d.territoryId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                            <td className="actions-col text-center">
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-
-                {editing && !updateKey && (
-                    <tr>
-                        <td>
-                            <input
-                                value={editing.territoryId}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, territoryId: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editing.territoryDescription}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, territoryDescription: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <Form.Select
-                                value={editing.regionId || ""}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, regionId: Number(e.target.value) })
-                                }
-                            >
-                                <option value="">Select region</option>
-                                {regions.map((r) => (
-                                    <option key={r.regionId} value={r.regionId}>
-                                        {r.regionDescription}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </td>
-                        <td>
-                            <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
-                    </tr>
-                )}
-                </tbody>
-            </Table>
+                    )}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
