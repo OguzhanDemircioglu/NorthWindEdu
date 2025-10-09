@@ -127,137 +127,168 @@ export default function ShipperList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Shippers</h3>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
+                <h3>Shippers</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allData });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                <div className="d-flex align-items-center">
+                    <Form className="d-flex" onSubmit={handleSearch}>
+                        <Form.Control
+                            type="text"
+                            placeholder="Search"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ maxWidth: "200px", marginRight: "10px" }}
+                        />
+                        <Button type="submit" variant="info">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="ms-2"
+                            onClick={() => {
+                                setSearchText("");
+                                dispatch({ type: "SET_ALL", payload: allData });
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRotateRight} />
+                        </Button>
+                    </Form>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </div>
+            </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Company Name</th>
-                    <th>Phone</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editing && !updateKey && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        <td>-</td>
-                        <td>
-                            <input
-                                value={editing.companyName}
-                                onChange={(e) =>
-                                    handleChange("companyName", e.target.value)
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                type="tel"
-                                placeholder="0xxx-xxx-xx-xx"
-                                value={editing.phone}
-                                onChange={(e) => handleChange("phone", e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editing)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="id-col">ID</th>
+                        <th>Company Name</th>
+                        <th>Phone</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-
-                {shippers.map((shipper) => {
-                    const isEditing = updateKey === shipper.shipperId;
-                    return (
-                        <tr key={shipper.shipperId}>
-                            <td>{shipper.shipperId}</td>
+                    </thead>
+                    <tbody>
+                    {editing && !updateKey && (
+                        <tr>
+                            <td className="id-col text-center">-</td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.companyName}
-                                        onChange={(e) => setEditing({ ...editing, companyName: e.target.value })}
-                                    />
-                                ) : (
-                                    shipper.companyName
-                                )}
+                                <input
+                                    value={editing.companyName}
+                                    onChange={(e) =>
+                                        handleChange("companyName", e.target.value)
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        type="tel"
-                                        placeholder="0xxx-xxx-xx-xx"
-                                        value={editing.phone}
-                                        onChange={(e) => handleChange("phone", e.target.value)}
-                                    />
-                                ) : (
-                                    formatPhone(shipper.phone)
-                                )}
+                                <input
+                                    type="tel"
+                                    placeholder="0xxx-xxx-xx-xx"
+                                    value={editing.phone}
+                                    onChange={(e) => handleChange("phone", e.target.value)}
+                                    style={{ width: '100%' }}
+                                />
                             </td>
-                            <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}>
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(shipper)}>
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button variant="danger" size="sm" onClick={() => handleDelete(shipper.shipperId)}>
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                            <td className="actions-col text-center">
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {shippers.map((shipper) => {
+                        const isEditing = updateKey === shipper.shipperId;
+                        return (
+                            <tr key={shipper.shipperId}>
+                                <td className="id-col text-center">{shipper.shipperId}</td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            value={editing.companyName}
+                                            onChange={(e) => handleChange("companyName", e.target.value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        shipper.companyName
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            type="tel"
+                                            placeholder="0xxx-xxx-xx-xx"
+                                            value={editing.phone}
+                                            onChange={(e) => handleChange("phone", e.target.value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        formatPhone(shipper.phone)
+                                    )}
+                                </td>
+                                <td className="actions-col text-center">
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editing)}
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleEdit(shipper)}
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(shipper.shipperId)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
