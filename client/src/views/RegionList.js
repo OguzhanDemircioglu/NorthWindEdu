@@ -92,112 +92,134 @@ export default function RegionList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Regions</h3>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
+                <h3 className="me-2">Regions</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allData });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                <div className="d-flex align-items-center">
+                    <Form className="d-flex" onSubmit={handleSearch}>
+                        <Form.Control
+                            type="text"
+                            placeholder={`Search`}
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ maxWidth: "200px", marginRight: "10px" }}
+                        />
+                        <Button type="submit" variant="info">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="ms-2"
+                            onClick={() => {
+                                setSearchText("");
+                                dispatch({ type: "SET_ALL", payload: allData });
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRotateRight} />
+                        </Button>
+                    </Form>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </div>
+            </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editing && !updateKey && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        <td>-</td>
-                        <td>
-                            <input
-                                value={editing.regionDescription}
-                                onChange={(e) => setEditing({ ...editing, regionDescription: e.target.value })}
-                            />
-                        </td>
-                        <td>
-                            <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}>
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="id-col">ID</th>
+                        <th>Description</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-
-                {regions.map((r, i) => {
-                    const isEditing = updateKey === r.regionId;
-                    return (
-                        <tr key={i}>
-                            <td>{r.regionId}</td>
+                    </thead>
+                    <tbody>
+                    {editing && !updateKey && (
+                        <tr>
+                            <td className="text-center">{"-"}</td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.regionDescription}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, regionDescription: e.target.value })
-                                        }
-                                    />
-                                ) : (
-                                    r.regionDescription
-                                )}
+                                <input
+                                    value={editing.regionDescription}
+                                    onChange={(e) => setEditing({ ...editing, regionDescription: e.target.value })}
+                                    style={{ width: '100%' }}
+                                />
                             </td>
-                            <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}>
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => handleEdit(r)}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button variant="danger" size="sm" onClick={() => handleDelete(r.regionId)}>
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                            <td className="text-center">
+                                <Button variant="primary"
+                                        size="sm"
+                                        className="btn-compact me-2"
+                                        onClick={() => handleSave(editing)}>
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button variant="secondary"
+                                        size="sm"
+                                        className="btn-compact"
+                                        onClick={handleCancel}>
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {regions.map((r, i) => {
+                        const isEditing = updateKey === r.regionId;
+                        return (
+                            <tr key={i}>
+                                <td className="text-center">{r.regionId}</td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            value={editing.regionDescription}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, regionDescription: e.target.value })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        r.regionDescription
+                                    )}
+                                </td>
+                                <td className="text-center">
+                                    {isEditing ? (
+                                        <>
+                                            <Button variant="primary"
+                                                    size="sm" className="btn-compact me-2"
+                                                    onClick={() => handleSave(editing)}>
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button variant="secondary"
+                                                    size="sm"
+                                                    className="btn-compact"
+                                                    onClick={handleCancel}>
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleEdit(r)}
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button variant="danger"
+                                                    size="sm"
+                                                    className="btn-compact"
+                                                    onClick={() => handleDelete(r.regionId)}>
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
