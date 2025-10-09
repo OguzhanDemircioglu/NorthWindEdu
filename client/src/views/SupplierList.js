@@ -142,7 +142,7 @@ export default function SupplierList() {
     };
 
     const fields = [
-        { label: "ID", key: "supplierId" },
+        { label: "ID", key: "supplierId", className: "id-col text-center" },
         { label: "Company", key: "companyName" },
         { label: "Contact", key: "contactName" },
         { label: "Title", key: "contactTitle" },
@@ -153,132 +153,161 @@ export default function SupplierList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Suppliers</h3>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
+                <h3 className="me-2">Suppliers</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allData });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                <div className="d-flex align-items-center">
+                    <Form className="d-flex" onSubmit={handleSearch}>
+                        <Form.Control
+                            type="text"
+                            placeholder="Search"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ maxWidth: "200px", marginRight: "10px" }}
+                        />
+                        <Button type="submit" variant="info">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="ms-2"
+                            onClick={() => {
+                                setSearchText("");
+                                dispatch({ type: "SET_ALL", payload: allData });
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRotateRight} />
+                        </Button>
+                    </Form>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </div>
+            </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    {fields.map((f) => (
-                        <th key={f.key}>{f.label}</th>
-                    ))}
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editing && !updateKey && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
                         {fields.map((f) => (
-                            <td key={f.key}>
-                                {f.key === "supplierId" ? (
-                                    "-"
-                                ) : (
-                                    <input
-                                        type="text"
-                                        value={editing[f.key] || ""}
-                                        placeholder={
-                                            f.key === "phone"
-                                                ? "0xxx-xxx-xx-xx"
-                                                : f.key === "postalCode"
-                                                    ? "12345"
-                                                    : ""
-                                        }
-                                        onChange={(e) => handleChange(f.key, e.target.value)}
-                                    />
-                                )}
-                            </td>
+                            <th key={f.key} className={f.className}>{f.label}</th>
                         ))}
-                        <td>
-                            <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}>
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="actions-col text-center">Actions</th>
                     </tr>
-                )}
-
-                {suppliers.map((supplier) => {
-                    const isEditing = updateKey === supplier.supplierId;
-                    return (
-                        <tr key={supplier.supplierId}>
+                    </thead>
+                    <tbody>
+                    {editing && !updateKey && (
+                        <tr>
                             {fields.map((f) => (
-                                <td key={f.key}>
-                                    {isEditing && f.key !== "supplierId" ? (
-                                        <input
-                                            type="text"
-                                            value={editing[f.key] || ""}
-                                            onChange={(e) => handleChange(f.key, e.target.value)}
-                                        />
-                                    ) : f.key === "phone" ? (
-                                        formatPhone(supplier[f.key])
+                                <td key={f.key} className={f.className}>
+                                    {f.key === "supplierId" ? (
+                                        "-"
                                     ) : (
-                                        supplier[f.key]
+                                        <input
+                                            type={["phone", "postalCode"].includes(f.key) ? "tel" : "text"}
+                                            value={editing[f.key] || ""}
+                                            placeholder={
+                                                f.key === "phone"
+                                                    ? "0xxx-xxx-xx-xx"
+                                                    : f.key === "postalCode"
+                                                        ? "12345"
+                                                        : ""
+                                            }
+                                            onChange={(e) => handleChange(f.key, e.target.value)}
+                                            style={{ width: '100%' }}
+                                        />
                                     )}
                                 </td>
                             ))}
-                            <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}>
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => handleEdit(supplier)}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(supplier.supplierId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                            <td className="actions-col text-center">
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {suppliers.map((supplier) => {
+                        const isEditing = updateKey === supplier.supplierId;
+                        return (
+                            <tr key={supplier.supplierId}>
+                                {fields.map((f) => (
+                                    <td key={f.key} className={f.className}>
+                                        {isEditing && f.key !== "supplierId" ? (
+                                            <input
+                                                type={["phone", "postalCode"].includes(f.key) ? "tel" : "text"}
+                                                value={editing[f.key] || ""}
+                                                onChange={(e) => handleChange(f.key, e.target.value)}
+                                                style={{ width: '100%' }}
+                                            />
+                                        ) : f.key === "phone" ? (
+                                            formatPhone(supplier[f.key])
+                                        ) : (
+                                            supplier[f.key]
+                                        )}
+                                    </td>
+                                ))}
+                                <td className="actions-col text-center">
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editing)}
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleEdit(supplier)}
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(supplier.supplierId)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

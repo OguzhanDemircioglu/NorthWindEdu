@@ -128,7 +128,7 @@ export default function ShipperList() {
     return (
         <div style={{ padding: "20px" }}>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
-                <h3>Shippers</h3>
+                <h3 className="me-2">Shippers</h3>
 
                 <div className="d-flex align-items-center">
                     <Form className="d-flex" onSubmit={handleSearch}>
