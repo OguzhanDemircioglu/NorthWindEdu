@@ -132,354 +132,387 @@ export default function ProductList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Products</h3>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
+                <h3 className="me-2">Products</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
+                <div className="d-flex align-items-center">
+                    <Form className="d-flex" onSubmit={handleSearch}>
+                        <Form.Control
+                            type="text"
+                            placeholder="Search"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ maxWidth: "250px", marginRight: "10px" }}
+                        />
 
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allData });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                        <Button type="submit" variant="info">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="ms-2"
+                            onClick={() => {
+                                setSearchText("");
+                                dispatch({ type: "SET_ALL", payload: allData });
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRotateRight} />
+                        </Button>
+                    </Form>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </div>
+            </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Supplier</th>
-                    <th>Category</th>
-                    <th>Quantity per Unit</th>
-                    <th>Unit Price</th>
-                    <th>Units In Stock</th>
-                    <th>Units In Order</th>
-                    <th>Reorder Level</th>
-                    <th>Discontinued</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editing && !updateKey && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        <td>-</td>
-                        <td>
-                            <input
-                                value={editing.productName}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, productName: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <Form.Select
-                                value={editing.supplierId || ""}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, supplierId: Number(e.target.value) })
-                                }
-                            >
-                                <option value="">Select supplier</option>
-                                {suppliers.map((s) => (
-                                    <option key={s.supplierId} value={s.supplierId}>
-                                        {s.companyName}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </td>
-                        <td>
-                            <Form.Select
-                                value={editing.categoryId || ""}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, categoryId: Number(e.target.value) })
-                                }
-                            >
-                                <option value="">Select category</option>
-                                {categories.map((c) => (
-                                    <option key={c.categoryId} value={c.categoryId}>
-                                        {c.categoryName}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </td>
-                        <td>
-                            <input
-                                value={editing.quantityPerUnit}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, quantityPerUnit: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editing.unitPrice}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, unitPrice: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editing.unitsInStock}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, unitsInStock: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editing.unitsInOrder}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, unitsInOrder: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editing.reorderLevel}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, reorderLevel: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <Form.Select
-                                value={editing.discontinued}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, discontinued: Number(e.target.value) })
-                                }
-                            >
-                                <option value={0}>0</option>
-                                <option value={1}>1</option>
-                            </Form.Select>
-                        </td>
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editing)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="id-col">ID</th>
+                        <th>Name</th>
+                        <th>Supplier</th>
+                        <th>Category</th>
+                        <th>Quantity per Unit</th>
+                        <th>Unit Price</th>
+                        <th>Units In Stock</th>
+                        <th>Units In Order</th>
+                        <th>Reorder Level</th>
+                        <th>Discontinued</th>
+                        <th className="actions-col" style={{ width: '80px' }}>Actions</th>
                     </tr>
-                )}
-
-                {products.map((d, i) => {
-                    const isEditing = updateKey === d.productId;
-                    return (
-                        <tr key={i}>
-                            <td>{d.productId}</td>
+                    </thead>
+                    <tbody>
+                    {editing && !updateKey && (
+                        <tr>
+                            <td>-</td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.productName}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, productName: e.target.value })
-                                        }
-                                    />
-                                ) : (
-                                    d.productName
-                                )}
+                                <input
+                                    value={editing.productName}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, productName: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <Form.Select
-                                        value={editing.supplierId || ""}
-                                        onChange={(e) =>
-                                            setEditing({
-                                                ...editing,
-                                                supplierId: Number(e.target.value),
-                                            })
-                                        }
-                                    >
-                                        <option value="">Select supplier</option>
-                                        {suppliers.map((s) => (
-                                            <option key={s.supplierId} value={s.supplierId}>
-                                                {s.companyName}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                ) : (
-                                    getSupplierName(d.supplierId)
-                                )}
+                                <Form.Select
+                                    value={editing.supplierId || ""}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, supplierId: Number(e.target.value) })
+                                    }
+                                    style={{ width: '100%', minWidth: '100px' }}
+                                >
+                                    <option value="">Select</option>
+                                    {suppliers.map((s) => (
+                                        <option key={s.supplierId} value={s.supplierId}>
+                                            {s.companyName}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <Form.Select
-                                        value={editing.categoryId || ""}
-                                        onChange={(e) =>
-                                            setEditing({
-                                                ...editing,
-                                                categoryId: Number(e.target.value),
-                                            })
-                                        }
-                                    >
-                                        <option value="">Select category</option>
-                                        {categories.map((c) => (
-                                            <option key={c.categoryId} value={c.categoryId}>
-                                                {c.categoryName}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                ) : (
-                                    getCategoryName(d.categoryId)
-                                )}
+                                <Form.Select
+                                    value={editing.categoryId || ""}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, categoryId: Number(e.target.value) })
+                                    }
+                                    style={{ width: '100%', minWidth: '80px' }}
+                                >
+                                    <option value="">Select</option>
+                                    {categories.map((c) => (
+                                        <option key={c.categoryId} value={c.categoryId}>
+                                            {c.categoryName}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.quantityPerUnit}
-                                        onChange={(e) =>
-                                            setEditing({
-                                                ...editing,
-                                                quantityPerUnit: e.target.value,
-                                            })
-                                        }
-                                    />
-                                ) : (
-                                    d.quantityPerUnit
-                                )}
+                                <input
+                                    value={editing.quantityPerUnit}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, quantityPerUnit: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.unitPrice}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, unitPrice: e.target.value })
-                                        }
-                                    />
-                                ) : (
-                                    d.unitPrice
-                                )}
+                                <input
+                                    type="number"
+                                    value={editing.unitPrice}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, unitPrice: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.unitsInStock}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, unitsInStock: e.target.value })
-                                        }
-                                    />
-                                ) : (
-                                    d.unitsInStock
-                                )}
+                                <input
+                                    type="number"
+                                    value={editing.unitsInStock}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, unitsInStock: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.unitsInOrder}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, unitsInOrder: e.target.value })
-                                        }
-                                    />
-                                ) : (
-                                    d.unitsInOrder
-                                )}
+                                <input
+                                    type="number"
+                                    value={editing.unitsInOrder}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, unitsInOrder: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.reorderLevel}
-                                        onChange={(e) =>
-                                            setEditing({
-                                                ...editing,
-                                                reorderLevel: e.target.value,
-                                            })
-                                        }
-                                    />
-                                ) : (
-                                    d.reorderLevel
-                                )}
+                                <input
+                                    type="number"
+                                    value={editing.reorderLevel}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, reorderLevel: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <Form.Select
-                                        value={editing.discontinued}
-                                        onChange={(e) =>
-                                            setEditing({
-                                                ...editing,
-                                                discontinued: Number(e.target.value),
-                                            })
-                                        }
-                                    >
-                                        <option value={0}>0</option>
-                                        <option value={1}>1</option>
-                                    </Form.Select>
-                                ) : (
-                                    d.discontinued
-                                )}
+                                <Form.Select
+                                    value={editing.discontinued}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, discontinued: Number(e.target.value) })
+                                    }
+                                >
+                                    <option value={0}>0</option>
+                                    <option value={1}>1</option>
+                                </Form.Select>
                             </td>
-                            <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button
-                                            variant="primary"
-                                            size="sm"
-                                            onClick={() => handleSave(editing)}
-                                        >
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            className="ms-2"
-                                            onClick={handleCancel}
-                                        >
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => handleEdit(d)}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(d.productId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                            <td className="text-center">
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {products.map((d, i) => {
+                        const isEditing = updateKey === d.productId;
+                        return (
+                            <tr key={i}>
+                                <td>{d.productId}</td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            value={editing.productName}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, productName: e.target.value })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        d.productName
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <Form.Select
+                                            value={editing.supplierId || ""}
+                                            onChange={(e) =>
+                                                setEditing({
+                                                    ...editing,
+                                                    supplierId: Number(e.target.value),
+                                                })
+                                            }
+                                            style={{ width: '100%', minWidth: '100px' }}
+                                        >
+                                            <option value="">Select supplier</option>
+                                            {suppliers.map((s) => (
+                                                <option key={s.supplierId} value={s.supplierId}>
+                                                    {s.companyName}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    ) : (
+                                        getSupplierName(d.supplierId)
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <Form.Select
+                                            value={editing.categoryId || ""}
+                                            onChange={(e) =>
+                                                setEditing({
+                                                    ...editing,
+                                                    categoryId: Number(e.target.value),
+                                                })
+                                            }
+                                            style={{ width: '100%', minWidth: '80px' }}
+                                        >
+                                            <option value="">Select category</option>
+                                            {categories.map((c) => (
+                                                <option key={c.categoryId} value={c.categoryId}>
+                                                    {c.categoryName}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    ) : (
+                                        getCategoryName(d.categoryId)
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            value={editing.quantityPerUnit}
+                                            onChange={(e) =>
+                                                setEditing({
+                                                    ...editing,
+                                                    quantityPerUnit: e.target.value,
+                                                })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        d.quantityPerUnit
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            type="number"
+                                            value={editing.unitPrice}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, unitPrice: e.target.value })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        d.unitPrice
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            type="number"
+                                            value={editing.unitsInStock}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, unitsInStock: e.target.value })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        d.unitsInStock
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            type="number"
+                                            value={editing.unitsInOrder}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, unitsInOrder: e.target.value })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        d.unitsInOrder
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            type="number"
+                                            value={editing.reorderLevel}
+                                            onChange={(e) =>
+                                                setEditing({
+                                                    ...editing,
+                                                    reorderLevel: e.target.value,
+                                                })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        d.reorderLevel
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <Form.Select
+                                            value={editing.discontinued}
+                                            onChange={(e) =>
+                                                setEditing({
+                                                    ...editing,
+                                                    discontinued: Number(e.target.value),
+                                                })
+                                            }
+                                        >
+                                            <option value={0}>0</option>
+                                            <option value={1}>1</option>
+                                        </Form.Select>
+                                    ) : (
+                                        d.discontinued
+                                    )}
+                                </td>
+                                <td className="text-center">
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editing)}
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleEdit(d)}
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(d.productId)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
