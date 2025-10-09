@@ -148,214 +148,225 @@ export default function OrderList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Orders</h3>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
+                <h3 className="me-2">Orders</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "200px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allOrders });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                <div className="d-flex align-items-center">
+                    <Form className="d-flex" onSubmit={handleSearch}>
+                        <Form.Control
+                            type="text"
+                            placeholder={`Search`}
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ maxWidth: "200px", marginRight: "10px" }}
+                        />
+                        <Button type="submit" variant="info">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="ms-2"
+                            onClick={() => {
+                                setSearchText("");
+                                dispatch({ type: "SET_ALL", payload: allOrders });
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRotateRight} />
+                        </Button>
+                    </Form>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </div>
+            </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Customer</th>
-                    <th>Employee</th>
-                    <th>Shipper</th>
-                    <th>Order Date</th>
-                    <th>Required Date</th>
-                    <th>Shipped Date</th>
-                    <th>Freight</th>
-                    <th>Ship Name</th>
-                    <th>Details</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editingOrder && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        <td>{editingOrder.orderId || "-"}</td>
-                        {[
-                            "customerId",
-                            "employeeId",
-                            "shipViaId",
-                            "orderDate",
-                            "requiredDate",
-                            "shippedDate",
-                            "freight",
-                            "shipName",
-                        ].map((field) => (
-                            <td key={field}>
-                                {["orderDate", "requiredDate", "shippedDate"].includes(field) ? (
-                                    <input
-                                        type="date"
-                                        value={editingOrder[field] || ""}
-                                        onChange={(e) => handleChange(field, e.target.value)}
-                                    />
-                                ) : ["customerId", "employeeId", "shipViaId"].includes(
-                                    field
-                                ) ? (
-                                    <Form.Select
-                                        value={editingOrder[field] || ""}
-                                        onChange={(e) =>
-                                            handleChange(field, e.target.value)
-                                        }
-                                    >
-                                        <option value="">Select...</option>
-                                        {field === "customerId" &&
-                                            customers.map((c) => (
-                                                <option
-                                                    key={c.customerId}
-                                                    value={c.customerId}
-                                                >
-                                                    {c.contactName || c.customerId}
-                                                </option>
-                                            ))}
-                                        {field === "employeeId" &&
-                                            employees.map((e) => (
-                                                <option
-                                                    key={e.employeeId}
-                                                    value={e.employeeId}
-                                                >
-                                                    {e.firstName} {e.lastName}
-                                                </option>
-                                            ))}
-                                        {field === "shipViaId" &&
-                                            shippers.map((s) => (
-                                                <option
-                                                    key={s.shipperId}
-                                                    value={s.shipperId}
-                                                >
-                                                    {s.companyName}
-                                                </option>
-                                            ))}
-                                    </Form.Select>
-                                ) : (
-                                    <input
-                                        value={editingOrder[field] || ""}
-                                        onChange={(e) => handleChange(field, e.target.value)}
-                                    />
-                                )}
-                            </td>
-                        ))}
-                        <td>-</td>
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editingOrder)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="id-col">ID</th>
+                        <th>Customer</th>
+                        <th>Employee</th>
+                        <th>Shipper</th>
+                        <th>Order Date</th>
+                        <th>Required Date</th>
+                        <th>Shipped Date</th>
+                        <th>Freight</th>
+                        <th>Ship Name</th>
+                        <th>Details</th>
+                        <th className="actions-col text-center" style={{ width: '80px' }}>Actions</th>
                     </tr>
-                )}
-
-                {orders.map((order) => {
-                    const isEditing = updateId === order.orderId;
-                    if (isEditing) return null;
-
-                    return (
-                        <tr key={order.orderId}>
-                            <td>{order.orderId}</td>
-                            <td>
-                                {customers.find(
-                                    (c) => c.customerId === order.customerId
-                                )?.contactName || order.customerId}
-                            </td>
-                            <td>
-                                {employees.find(
-                                    (e) => e.employeeId === order.employeeId
-                                )
-                                    ? `${
-                                        employees.find(
-                                            (e) =>
-                                                e.employeeId === order.employeeId
-                                        ).firstName
-                                    } ${
-                                        employees.find(
-                                            (e) =>
-                                                e.employeeId === order.employeeId
-                                        ).lastName
-                                    }`
-                                    : order.employeeId}
-                            </td>
-                            <td>
-                                {shippers.find(
-                                    (s) => s.shipperId === order.shipViaId
-                                )?.companyName || order.shipViaId}
-                            </td>
-                            <td>{formatDate(order.orderDate)}</td>
-                            <td>{formatDate(order.requiredDate)}</td>
-                            <td>{formatDate(order.shippedDate)}</td>
-                            <td>{order.freight}</td>
-                            <td>{order.shipName}</td>
-                            <td>
-                                {order.orderDetails && order.orderDetails.length > 0 ? (
-                                    <ul style={{ paddingLeft: "15px", margin: 0 }}>
-                                        {order.orderDetails.map((detail, index) => (
-                                            <li key={index}>
-                                                Product ID: {detail.productId}, Quantity: {detail.quantity},
-                                                Price: {detail.unitPrice}, Discount: {detail.discount}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    "-"
-                                )}
-                            </td>
-                            <td>
+                    </thead>
+                    <tbody>
+                    {editingOrder && (
+                        <tr>
+                            <td>{editingOrder.orderId || "-"}</td>
+                            {[
+                                "customerId",
+                                "employeeId",
+                                "shipViaId",
+                                "orderDate",
+                                "requiredDate",
+                                "shippedDate",
+                                "freight",
+                                "shipName",
+                            ].map((field) => (
+                                <td key={field}>
+                                    {["orderDate", "requiredDate", "shippedDate"].includes(field) ? (
+                                        <input
+                                            type="date"
+                                            value={formatDate(editingOrder[field]) || ""}
+                                            onChange={(e) => handleChange(field, e.target.value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : ["customerId", "employeeId", "shipViaId"].includes(
+                                        field
+                                    ) ? (
+                                        <Form.Select
+                                            value={editingOrder[field] || ""}
+                                            onChange={(e) =>
+                                                handleChange(field, e.target.value)
+                                            }
+                                            style={{ minWidth: '100px' }}
+                                        >
+                                            <option value="">Select...</option>
+                                            {field === "customerId" &&
+                                                customers.map((c) => (
+                                                    <option
+                                                        key={c.customerId}
+                                                        value={c.customerId}
+                                                    >
+                                                        {c.contactName || c.customerId}
+                                                    </option>
+                                                ))}
+                                            {field === "employeeId" &&
+                                                employees.map((e) => (
+                                                    <option
+                                                        key={e.employeeId}
+                                                        value={e.employeeId}
+                                                    >
+                                                        {e.firstName} {e.lastName}
+                                                    </option>
+                                                ))}
+                                            {field === "shipViaId" &&
+                                                shippers.map((s) => (
+                                                    <option
+                                                        key={s.shipperId}
+                                                        value={s.shipperId}
+                                                    >
+                                                        {s.companyName}
+                                                    </option>
+                                                ))}
+                                        </Form.Select>
+                                    ) : (
+                                        <input
+                                            value={editingOrder[field] || ""}
+                                            onChange={(e) => handleChange(field, e.target.value)}
+                                            style={{ width: '100%', minWidth: '50px' }}
+                                        />
+                                    )}
+                                </td>
+                            ))}
+                            <td>-</td>
+                            <td className="text-center">
                                 <Button
-                                    variant="warning"
+                                    variant="primary"
                                     size="sm"
-                                    className="me-2"
-                                    onClick={() => handleEdit(order)}
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editingOrder)}
                                 >
-                                    <FontAwesomeIcon icon={faArrowsRotate} />
+                                    <FontAwesomeIcon icon={faSave} />
                                 </Button>
                                 <Button
-                                    variant="danger"
+                                    variant="secondary"
                                     size="sm"
-                                    onClick={() => handleDelete(order.orderId)}
+                                    className="btn-compact"
+                                    onClick={handleCancel}
                                 >
-                                    <FontAwesomeIcon icon={faTrash} />
+                                    <FontAwesomeIcon icon={faCancel} />
                                 </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {orders.map((order) => {
+                        const isEditing = updateId === order.orderId;
+                        if (isEditing) return null;
+
+                        return (
+                            <tr key={order.orderId}>
+                                <td>{order.orderId}</td>
+                                <td>
+                                    {customers.find(
+                                        (c) => c.customerId === order.customerId
+                                    )?.contactName || order.customerId}
+                                </td>
+                                <td>
+                                    {employees.find(
+                                        (e) => e.employeeId === order.employeeId
+                                    )
+                                        ? `${
+                                            employees.find(
+                                                (e) =>
+                                                    e.employeeId === order.employeeId
+                                            ).firstName
+                                        } ${
+                                            employees.find(
+                                                (e) =>
+                                                    e.employeeId === order.employeeId
+                                            ).lastName
+                                        }`
+                                        : order.employeeId}
+                                </td>
+                                <td>
+                                    {shippers.find(
+                                        (s) => s.shipperId === order.shipViaId
+                                    )?.companyName || order.shipViaId}
+                                </td>
+                                <td>{formatDate(order.orderDate)}</td>
+                                <td>{formatDate(order.requiredDate)}</td>
+                                <td>{formatDate(order.shippedDate)}</td>
+                                <td>{order.freight}</td>
+                                <td>{order.shipName}</td>
+                                <td>
+                                    {order.orderDetails && order.orderDetails.length > 0 ? (
+                                        <ul style={{ paddingLeft: "15px", margin: 0 }}>
+                                            {order.orderDetails.map((detail, index) => (
+                                                <li key={index}>
+                                                    Product ID: {detail.productId}, Qty: {detail.quantity},
+                                                    Price: ${detail.unitPrice}, Disc: {detail.discount}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        "-"
+                                    )}
+                                </td>
+                                <td className="text-center">
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        className="btn-compact me-2"
+                                        onClick={() => handleEdit(order)}
+                                    >
+                                        <FontAwesomeIcon icon={faArrowsRotate} />
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        className="btn-compact"
+                                        onClick={() => handleDelete(order.orderId)}
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
