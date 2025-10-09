@@ -173,7 +173,7 @@ button {
 .table-compact {
     max-width: 700px;
     width: 100%;
-    table-layout: fixed;
+    table-layout: auto;
     margin-top: 30px;
 }
 
@@ -185,12 +185,12 @@ button {
 
 .table-compact th.actions-col,
 .table-compact td.actions-col {
-    width: 90px;
+    width: 80px;
     text-align: center;
 }
 
-.table-compact th:not(.id-col):not(.actions-col),
-.table-compact td:not(.id-col):not(.actions-col) {
+.table-compact td:not(.id-col):not(.actions-col),
+.table-compact th:not(.id-col):not(.actions-col) {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
