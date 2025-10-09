@@ -97,117 +97,126 @@ export default function EmployeeTerritoryList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Employee Territories</h3>
+            <div
+                style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", maxWidth: "800px", margin: "0 auto 20px auto",}}>
+                <h3 className="me-2">Employee Territories</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "200px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        setTerritories(allData);
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                <div className="d-flex align-items-center">
+                    <Form className="d-flex" onSubmit={handleSearch}>
+                        <Form.Control
+                            type="text"
+                            placeholder={`Search`}
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ maxWidth: "200px", marginRight: "10px" }}
+                        />
+                        <Button type="submit" variant="info">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="ms-2"
+                            onClick={() => {
+                                setSearchText("");
+                                setTerritories(allData);
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRotateRight} />
+                        </Button>
+                    </Form>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </div>
+            </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>Employee</th>
-                    <th>Territory</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editing && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        <td>
-                            <Form.Select
-                                value={editing.employeeId || ""}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, employeeId: e.target.value })
-                                }
-                            >
-                                <option value="">Select employee...</option>
-                                {employees.map((emp) => (
-                                    <option key={emp.employeeId} value={emp.employeeId}>
-                                        {emp.firstName} {emp.lastName}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </td>
-                        <td>
-                            <Form.Select
-                                value={editing.territoryId || ""}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, territoryId: e.target.value })
-                                }
-                            >
-                                <option value="">Select territory...</option>
-                                {territoryOptions.map((t) => (
-                                    <option key={t.territoryId} value={t.territoryId}>
-                                        {t.territoryDescription}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </td>
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editing)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={() => setEditing(null)}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th>Employee</th>
+                        <th>Territory</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-                {territories.map((t, i) => {
-                    const emp = employees.find((e) => e.employeeId === t.employeeId);
-                    const terr = territoryOptions.find((x) => x.territoryId === t.territoryId);
-
-                    return (
-                        <tr key={i}>
-                            <td>{emp ? `${emp.firstName} ${emp.lastName}` : t.employeeId}</td>
-                            <td>{terr ? terr.territoryDescription : t.territoryId}</td>
+                    </thead>
+                    <tbody>
+                    {editing && (
+                        <tr>
+                            <td>
+                                <Form.Select
+                                    value={editing.employeeId || ""}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, employeeId: e.target.value })
+                                    }
+                                >
+                                    <option value="">Select employee...</option>
+                                    {employees.map((emp) => (
+                                        <option key={emp.employeeId} value={emp.employeeId}>
+                                            {emp.firstName} {emp.lastName}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </td>
+                            <td>
+                                <Form.Select
+                                    value={editing.territoryId || ""}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, territoryId: e.target.value })
+                                    }
+                                >
+                                    <option value="">Select territory...</option>
+                                    {territoryOptions.map((t) => (
+                                        <option key={t.territoryId} value={t.territoryId}>
+                                            {t.territoryDescription}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </td>
                             <td>
                                 <Button
-                                    variant="danger"
+                                    variant="primary"
                                     size="sm"
-                                    onClick={() => handleDelete(t.employeeId, t.territoryId)}
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
                                 >
-                                    <FontAwesomeIcon icon={faTrash} />
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={() => setEditing(null)}
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
                                 </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+                    {territories.map((t, i) => {
+                        const emp = employees.find((e) => e.employeeId === t.employeeId);
+                        const terr = territoryOptions.find((x) => x.territoryId === t.territoryId);
+
+                        return (
+                            <tr key={i}>
+                                <td>{emp ? `${emp.firstName} ${emp.lastName}` : t.employeeId}</td>
+                                <td>{terr ? terr.territoryDescription : t.territoryId}</td>
+                                <td style={{ textAlign: 'center' }}>
+                                <Button
+                                        variant="danger"
+                                        size="sm"
+                                        className="btn-compact"
+                                        onClick={() => handleDelete(t.employeeId, t.territoryId)}
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
