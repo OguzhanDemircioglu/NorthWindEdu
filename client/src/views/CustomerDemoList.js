@@ -105,10 +105,8 @@ export default function CustomerDemoList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                <h3>
-                    Customer Demos
-                </h3>
+            <div style={{display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "20px"}}>
+                <h3 className="me-2">Customer Demos</h3>
 
                 <Form
                     className="d-flex justify-content-center mt-3"
@@ -144,89 +142,97 @@ export default function CustomerDemoList() {
                 </Form>
             </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>Customer</th>
-                    <th>Customer Type</th>
-                    <th className="actions-col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editing && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table
+                    striped bordered hover
+                    className="table-compact"
+                    style={{ maxWidth: "800px" }}
+                >
+                    <thead>
                     <tr>
-                        <td>
-                            <Form.Select
-                                value={editing.customerId || ""}
-                                onChange={(e) => handleChange("customerId", e.target.value)}
-                            >
-                                <option value="">Select...</option>
-                                {customers.map((c) => (
-                                    <option key={c.customerId} value={c.customerId}>
-                                        {c.contactName}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </td>
-                        <td>
-                            <Form.Select
-                                value={editing.customerTypeId || ""}
-                                onChange={(e) => handleChange("customerTypeId", e.target.value)}
-                            >
-                                <option value="">Select...</option>
-                                {demographics.map((d) => (
-                                    <option key={d.customerTypeId} value={d.customerTypeId}>
-                                        {d.customerDesc}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </td>
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editing)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th>Customer</th>
+                        <th>Customer Type</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-
-                {demos.map((demo, i) => {
-                    const customer = customers.find((c) => c.customerId === demo.customerId);
-                    const demographic = demographics.find(
-                        (d) => d.customerTypeId === demo.customerTypeId
-                    );
-
-                    return (
-                        <tr key={i}>
-                            <td>{customer?.contactName || demo.customerId}</td>
-                            <td>{demographic?.customerDesc || demo.customerTypeId}</td>
+                    </thead>
+                    <tbody>
+                    {editing && (
+                        <tr>
+                            <td>
+                                <Form.Select
+                                    value={editing.customerId || ""}
+                                    onChange={(e) => handleChange("customerId", e.target.value)}
+                                >
+                                    <option value="">Select...</option>
+                                    {customers.map((c) => (
+                                        <option key={c.customerId} value={c.customerId}>
+                                            {c.contactName}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </td>
+                            <td>
+                                <Form.Select
+                                    value={editing.customerTypeId || ""}
+                                    onChange={(e) => handleChange("customerTypeId", e.target.value)}
+                                >
+                                    <option value="">Select...</option>
+                                    {demographics.map((d) => (
+                                        <option key={d.customerTypeId} value={d.customerTypeId}>
+                                            {d.customerDesc}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </td>
                             <td>
                                 <Button
-                                    variant="danger"
+                                    variant="primary"
                                     size="sm"
-                                    onClick={() =>
-                                        handleDelete(demo.customerId, demo.customerTypeId)
-                                    }
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
                                 >
-                                    <FontAwesomeIcon icon={faTrash} />
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
                                 </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {demos.map((demo, i) => {
+                        const customer = customers.find((c) => c.customerId === demo.customerId);
+                        const demographic = demographics.find(
+                            (d) => d.customerTypeId === demo.customerTypeId
+                        );
+
+                        return (
+                            <tr key={i}>
+                                <td>{customer?.contactName || demo.customerId}</td>
+                                <td>{demographic?.customerDesc || demo.customerTypeId}</td>
+                                <td>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        className="btn-compact"
+                                        onClick={() =>
+                                            handleDelete(demo.customerId, demo.customerTypeId)
+                                        }
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
