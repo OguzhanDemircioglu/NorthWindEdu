@@ -137,185 +137,193 @@ export default function OrderDetailList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Order Details</h3>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
+                <h3 className="me-2">Order Details</h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "200px", marginRight: "10px" }}
-                />
+                <div className="d-flex align-items-center">
+                    <Form className="d-flex" onSubmit={handleSearch}>
+                        <Form.Control
+                            type="text"
+                            placeholder={`Search`}
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            style={{ maxWidth: "200px", marginRight: "10px" }}
+                        />
 
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allDetails });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                        <Button type="submit" variant="info">
+                            <FontAwesomeIcon icon={faSearch} />
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="ms-2"
+                            onClick={() => {
+                                setSearchText("");
+                                dispatch({ type: "SET_ALL", payload: allDetails });
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faRotateRight} />
+                        </Button>
+                    </Form>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </div>
+            </div>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>Order</th>
-                    <th>Product</th>
-                    <th>Unit Price</th>
-                    <th>Quantity</th>
-                    <th>Discount</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editingDetail && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        <td>
-                            <Form.Select
-                                value={editingDetail.orderId || ""}
-                                onChange={(e) => handleChange("orderId", e.target.value)}
-                            >
-                                <option value="">Select order...</option>
-                                {orders.map((o) => {
-                                    const customer = customers.find(
-                                        (c) => c.customerId === o.customerId
-                                    );
-                                    const employee = employees.find(
-                                        (e) => e.employeeId === o.employeeId
-                                    );
-                                    const shipper = shippers.find(
-                                        (s) => s.shipperId === o.shipViaId
-                                    );
-                                    return (
-                                        <option key={o.orderId} value={o.orderId}>
-                                            {o.orderId} - {customer?.contactName || "Unknown"}, {employee?.firstName || "Unknown"} {employee?.lastName || "Unknown"}, {shipper?.companyName || "Unknown"}
-                                        </option>
-                                    );
-                                })}
-                            </Form.Select>
-                        </td>
-
-                        <td>
-                            <Form.Select
-                                value={editingDetail.productId || ""}
-                                onChange={(e) => handleChange("productId", e.target.value)}
-                            >
-                                <option value="">Select product...</option>
-                                {products.map((p) => (
-                                    <option key={p.productId} value={p.productId}>
-                                        {p.productName}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </td>
-
-                        <td>
-                            <Form.Control
-                                type="number"
-                                value={editingDetail.unitPrice || ""}
-                                onChange={(e) => handleChange("unitPrice", e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <Form.Control
-                                type="number"
-                                value={editingDetail.quantity || ""}
-                                onChange={(e) => handleChange("quantity", e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <Form.Select
-                                value={editingDetail.discount || "0"}
-                                onChange={(e) => handleChange("discount", e.target.value)}
-                            >
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                            </Form.Select>
-                        </td>
-
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editingDetail)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th style={{ minWidth: '350px' }}>Order</th>
+                        <th>Product</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Discount</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-
-                {details.map((detail, i) => {
-                    const isEditing =
-                        updateKey &&
-                        updateKey.orderId === detail.orderId &&
-                        updateKey.productId === detail.productId;
-                    if (isEditing) return null;
-
-                    const order = orders.find((o) => o.orderId === detail.orderId);
-                    const customer = customers.find(
-                        (c) => c.customerId === order?.customerId
-                    );
-                    const employee = employees.find(
-                        (e) => e.employeeId === order?.employeeId
-                    );
-                    const shipper = shippers.find(
-                        (s) => s.shipperId === order?.shipViaId
-                    );
-                    const product = products.find(
-                        (p) => p.productId === detail.productId
-                    );
-
-                    return (
-                        <tr key={i}>
+                    </thead>
+                    <tbody>
+                    {editingDetail && (
+                        <tr>
                             <td>
-                                {order?.orderId} - {customer?.contactName || "Unknown"}, {employee?.firstName || "Unknown"} {employee?.lastName || "Unknown"}, {shipper?.companyName || "Unknown"}
-                            </td>
-                            <td>{product?.productName || detail.productId}</td>
-                            <td>{detail.unitPrice}</td>
-                            <td>{detail.quantity}</td>
-                            <td>{detail.discount}</td>
-                            <td>
-                                <Button
-                                    variant="warning"
-                                    size="sm"
-                                    className="me-2"
-                                    onClick={() => handleEdit(detail)}
+                                <Form.Select
+                                    value={editingDetail.orderId || ""}
+                                    onChange={(e) => handleChange("orderId", e.target.value)}
                                 >
-                                    <FontAwesomeIcon icon={faArrowsRotate} />
+                                    <option value="">Select...</option>
+                                    {orders.map((o) => {
+                                        const customer = customers.find(
+                                            (c) => c.customerId === o.customerId
+                                        );
+                                        const employee = employees.find(
+                                            (e) => e.employeeId === o.employeeId
+                                        );
+                                        const shipper = shippers.find(
+                                            (s) => s.shipperId === o.shipViaId
+                                        );
+                                        return (
+                                            <option key={o.orderId} value={o.orderId}>
+                                                {o.orderId} - {customer?.contactName || "Unknown"}, {employee?.firstName || "Unknown"} {employee?.lastName || "Unknown"}, {shipper?.companyName || "Unknown"}
+                                            </option>
+                                        );
+                                    })}
+                                </Form.Select>
+                            </td>
+
+                            <td>
+                                <Form.Select
+                                    value={editingDetail.productId || ""}
+                                    onChange={(e) => handleChange("productId", e.target.value)}
+                                >
+                                    <option value="">Select...</option>
+                                    {products.map((p) => (
+                                        <option key={p.productId} value={p.productId}>
+                                            {p.productName}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </td>
+
+                            <td>
+                                <Form.Control
+                                    type="number"
+                                    value={editingDetail.unitPrice || ""}
+                                    onChange={(e) => handleChange("unitPrice", e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <Form.Control
+                                    type="number"
+                                    value={editingDetail.quantity || ""}
+                                    onChange={(e) => handleChange("quantity", e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <Form.Select
+                                    value={editingDetail.discount || "0"}
+                                    onChange={(e) => handleChange("discount", e.target.value)}
+                                >
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </Form.Select>
+                            </td>
+
+                            <td className="text-center">
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editingDetail)}
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
                                 </Button>
                                 <Button
-                                    variant="danger"
+                                    variant="secondary"
                                     size="sm"
-                                    onClick={() => handleDelete(detail.orderId, detail.productId)}
+                                    className="btn-compact"
+                                    onClick={handleCancel}
                                 >
-                                    <FontAwesomeIcon icon={faTrash} />
+                                    <FontAwesomeIcon icon={faCancel} />
                                 </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {details.map((detail, i) => {
+                        const isEditing =
+                            updateKey &&
+                            updateKey.orderId === detail.orderId &&
+                            updateKey.productId === detail.productId;
+                        if (isEditing) return null;
+
+                        const order = orders.find((o) => o.orderId === detail.orderId);
+                        const customer = customers.find(
+                            (c) => c.customerId === order?.customerId
+                        );
+                        const employee = employees.find(
+                            (e) => e.employeeId === order?.employeeId
+                        );
+                        const shipper = shippers.find(
+                            (s) => s.shipperId === order?.shipViaId
+                        );
+                        const product = products.find(
+                            (p) => p.productId === detail.productId
+                        );
+
+                        return (
+                            <tr key={i}>
+                                <td>
+                                    {order?.orderId} - {customer?.contactName || "Unknown"}, {employee?.firstName || "Unknown"} {employee?.lastName || "Unknown"}, {shipper?.companyName || "Unknown"}
+                                </td>
+                                <td>{product?.productName || detail.productId}</td>
+                                <td>{detail.unitPrice}</td>
+                                <td>{detail.quantity}</td>
+                                <td>{detail.discount}</td>
+                                <td className="text-center">
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        className="btn-compact me-2"
+                                        onClick={() => handleEdit(detail)}
+                                    >
+                                        <FontAwesomeIcon icon={faArrowsRotate} />
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        className="btn-compact"
+                                        onClick={() => handleDelete(detail.orderId, detail.productId)}
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

@@ -97,8 +97,7 @@ export default function EmployeeTerritoryList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <div
-                style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", maxWidth: "800px", margin: "0 auto 20px auto",}}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
                 <h3 className="me-2">Employee Territories</h3>
 
                 <div className="d-flex align-items-center">
@@ -150,7 +149,7 @@ export default function EmployeeTerritoryList() {
                                         setEditing({ ...editing, employeeId: e.target.value })
                                     }
                                 >
-                                    <option value="">Select employee...</option>
+                                    <option value="">Select...</option>
                                     {employees.map((emp) => (
                                         <option key={emp.employeeId} value={emp.employeeId}>
                                             {emp.firstName} {emp.lastName}
@@ -165,7 +164,7 @@ export default function EmployeeTerritoryList() {
                                         setEditing({ ...editing, territoryId: e.target.value })
                                     }
                                 >
-                                    <option value="">Select territory...</option>
+                                    <option value="">Select...</option>
                                     {territoryOptions.map((t) => (
                                         <option key={t.territoryId} value={t.territoryId}>
                                             {t.territoryDescription}
