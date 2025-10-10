@@ -105,13 +105,12 @@ export default function CustomerDemoList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <div style={{display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "20px"}}>
-                <h3 className="me-2">Customer Demos</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    CUSTOMER DEMOS
+                </h3>
 
-                <Form
-                    className="d-flex justify-content-center mt-3"
-                    onSubmit={handleSearch}
-                >
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
                     <Form.Control
                         type="text"
                         placeholder="Search"

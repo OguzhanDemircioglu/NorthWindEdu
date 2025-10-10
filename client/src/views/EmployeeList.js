@@ -200,9 +200,11 @@ export default function EmployeeList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
-                <h3 className="me-2">Employees</h3>
-                <Form className="d-flex" onSubmit={handleSearch}>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    EMPLOYEES
+                </h3>
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
                     <Form.Control
                         type="text"
                         placeholder={`Search`}

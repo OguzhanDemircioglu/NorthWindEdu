@@ -132,38 +132,36 @@ export default function ProductList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px" }}>
-                <h3 className="me-2">Products</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    PRODUCTS
+                </h3>
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Search"
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "250px", marginRight: "10px" }}
+                    />
 
-                <div className="d-flex align-items-center">
-                    <Form className="d-flex" onSubmit={handleSearch}>
-                        <Form.Control
-                            type="text"
-                            placeholder="Search"
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
-                            style={{ maxWidth: "250px", marginRight: "10px" }}
-                        />
-
-                        <Button type="submit" variant="info">
-                            <FontAwesomeIcon icon={faSearch} />
-                        </Button>
-                        <Button
-                            variant="secondary"
-                            className="ms-2"
-                            onClick={() => {
-                                setSearchText("");
-                                dispatch({ type: "SET_ALL", payload: allData });
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faRotateRight} />
-                        </Button>
-                    </Form>
-
-                    <Button variant="success" className="ms-3" onClick={handleAdd}>
+                    <Button type="submit" variant="info">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            dispatch({ type: "SET_ALL", payload: allData });
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button variant="success" className="ms-2" onClick={handleAdd}>
                         <FontAwesomeIcon icon={faAdd} />
                     </Button>
-                </div>
+                </Form>
             </div>
 
             <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
