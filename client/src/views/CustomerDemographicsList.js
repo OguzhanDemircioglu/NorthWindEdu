@@ -4,6 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
 import {getAllCustomerDemographics, addCustomerDemographics, updateCustomerDemographics, deleteCustomerDemographics} from "../services/CustomerDemographicsService";
 
+const sortById = (data) => {
+    return data.slice().sort((a, b) => {
+        if (a.customerTypeId < b.customerTypeId) return -1;
+        if (a.customerTypeId > b.customerTypeId) return 1;
+        return 0;
+    });
+};
+
 export default function CustomerDemographicsList() {
     const [demographics, setDemographics] = useState([]);
     const [editing, setEditing] = useState(null);
@@ -14,8 +22,12 @@ export default function CustomerDemographicsList() {
     const loadData = async () => {
         try {
             const res = await getAllCustomerDemographics();
-            setDemographics(res.data || []);
-            setAllData(res.data || []);
+            const rawData = res.data || [];
+
+            const sortedData = sortById(rawData);
+
+            setDemographics(sortedData);
+            setAllData(rawData);
         } catch (e) {
             setDemographics([]);
         }
@@ -70,7 +82,7 @@ export default function CustomerDemographicsList() {
     const handleSearch = (e) => {
         e.preventDefault();
         if (!searchText) {
-            setDemographics(allData);
+            setDemographics(sortById(allData));
             return;
         }
         const filtered = allData.filter((d) =>
@@ -78,7 +90,7 @@ export default function CustomerDemographicsList() {
                 value?.toString().toLowerCase().includes(searchText.toLowerCase())
             )
         );
-        setDemographics(filtered);
+        setDemographics(sortById(filtered));
     };
 
     return (
@@ -104,7 +116,7 @@ export default function CustomerDemographicsList() {
                         className="ms-2"
                         onClick={() => {
                             setSearchText("");
-                            setDemographics(allData);
+                            setDemographics(sortById(allData));
                         }}
                     >
                         <FontAwesomeIcon icon={faRotateRight} />

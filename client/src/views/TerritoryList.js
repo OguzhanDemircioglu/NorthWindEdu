@@ -5,6 +5,14 @@ import {faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRigh
 import {getAllTerritories, addTerritory, updateTerritory, deleteTerritory} from "../services/TerritoryService";
 import { getAllRegions } from "../services/RegionService";
 
+const sortById = (data) => {
+    return data.slice().sort((a, b) => {
+        if (a.territoryId < b.territoryId) return -1;
+        if (a.territoryId > b.territoryId) return 1;
+        return 0;
+    });
+};
+
 export default function TerritoryList() {
     const [territories, setTerritories] = useState([]);
     const [regions, setRegions] = useState([]);
@@ -16,8 +24,10 @@ export default function TerritoryList() {
     const loadData = async () => {
         try {
             const res = await getAllTerritories();
-            setTerritories(res.data || []);
-            setAllData(res.data || []);
+            const rawData = res.data || [];
+
+            setTerritories(sortById(rawData));
+            setAllData(rawData);
         } catch (e) {
             setTerritories([]);
             setAllData([]);
@@ -84,7 +94,7 @@ export default function TerritoryList() {
     const handleSearch = (e) => {
         e.preventDefault();
         if (!searchText) {
-            setTerritories(allData);
+            setTerritories(sortById(allData));
             return;
         }
         const filtered = allData.filter((d) =>
@@ -92,7 +102,7 @@ export default function TerritoryList() {
                 value?.toString().toLowerCase().includes(searchText.toLowerCase())
             )
         );
-        setTerritories(filtered);
+        setTerritories(sortById(filtered));
     };
 
     const getRegionName = (id) =>
@@ -121,7 +131,7 @@ export default function TerritoryList() {
                         className="ms-2"
                         onClick={() => {
                             setSearchText("");
-                            setTerritories(allData);
+                            setTerritories(sortById(allData));
                         }}
                     >
                         <FontAwesomeIcon icon={faRotateRight} />

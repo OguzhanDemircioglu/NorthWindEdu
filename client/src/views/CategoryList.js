@@ -6,10 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialState = [];
 
+const sortById = (data) => {
+    return data.sort((a, b) => a.categoryId - b.categoryId);
+};
+
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return action.payload;
+            return sortById(action.payload || []);
         default:
             return state;
     }

@@ -6,10 +6,14 @@ import {getAllShippers, addShipper, updateShipper, deleteShipper} from "../servi
 
 const initialState = [];
 
+const sortById = (data) => {
+    return data.sort((a, b) => a.shipViaId - b.shipViaId);
+};
+
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return action.payload || [];
+            return sortById(action.payload || []);
         default:
             return state;
     }
