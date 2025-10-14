@@ -29,7 +29,7 @@ export default function CustomerList() {
     const [allCustomers, setAllCustomers] = useState([]);
     const [searchText, setSearchText] = useState("");
 
-    const allowedFields = [
+    const allFields = [
         "customerId",
         "companyName",
         "contactName",
@@ -37,12 +37,17 @@ export default function CustomerList() {
         "phone",
     ];
 
+    const nonIdFields = allFields.filter(f => f !== "customerId");
+
+    const fieldHeaders = ["ID", "Company", "Contact", "Title", "Phone"];
+
+
     const loadCustomers = async () => {
         try {
             const response = await getCustomers();
             const filtered = response.data.map((c) => {
                 const obj = {};
-                allowedFields.forEach((f) => (obj[f] = c[f]));
+                allFields.forEach((f) => (obj[f] = c[f]));
                 return obj;
             });
             setAllCustomers(filtered);
@@ -135,6 +140,20 @@ export default function CustomerList() {
         dispatch({ type: "SET_ALL", payload: filtered });
     };
 
+    const getTableHeaders = () => {
+        let headers = [];
+
+        if (editingCustomer) {
+            headers = fieldHeaders;
+        } else {
+            headers = fieldHeaders.filter(h => h !== "ID");
+        }
+
+        headers.push("Actions");
+        return headers;
+    };
+
+
     return (
         <div style={{ padding: "20px" }}>
             <div style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -173,25 +192,34 @@ export default function CustomerList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Company</th>
-                        <th>Contact</th>
-                        <th>Title</th>
-                        <th>Phone</th>
-                        <th className="actions-col">Actions</th>
+                        {getTableHeaders().map((header) => (
+                            <th
+                                key={header}
+                                className={header === "Actions" ? "actions-col" : ""}
+                            >
+                                {header}
+                            </th>
+                        ))}
                     </tr>
                     </thead>
                     <tbody>
                     {editingCustomer && !updateId && (
                         <tr>
-                            {allowedFields.map((field) => (
+                            <td key="customerId" style={{ width: '75px' }}>
+                                <input
+                                    value={editingCustomer["customerId"] || ""}
+                                    onChange={(e) => handleChange("customerId", e.target.value)}
+                                    style={{ width: '100%', maxWidth: '75px' }}
+                                />
+                            </td>
+                            {nonIdFields.map((field) => (
                                 <td key={field}>
                                     <input
-                                        type={field === "phone" || field === "postalCode" ? "tel" : "text"}
+                                        type={field === "phone" ? "tel" : "text"}
                                         value={editingCustomer[field] || ""}
-                                        placeholder={field === "phone" ? "0xxx-xxx-xx-xx"
-                                            : field === "postalCode" ? "12345" :""}
+                                        placeholder={field === "phone" ? "0xxx-xxx-xx-xx" : ""}
                                         onChange={(e) => handleChange(field, e.target.value)}
+                                        style={{ width: '100%' }}
                                     />
                                 </td>
                             ))}
@@ -218,69 +246,67 @@ export default function CustomerList() {
 
                     {customers.map((customer) => {
                         const isEditing = updateId === customer.customerId;
-                        return (
-                            <tr key={customer.customerId}>
-                                {allowedFields.map((field) => (
-                                    <td key={field}>
-                                        {isEditing ? (
-                                            <input
-                                                type={field === "phone" || field === "postalCode" ? "tel" : "text"}
-                                                value={editingCustomer[field] || ""}
-                                                onChange={(e) => handleChange(field, e.target.value)}
-                                            />
-                                        ) : field === "phone" ? (
-                                            formatPhone(customer[field])
-                                        ) : (
-                                            customer[field]
-                                        )}
-                                    </td>
-                                ))}
-                                <td>
+
+                        const rowCells = [];
+
+                        if (isEditing) {
+                            rowCells.push(
+                                <td key="customerId" style={{ width: '75px' }}>
+                                    <input
+                                        value={editingCustomer.customerId}
+                                        disabled
+                                        style={{ width: '100%', maxWidth: '75px' }}
+                                    />
+                                </td>
+                            );
+                        } else if (editingCustomer) {
+                            rowCells.push(<td key="empty-id-cell" style={{ width: '50px' }}></td>);
+                        }
+
+                        nonIdFields.forEach((field) => {
+                            rowCells.push(
+                                <td key={field}>
                                     {isEditing ? (
-                                        <>
-                                            <Button
-                                                variant="primary"
-                                                size="sm"
-                                                className="btn-compact me-2"
-                                                onClick={() => handleSave(editingCustomer)}
-                                            >
-                                                <FontAwesomeIcon icon={faSave} />
-                                            </Button>
-                                            <Button
-                                                variant="secondary"
-                                                size="sm"
-                                                className="btn-compact"
-                                                onClick={handleCancel}
-                                            >
-                                                <FontAwesomeIcon icon={faCancel} />
-                                            </Button>
-                                        </>
+                                        <input
+                                            type={field === "phone" ? "tel" : "text"}
+                                            value={editingCustomer[field] || ""}
+                                            onChange={(e) => handleChange(field, e.target.value)}
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : field === "phone" ? (
+                                        formatPhone(customer[field])
                                     ) : (
-                                        <>
-                                            <Button
-                                                variant="warning"
-                                                size="sm"
-                                                className="btn-compact me-2"
-                                                onClick={() => {
-                                                    setUpdateId(customer.customerId);
-                                                    setEditingCustomer({ ...customer });
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faArrowsRotate} />
-                                            </Button>
-                                            <Button
-                                                variant="danger"
-                                                size="sm"
-                                                className="btn-compact"
-                                                onClick={() => handleDelete(customer.customerId)}
-                                            >
-                                                <FontAwesomeIcon icon={faTrash} />
-                                            </Button>
-                                        </>
+                                        customer[field]
                                     )}
                                 </td>
-                            </tr>
+                            );
+                        });
+
+                        rowCells.push(
+                            <td key="actions-cell">
+                                {isEditing ? (
+                                    <>
+                                        <Button variant="primary" size="sm" className="btn-compact me-2" onClick={() => handleSave(editingCustomer)}>
+                                            <FontAwesomeIcon icon={faSave} />
+                                        </Button>
+                                        <Button variant="secondary" size="sm" className="btn-compact" onClick={handleCancel}>
+                                            <FontAwesomeIcon icon={faCancel} />
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button variant="warning" size="sm" className="btn-compact me-2" onClick={() => { setUpdateId(customer.customerId); setEditingCustomer({ ...customer }); }}>
+                                            <FontAwesomeIcon icon={faArrowsRotate} />
+                                        </Button>
+                                        <Button variant="danger" size="sm" className="btn-compact" onClick={() => handleDelete(customer.customerId)}>
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </Button>
+                                    </>
+                                )}
+                            </td>
                         );
+
+                        return <tr key={customer.customerId}>{rowCells}</tr>;
                     })}
                     </tbody>
                 </Table>
