@@ -118,7 +118,7 @@ export default function CustomerDemoList() {
                         onChange={(e) => setSearchText(e.target.value)}
                         style={{ maxWidth: "250px", marginRight: "10px" }}
                     />
-                    <Button type="submit" variant="info">
+                    <Button type="submit" variant="info" title="Search">
                         <FontAwesomeIcon icon={faSearch} />
                     </Button>
                     <Button
@@ -128,6 +128,7 @@ export default function CustomerDemoList() {
                             setSearchText("");
                             dispatch({ type: "SET_ALL", payload: allData });
                         }}
+                        title="Reset"
                     >
                         <FontAwesomeIcon icon={faRotateRight} />
                     </Button>
@@ -135,6 +136,7 @@ export default function CustomerDemoList() {
                         variant="success"
                         className="ms-2"
                         onClick={handleAdd}
+                        title="Add"
                     >
                         <FontAwesomeIcon icon={faAdd} />
                     </Button>
@@ -189,6 +191,7 @@ export default function CustomerDemoList() {
                                     size="sm"
                                     className="btn-compact me-2"
                                     onClick={() => handleSave(editing)}
+                                    title="Save"
                                 >
                                     <FontAwesomeIcon icon={faSave} />
                                 </Button>
@@ -197,6 +200,7 @@ export default function CustomerDemoList() {
                                     size="sm"
                                     className="btn-compact"
                                     onClick={handleCancel}
+                                    title="Cancel"
                                 >
                                     <FontAwesomeIcon icon={faCancel} />
                                 </Button>
@@ -222,6 +226,7 @@ export default function CustomerDemoList() {
                                         onClick={() =>
                                             handleDelete(demo.customerId, demo.customerTypeId)
                                         }
+                                        title="Delete"
                                     >
                                         <FontAwesomeIcon icon={faTrash} />
                                     </Button>

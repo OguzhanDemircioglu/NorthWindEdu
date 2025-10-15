@@ -169,7 +169,7 @@ export default function CustomerList() {
                         onChange={(e) => setSearchText(e.target.value)}
                         style={{ maxWidth: "250px", marginRight: "10px" }}
                     />
-                    <Button type="submit" variant="info">
+                    <Button type="submit" variant="info" title="Search">
                         <FontAwesomeIcon icon={faSearch} />
                     </Button>
                     <Button
@@ -179,10 +179,11 @@ export default function CustomerList() {
                             setSearchText("");
                             dispatch({ type: "SET_ALL", payload: allCustomers });
                         }}
+                        title="Reset"
                     >
                         <FontAwesomeIcon icon={faRotateRight} />
                     </Button>
-                    <Button variant="success" className="ms-2" onClick={handleAdd}>
+                    <Button variant="success" className="ms-2" onClick={handleAdd} title="Add">
                         <FontAwesomeIcon icon={faAdd} />
                     </Button>
                 </Form>
@@ -229,6 +230,7 @@ export default function CustomerList() {
                                     size="sm"
                                     className="btn-compact me-2"
                                     onClick={() => handleSave(editingCustomer)}
+                                    title="Save"
                                 >
                                     <FontAwesomeIcon icon={faSave} />
                                 </Button>
@@ -237,6 +239,7 @@ export default function CustomerList() {
                                     size="sm"
                                     className="btn-compact"
                                     onClick={handleCancel}
+                                    title="Cancel"
                                 >
                                     <FontAwesomeIcon icon={faCancel} />
                                 </Button>
@@ -286,19 +289,19 @@ export default function CustomerList() {
                             <td key="actions-cell">
                                 {isEditing ? (
                                     <>
-                                        <Button variant="primary" size="sm" className="btn-compact me-2" onClick={() => handleSave(editingCustomer)}>
+                                        <Button variant="primary" size="sm" className="btn-compact me-2" onClick={() => handleSave(editingCustomer)} title="Save">
                                             <FontAwesomeIcon icon={faSave} />
                                         </Button>
-                                        <Button variant="secondary" size="sm" className="btn-compact" onClick={handleCancel}>
+                                        <Button variant="secondary" size="sm" className="btn-compact" onClick={handleCancel} title="Cancel">
                                             <FontAwesomeIcon icon={faCancel} />
                                         </Button>
                                     </>
                                 ) : (
                                     <>
-                                        <Button variant="warning" size="sm" className="btn-compact me-2" onClick={() => { setUpdateId(customer.customerId); setEditingCustomer({ ...customer }); }}>
+                                        <Button variant="warning" size="sm" className="btn-compact me-2" onClick={() => { setUpdateId(customer.customerId); setEditingCustomer({ ...customer }); }} title="Update">
                                             <FontAwesomeIcon icon={faArrowsRotate} />
                                         </Button>
-                                        <Button variant="danger" size="sm" className="btn-compact" onClick={() => handleDelete(customer.customerId)}>
+                                        <Button variant="danger" size="sm" className="btn-compact" onClick={() => handleDelete(customer.customerId)} title="Delete">
                                             <FontAwesomeIcon icon={faTrash} />
                                         </Button>
                                     </>

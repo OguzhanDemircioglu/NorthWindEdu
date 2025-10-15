@@ -108,7 +108,7 @@ export default function RegionList() {
                         onChange={(e) => setSearchText(e.target.value)}
                         style={{ maxWidth: "200px", marginRight: "10px" }}
                     />
-                    <Button type="submit" variant="info">
+                    <Button type="submit" variant="info" title="Search">
                         <FontAwesomeIcon icon={faSearch} />
                     </Button>
                     <Button
@@ -118,10 +118,11 @@ export default function RegionList() {
                             setSearchText("");
                             dispatch({ type: "SET_ALL", payload: allData });
                         }}
+                        title="Reset"
                     >
                         <FontAwesomeIcon icon={faRotateRight} />
                     </Button>
-                    <Button variant="success" className="ms-2" onClick={handleAdd}>
+                    <Button variant="success" className="ms-2" onClick={handleAdd} title="Add">
                         <FontAwesomeIcon icon={faAdd} />
                     </Button>
                 </Form>
@@ -148,16 +149,22 @@ export default function RegionList() {
                                 />
                             </td>
                             <td className="text-center">
-                                <Button variant="primary"
-                                        size="sm"
-                                        className="btn-compact me-2"
-                                        onClick={() => handleSave(editing)}>
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                    title="Save"
+                                >
                                     <FontAwesomeIcon icon={faSave} />
                                 </Button>
-                                <Button variant="secondary"
-                                        size="sm"
-                                        className="btn-compact"
-                                        onClick={handleCancel}>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                    title="Cancel"
+                                >
                                     <FontAwesomeIcon icon={faCancel} />
                                 </Button>
                             </td>
@@ -185,15 +192,21 @@ export default function RegionList() {
                                 <td className="text-center">
                                     {isEditing ? (
                                         <>
-                                            <Button variant="primary"
-                                                    size="sm" className="btn-compact me-2"
-                                                    onClick={() => handleSave(editing)}>
+                                            <Button
+                                                variant="primary"
+                                                size="sm" className="btn-compact me-2"
+                                                onClick={() => handleSave(editing)}
+                                                title="Save"
+                                            >
                                                 <FontAwesomeIcon icon={faSave} />
                                             </Button>
-                                            <Button variant="secondary"
-                                                    size="sm"
-                                                    className="btn-compact"
-                                                    onClick={handleCancel}>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                                title="Cancel"
+                                            >
                                                 <FontAwesomeIcon icon={faCancel} />
                                             </Button>
                                         </>
@@ -204,13 +217,17 @@ export default function RegionList() {
                                                 size="sm"
                                                 className="btn-compact me-2"
                                                 onClick={() => handleEdit(r)}
+                                                title="Update"
                                             >
                                                 <FontAwesomeIcon icon={faArrowsRotate} />
                                             </Button>
-                                            <Button variant="danger"
-                                                    size="sm"
-                                                    className="btn-compact"
-                                                    onClick={() => handleDelete(r.regionId)}>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(r.regionId)}
+                                                title="Delete"
+                                            >
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </Button>
                                         </>

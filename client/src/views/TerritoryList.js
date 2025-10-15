@@ -123,7 +123,7 @@ export default function TerritoryList() {
                         style={{ maxWidth: "200px", marginRight: "10px" }}
                     />
 
-                    <Button type="submit" variant="info">
+                    <Button type="submit" variant="info" title="Search">
                         <FontAwesomeIcon icon={faSearch} />
                     </Button>
                     <Button
@@ -133,10 +133,11 @@ export default function TerritoryList() {
                             setSearchText("");
                             setTerritories(sortById(allData));
                         }}
+                        title="Reset"
                     >
                         <FontAwesomeIcon icon={faRotateRight} />
                     </Button>
-                    <Button variant="success" className="ms-2" onClick={handleAdd}>
+                    <Button variant="success" className="ms-2" onClick={handleAdd} title="Add">
                         <FontAwesomeIcon icon={faAdd} />
                     </Button>
                 </Form>
@@ -146,7 +147,7 @@ export default function TerritoryList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th className="id-col">Territory ID</th>
+                        <th className="id-col">ID</th>
                         <th>Description</th>
                         <th>Region</th>
                         <th className="actions-col">Actions</th>
@@ -205,6 +206,7 @@ export default function TerritoryList() {
                                                 size="sm"
                                                 className="btn-compact me-2"
                                                 onClick={() => handleSave(editing)}
+                                                title="Save"
                                             >
                                                 <FontAwesomeIcon icon={faSave} />
                                             </Button>
@@ -213,6 +215,7 @@ export default function TerritoryList() {
                                                 size="sm"
                                                 className="btn-compact"
                                                 onClick={handleCancel}
+                                                title="Cancel"
                                             >
                                                 <FontAwesomeIcon icon={faCancel} />
                                             </Button>
@@ -224,6 +227,7 @@ export default function TerritoryList() {
                                                 size="sm"
                                                 className="btn-compact me-2"
                                                 onClick={() => handleEdit(d)}
+                                                title="Update"
                                             >
                                                 <FontAwesomeIcon icon={faArrowsRotate} />
                                             </Button>
@@ -232,6 +236,7 @@ export default function TerritoryList() {
                                                 size="sm"
                                                 className="btn-compact"
                                                 onClick={() => handleDelete(d.territoryId)}
+                                                title="Delete"
                                             >
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </Button>
@@ -284,6 +289,7 @@ export default function TerritoryList() {
                                     size="sm"
                                     className="btn-compact me-2"
                                     onClick={() => handleSave(editing)}
+                                    title="Save"
                                 >
                                     <FontAwesomeIcon icon={faSave} />
                                 </Button>
@@ -292,6 +298,7 @@ export default function TerritoryList() {
                                     size="sm"
                                     className="btn-compact"
                                     onClick={handleCancel}
+                                    title="Cancel"
                                 >
                                     <FontAwesomeIcon icon={faCancel} />
                                 </Button>

@@ -216,7 +216,7 @@ export default function EmployeeList() {
                         onChange={(e) => setSearchText(e.target.value)}
                         style={{ maxWidth: "200px", marginRight: "10px" }}
                     />
-                    <Button type="submit" variant="info">
+                    <Button type="submit" variant="info" title="Search">
                         <FontAwesomeIcon icon={faSearch} />
                     </Button>
                     <Button
@@ -226,10 +226,11 @@ export default function EmployeeList() {
                             setSearchText("");
                             dispatch({ type: "SET_ALL", payload: allEmployees });
                         }}
+                        title="Reset"
                     >
                         <FontAwesomeIcon icon={faRotateRight} />
                     </Button>
-                <Button variant="success" className="ms-3" onClick={handleAdd}>
+                <Button variant="success" className="ms-3" onClick={handleAdd} title="Add">
                     <FontAwesomeIcon icon={faAdd} />
                 </Button>
                 </Form>
@@ -293,6 +294,7 @@ export default function EmployeeList() {
                                     size="sm"
                                     className="btn-compact me-2"
                                     onClick={() => handleSave(editingEmployee)}
+                                    title="Save"
                                 >
                                     <FontAwesomeIcon icon={faSave} />
                                 </Button>
@@ -301,6 +303,7 @@ export default function EmployeeList() {
                                     size="sm"
                                     className="btn-compact"
                                     onClick={handleCancel}
+                                    title="Cancel"
                                 >
                                     <FontAwesomeIcon icon={faCancel} />
                                 </Button>
@@ -360,6 +363,7 @@ export default function EmployeeList() {
                                                 size="sm"
                                                 className="btn-compact me-2"
                                                 onClick={() => handleSave(editingEmployee)}
+                                                title="Save"
                                             >
                                                 <FontAwesomeIcon icon={faSave} />
                                             </Button>
@@ -368,6 +372,7 @@ export default function EmployeeList() {
                                                 size="sm"
                                                 className="btn-compact"
                                                 onClick={handleCancel}
+                                                title="Cancel"
                                             >
                                                 <FontAwesomeIcon icon={faCancel} />
                                             </Button>
@@ -379,6 +384,7 @@ export default function EmployeeList() {
                                                 size="sm"
                                                 className="btn-compact me-2"
                                                 onClick={() => handleUpdate(employee)}
+                                                title="Update"
                                             >
                                                 <FontAwesomeIcon icon={faArrowsRotate} />
                                             </Button>
@@ -387,6 +393,7 @@ export default function EmployeeList() {
                                                 size="sm"
                                                 className="btn-compact"
                                                 onClick={() => handleDelete(employee.employeeId)}
+                                                title="Delete"
                                             >
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </Button>
