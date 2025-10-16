@@ -55,10 +55,10 @@ class EmployeeTerritorySrvImplTest {
 
     @BeforeEach
     void setUp() {
-        saveRequest.setTerritoryId("Terr1");
+        saveRequest.setTerritoryId(1L);
         saveRequest.setEmployeeId(1L);
 
-        updateRequest.setTerritoryId("Terr2");
+        updateRequest.setTerritoryId(2L);
         updateRequest.setEmployeeId(2L);
 
         employeeTerritoryMapper = new EmployeeTerritoryMapper(employeeTerritoryRepository,  employeeService, territoryService);
@@ -128,7 +128,7 @@ class EmployeeTerritorySrvImplTest {
 
         @Test
         void isEmployeeTerritoryNotFound() {
-            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, "Terr1");
+            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, 1L);
 
             when(employeeTerritoryRepository.findEmployeeTerritoryByEmployeeTerritoryId(employeeTerritoryId)).thenReturn(Optional.empty());
 
@@ -167,9 +167,9 @@ class EmployeeTerritorySrvImplTest {
             employee.setEmployeeId(1L);
 
             Territory territory = new Territory();
-            territory.setTerritoryId("Terr1");
+            territory.setTerritoryId(1L);
 
-            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, "Terr1");
+            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, 1L);
 
             EmployeeTerritory employeeTerritory = new EmployeeTerritory();
             employeeTerritory.setEmployeeTerritoryId(employeeTerritoryId);
@@ -182,7 +182,7 @@ class EmployeeTerritorySrvImplTest {
 
             assertThat(response).isNotNull();
             assertThat(response.getData().getEmployeeId()).isEqualTo(1L);
-            assertThat(response.getData().getTerritoryId()).isEqualTo("Terr1");
+            assertThat(response.getData().getTerritoryId()).isEqualTo(1L);
         }
     }
 
@@ -191,9 +191,9 @@ class EmployeeTerritorySrvImplTest {
 
         @Test
         void isEmployeeTerritoryNotFound() {
-            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, "Terr1");
+            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, 1L);
 
-            when(employeeTerritoryRepository.existsByEmployeeTerritoryId_EmployeeIdAndEmployeeTerritoryId_TerritoryId(1L, "Terr1")).thenReturn(false);
+            when(employeeTerritoryRepository.existsByEmployeeTerritoryId_EmployeeIdAndEmployeeTerritoryId_TerritoryId(1L, 1L)).thenReturn(false);
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
@@ -205,9 +205,9 @@ class EmployeeTerritorySrvImplTest {
 
         @Test
         void isSuccess() {
-            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, "Terr1");
+            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, 1L);
 
-            when(employeeTerritoryRepository.existsByEmployeeTerritoryId_EmployeeIdAndEmployeeTerritoryId_TerritoryId(1L, "Terr1")).thenReturn(true);
+            when(employeeTerritoryRepository.existsByEmployeeTerritoryId_EmployeeIdAndEmployeeTerritoryId_TerritoryId(1L, 1L)).thenReturn(true);
 
             GenericResponse response = employeeTerritorySrv.deleteEmployeeTerritoryByEmployeeTerritoryId(employeeTerritoryId);
 

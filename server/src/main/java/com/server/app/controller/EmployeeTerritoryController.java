@@ -34,7 +34,7 @@ public class EmployeeTerritoryController {
     @GetMapping("/")
     public ResponseEntity<DataGenericResponse<EmployeeTerritoryDto>> get(
             @RequestParam Long employeeId,
-            @RequestParam String territoryId) {
+            @RequestParam Long territoryId) {
 
         EmployeeTerritoryId id = new EmployeeTerritoryId(employeeId, territoryId);
 
@@ -46,7 +46,7 @@ public class EmployeeTerritoryController {
     @DeleteMapping("/")
     public ResponseEntity<GenericResponse> delete(
             @RequestParam Long employeeId,
-            @RequestParam String territoryId) {
+            @RequestParam Long territoryId) {
         EmployeeTerritoryId id = new EmployeeTerritoryId(employeeId, territoryId);
         GenericResponse result = employeeTerritoryService.deleteEmployeeTerritoryByEmployeeTerritoryId(id);
         return ResponseEntity.ok(result);

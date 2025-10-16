@@ -7,13 +7,13 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TerritoryRepository extends JpaRepository<Territory, String> {
+public interface TerritoryRepository extends JpaRepository<Territory, Long> {
 
-    Optional<Territory> findTerritoryByTerritoryId(String id);
+    Optional<Territory> findTerritoryByTerritoryId(Long id);
 
-    void deleteTerritoryByTerritoryId(String id);
+    void deleteTerritoryByTerritoryId(Long id);
 
-    Territory getTerritoryByTerritoryId(String id);
+    Territory getTerritoryByTerritoryId(Long id);
 
-    boolean existsTerritoryByTerritoryId(String id);
+    boolean existsTerritoryByTerritoryId(Long id);
 }

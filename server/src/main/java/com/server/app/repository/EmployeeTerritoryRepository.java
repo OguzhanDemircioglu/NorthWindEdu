@@ -14,5 +14,5 @@ public interface EmployeeTerritoryRepository extends JpaRepository<EmployeeTerri
 
     void deleteEmployeeTerritoryByEmployeeTerritoryId(EmployeeTerritoryId id);
 
-    boolean existsByEmployeeTerritoryId_EmployeeIdAndEmployeeTerritoryId_TerritoryId(Long employeeId, String territoryId);
+    boolean existsByEmployeeTerritoryId_EmployeeIdAndEmployeeTerritoryId_TerritoryId(Long employeeId, Long territoryId);
 }

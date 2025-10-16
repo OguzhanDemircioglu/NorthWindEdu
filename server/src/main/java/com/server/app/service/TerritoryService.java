@@ -15,11 +15,11 @@ public interface TerritoryService {
 
     GenericResponse update(TerritoryUpdateRequest request);
 
-    DataGenericResponse<TerritoryDto> findTerritoryByTerritoryId(String id);
+    DataGenericResponse<TerritoryDto> findTerritoryByTerritoryId(Long id);
 
-    GenericResponse deleteTerritoryByTerritoryId(String id);
+    GenericResponse deleteTerritoryByTerritoryId(Long id);
 
     DataGenericResponse<List<TerritoryDto>> findAllTerritories();
 
-    Territory getTerritory(String id);
+    Territory getTerritory(Long id);
 }

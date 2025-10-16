@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EmployeeTerritoryUpdateRequest {
     private Long employeeId;
-    private String territoryId;
+    private Long territoryId;
 }

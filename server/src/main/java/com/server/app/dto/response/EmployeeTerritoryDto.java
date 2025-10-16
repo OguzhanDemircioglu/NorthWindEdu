@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EmployeeTerritoryDto {
     private Long employeeId;
-    private String territoryId;
+    private Long territoryId;
 }

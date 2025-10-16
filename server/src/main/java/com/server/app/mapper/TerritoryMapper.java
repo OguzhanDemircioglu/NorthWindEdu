@@ -33,7 +33,7 @@ public class TerritoryMapper {
     }
 
     public Territory toEntity(TerritoryUpdateRequest request) {
-        if (request.getTerritoryId() == null || request.getTerritoryId().isEmpty()) {
+        if (request.getTerritoryId() == null) {
             throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
         }
 
@@ -59,7 +59,6 @@ public class TerritoryMapper {
         Region region = regionService.getRegion(request.getRegionId());
 
         return Territory.builder()
-                .territoryId(request.getTerritoryId())
                 .territoryDescription(request.getTerritoryDescription())
                 .region(region)
                 .build();

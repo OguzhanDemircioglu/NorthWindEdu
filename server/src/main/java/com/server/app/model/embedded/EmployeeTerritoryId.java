@@ -13,5 +13,5 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class EmployeeTerritoryId implements Serializable {
     private Long employeeId;
-    private String territoryId;
+    private Long territoryId;
 }

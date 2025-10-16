@@ -51,7 +51,7 @@ export default function TerritoryList() {
 
     const handleAdd = () => {
         if (editing) return;
-        setEditing({ territoryId: "", territoryDescription: "", regionId: "" });
+        setEditing({ territoryId: null, territoryDescription: "", regionId: "" });
         setUpdateKey(null);
     };
 
@@ -159,11 +159,7 @@ export default function TerritoryList() {
                         return (
                             <tr key={i}>
                                 <td className="id-col text-center">
-                                    {isEditing ? (
-                                        <input value={editing.territoryId} disabled style={{ width: '100%' }}/>
-                                    ) : (
-                                        d.territoryId
-                                    )}
+                                    {d.territoryId}
                                 </td>
                                 <td>
                                     {isEditing ? (
@@ -249,14 +245,8 @@ export default function TerritoryList() {
 
                     {editing && !updateKey && (
                         <tr>
-                            <td className="id-col">
-                                <input
-                                    value={editing.territoryId}
-                                    onChange={(e) =>
-                                        setEditing({ ...editing, territoryId: e.target.value })
-                                    }
-                                    style={{ width: '100%' }}
-                                />
+                            <td className="id-col text-center">
+                                -
                             </td>
                             <td>
                                 <input

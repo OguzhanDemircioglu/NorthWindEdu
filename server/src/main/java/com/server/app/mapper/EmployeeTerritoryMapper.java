@@ -41,7 +41,7 @@ public class EmployeeTerritoryMapper {
 
     public EmployeeTerritory toEntity(EmployeeTerritoryUpdateRequest request) {
         if (request.getEmployeeId() == null || request.getEmployeeId() == 0 ||
-                request.getTerritoryId() == null || request.getTerritoryId().isEmpty()) {
+                request.getTerritoryId() == null || request.getTerritoryId() == 0) {
             throw new BusinessException(ResultMessages.ID_IS_NOT_DELIVERED);
         }
 
