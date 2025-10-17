@@ -55,10 +55,9 @@ class TerritoryControllerTest {
 
     @BeforeEach
     void setUp() {
-        saveRequest.setTerritoryId("Terr1");
         saveRequest.setTerritoryDescription("First Territory");
 
-        updateRequest.setTerritoryId("Terr2");
+        updateRequest.setTerritoryId(1L);
         updateRequest.setTerritoryDescription("Second Territory");
     }
 
@@ -189,15 +188,15 @@ class TerritoryControllerTest {
                     .data(territoryDto)
                     .build();
 
-            BDDMockito.given(territoryService.findTerritoryByTerritoryId("Terr1"))
+            BDDMockito.given(territoryService.findTerritoryByTerritoryId(1L))
                     .willReturn(mockResponse);
 
-            mockMvc.perform(get("/api/territories/{id}", "Terr1")
+            mockMvc.perform(get("/api/territories/{id}", 1L)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success", CoreMatchers.is(true)));
 
-            verify(territoryService, Mockito.times(1)).findTerritoryByTerritoryId("Terr1");
+            verify(territoryService, Mockito.times(1)).findTerritoryByTerritoryId(1L);
         }
     }
 
@@ -207,14 +206,14 @@ class TerritoryControllerTest {
         void isSuccess() throws Exception {
             GenericResponse mockResponse = GenericResponse.builder().message(ResultMessages.RECORD_DELETED).success(true).build();
 
-            BDDMockito.given(territoryService.deleteTerritoryByTerritoryId("Terr1"))
+            BDDMockito.given(territoryService.deleteTerritoryByTerritoryId(1L))
                     .willReturn(mockResponse);
 
-            mockMvc.perform(delete("/api/territories/{id}", "Terr1")
+            mockMvc.perform(delete("/api/territories/{id}", 1L)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
 
-            verify(territoryService, times(1)).deleteTerritoryByTerritoryId("Terr1");
+            verify(territoryService, times(1)).deleteTerritoryByTerritoryId(1L);
         }
     }
 

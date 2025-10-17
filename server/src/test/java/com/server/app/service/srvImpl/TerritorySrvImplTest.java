@@ -49,11 +49,10 @@ class TerritorySrvImplTest {
 
     @BeforeEach
     void setUp() {
-        saveRequest.setTerritoryId("Terr1");
         saveRequest.setTerritoryDescription("First Territory");
         saveRequest.setRegionId(1L);
 
-        updateRequest.setTerritoryId("Terr2");
+        updateRequest.setTerritoryId(1L);
         updateRequest.setTerritoryDescription("Second Territory");
         updateRequest.setRegionId(2L);
 
@@ -71,20 +70,6 @@ class TerritorySrvImplTest {
 
     @Nested
     class add {
-
-        @Test
-        void isEmptyId() {
-            saveRequest.setTerritoryId("");
-
-            BusinessException exception = assertThrows(
-                    BusinessException.class,
-                    () -> territorySrv.add(saveRequest)
-            );
-
-            assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.ID_IS_NOT_DELIVERED);
-        }
-
         @Test
         void isEmptyDescription() {
             saveRequest.setTerritoryDescription("");
@@ -99,22 +84,7 @@ class TerritorySrvImplTest {
         }
 
         @Test
-        void isInvalidId() {
-
-            saveRequest.setTerritoryId("t".repeat(21));
-
-            BusinessException exception = assertThrows(
-                    BusinessException.class,
-                    () -> territorySrv.add(saveRequest)
-            );
-
-            assertThat(exception.getMessage())
-                    .isEqualTo(ResultMessages.TERRITORY_ID_OUT_OF_RANGE);
-        }
-
-        @Test
         void isSuccess() {
-            saveRequest.setTerritoryId("Terr1");
             saveRequest.setTerritoryDescription("First Territory");
 
             Region region = new Region();
@@ -154,11 +124,11 @@ class TerritorySrvImplTest {
     class findTerritoryById {
         @Test
         void isTerritoryNotFound() {
-            when(territoryRepository.findTerritoryByTerritoryId("Terr1")).thenReturn(Optional.empty());
+            when(territoryRepository.findTerritoryByTerritoryId(1L)).thenReturn(Optional.empty());
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> territorySrv.findTerritoryByTerritoryId("Terr1")
+                    () -> territorySrv.findTerritoryByTerritoryId(1L)
             );
 
             assertThat(exception.getMessage()).isEqualTo(ResultMessages.TERRITORY_NOT_FOUND);
@@ -167,7 +137,7 @@ class TerritorySrvImplTest {
         @Test
         void isSuccess() {
             Territory territory = new Territory();
-            territory.setTerritoryId("Terr1");
+            territory.setTerritoryId(1L);
             territory.setTerritoryDescription("First Territory");
 
             when(territoryRepository.findTerritoryByTerritoryId(territory.getTerritoryId())).thenReturn(Optional.of(territory));
@@ -184,11 +154,11 @@ class TerritorySrvImplTest {
 
         @Test
         void isTerritoryNotFound() {
-            when(territoryRepository.existsTerritoryByTerritoryId("Terr1")).thenReturn(false);
+            when(territoryRepository.existsTerritoryByTerritoryId(1L)).thenReturn(false);
 
             BusinessException exception = assertThrows(
                     BusinessException.class,
-                    () -> territorySrv.deleteTerritoryByTerritoryId("Terr1")
+                    () -> territorySrv.deleteTerritoryByTerritoryId(1L)
             );
 
             assertThat(exception.getMessage()).isEqualTo(ResultMessages.RECORD_NOT_FOUND);
@@ -196,9 +166,9 @@ class TerritorySrvImplTest {
 
         @Test
         void isSuccess() {
-            when(territoryRepository.existsTerritoryByTerritoryId("Terr1")).thenReturn(true);
+            when(territoryRepository.existsTerritoryByTerritoryId(1L)).thenReturn(true);
 
-            GenericResponse response = territorySrv.deleteTerritoryByTerritoryId("Terr1");
+            GenericResponse response = territorySrv.deleteTerritoryByTerritoryId(1L);
 
             assertThat(response).isNotNull();
             assertThat(response.isSuccess()).isTrue();
@@ -212,11 +182,11 @@ class TerritorySrvImplTest {
         @Test
         void isSuccess() {
             Territory terr1 = new Territory();
-            terr1.setTerritoryId("Terr1");
+            terr1.setTerritoryId(1L);
             terr1.setTerritoryDescription("First Territory");
 
             Territory terr2 = new Territory();
-            terr2.setTerritoryId("Terr2");
+            terr2.setTerritoryId(2L);
             terr2.setTerritoryDescription("Second Territory");
 
             when(territoryRepository.findAll()).thenReturn(List.of(terr1, terr2));

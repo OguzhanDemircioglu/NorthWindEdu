@@ -2,10 +2,8 @@ package com.server.app.repository;
 
 import com.server.app.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,8 +18,6 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
 
     Order getOrderByOrderId(Long id);
 
-    @Modifying
-    @Transactional
-    @Query(value = "ALTER SEQUENCE order_seq RESTART WITH 1", nativeQuery = true)
-    void resetOrderSequence();
+    @Query("SELECT MAX(o.orderId) FROM Order o")
+    Long findMaxId();
 }

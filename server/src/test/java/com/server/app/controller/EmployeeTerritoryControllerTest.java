@@ -56,10 +56,10 @@ class EmployeeTerritoryControllerTest {
 
     @BeforeEach
     void setUp() {
-        saveRequest.setTerritoryId("Terr1");
+        saveRequest.setTerritoryId(1L);
         saveRequest.setEmployeeId(1L);
 
-        updateRequest.setTerritoryId("Terr2");
+        updateRequest.setTerritoryId(2L);
         updateRequest.setEmployeeId(2L);
     }
 
@@ -145,7 +145,7 @@ class EmployeeTerritoryControllerTest {
     class findById {
         @Test
         void isSuccess() throws Exception {
-            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, "Terr 1");
+            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, 1L);
             EmployeeTerritoryDto employeeTerritoryDto = new EmployeeTerritoryDto();
 
             DataGenericResponse<EmployeeTerritoryDto> mockResponse = DataGenericResponse.<EmployeeTerritoryDto>dataBuilder()
@@ -170,7 +170,7 @@ class EmployeeTerritoryControllerTest {
     class delete {
         @Test
         void isSuccess() throws Exception {
-            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, "Terr 1");
+            EmployeeTerritoryId employeeTerritoryId = new EmployeeTerritoryId(1L, 1L);
 
             GenericResponse mockResponse = GenericResponse.builder().message(ResultMessages.RECORD_DELETED).success(true).build();
 

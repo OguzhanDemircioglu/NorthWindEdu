@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class UsState {
 
     @Id
-    @SequenceGenerator(name = "state_seq", sequenceName = "state_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_seq")
     @Column(name = "state_id", nullable = false, updatable = false, unique = true)
     private Long stateId;
 

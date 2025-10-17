@@ -30,6 +30,10 @@ public class SupplierSrvImpl implements SupplierService {
     public GenericResponse add(SupplierSaveRequest request) {
         Supplier supplier = mapper.saveEntityFromRequest(request);
 
+        Long maxId = repository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        supplier.setSupplierId(newId);
+
         BusinessRules.validate(
                 checkSupplierForGeneralValidations(supplier),
                 checkAddressValidation(request.getAddress()),
@@ -90,10 +94,6 @@ public class SupplierSrvImpl implements SupplierService {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
         repository.deleteSupplierBySupplierId(supplierId);
-
-        if (repository.count() == 0) {
-            repository.resetSupplierSequence();
-        }
 
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }

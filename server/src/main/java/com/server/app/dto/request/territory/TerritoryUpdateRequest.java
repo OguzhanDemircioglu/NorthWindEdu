@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TerritoryUpdateRequest {
-    private String territoryId;
+    private Long territoryId;
     private String territoryDescription;
     private Long regionId;
 }

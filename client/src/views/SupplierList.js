@@ -19,6 +19,7 @@ import {
 
 const initialState = [];
 
+
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
@@ -62,11 +63,8 @@ export default function SupplierList() {
             companyName: "",
             contactName: "",
             contactTitle: "",
-            address: "",
             city: "",
-            region: "",
             postalCode: "",
-            country: "",
             phone: "",
         });
         setUpdateKey(null);
@@ -145,146 +143,177 @@ export default function SupplierList() {
     };
 
     const fields = [
-        { label: "ID", key: "supplierId" },
+        { label: "-", key: "supplierId", className: "id-col text-center" },
         { label: "Company", key: "companyName" },
         { label: "Contact", key: "contactName" },
         { label: "Title", key: "contactTitle" },
-        { label: "Address", key: "address" },
         { label: "City", key: "city" },
-        { label: "Region", key: "region" },
         { label: "Postal Code", key: "postalCode" },
-        { label: "Country", key: "country" },
         { label: "Phone", key: "phone" },
     ];
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Suppliers</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    SUPPLIERS
+                </h3>
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Search"
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "200px", marginRight: "10px" }}
+                    />
+                    <Button type="submit" variant="info" title="Search">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            dispatch({ type: "SET_ALL", payload: allData });
+                        }}
+                        title="Reset"
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button variant="success" className="ms-2" onClick={handleAdd} title="Add">
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </Form>
+            </div>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allData });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
-
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
-
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    {fields.map((f) => (
-                        <th key={f.key}>{f.label}</th>
-                    ))}
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editing && !updateKey && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
                         {fields.map((f) => (
-                            <td key={f.key}>
-                                {f.key === "supplierId" ? (
-                                    "-"
-                                ) : (
-                                    <input
-                                        type="text"
-                                        value={editing[f.key] || ""}
-                                        placeholder={
-                                            f.key === "phone"
-                                                ? "0xxx-xxx-xx-xx"
-                                                : f.key === "postalCode"
-                                                    ? "12345"
-                                                    : ""
-                                        }
-                                        onChange={(e) => handleChange(f.key, e.target.value)}
-                                    />
-                                )}
-                            </td>
+                            <th key={f.key} className={f.className}>{f.label}</th>
                         ))}
-                        <td>
-                            <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}>
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="actions-col text-center">Actions</th>
                     </tr>
-                )}
-
-                {suppliers.map((supplier) => {
-                    const isEditing = updateKey === supplier.supplierId;
-                    return (
-                        <tr key={supplier.supplierId}>
+                    </thead>
+                    <tbody>
+                    {editing && !updateKey && (
+                        <tr>
                             {fields.map((f) => (
-                                <td key={f.key}>
-                                    {isEditing && f.key !== "supplierId" ? (
-                                        <input
-                                            type="text"
-                                            value={editing[f.key] || ""}
-                                            onChange={(e) => handleChange(f.key, e.target.value)}
-                                        />
-                                    ) : f.key === "phone" ? (
-                                        formatPhone(supplier[f.key])
+                                <td key={f.key} className={f.className}>
+                                    {f.key === "supplierId" ? (
+                                        "-"
                                     ) : (
-                                        supplier[f.key]
+                                        <input
+                                            type={["phone", "postalCode"].includes(f.key) ? "tel" : "text"}
+                                            value={editing[f.key] || ""}
+                                            placeholder={
+                                                f.key === "phone"
+                                                    ? "0xxx-xxx-xx-xx"
+                                                    : f.key === "postalCode"
+                                                        ? "12345"
+                                                        : ""
+                                            }
+                                            onChange={(e) => handleChange(f.key, e.target.value)}
+                                            style={{ width: '100%' }}
+                                        />
                                     )}
                                 </td>
                             ))}
-                            <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button variant="secondary" size="sm" className="ms-2" onClick={handleCancel}>
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => handleEdit(supplier)}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(supplier.supplierId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                            <td className="actions-col text-center">
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                    title="Save"
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                    title="Cancel"
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {suppliers.map((supplier, index) => {
+                        const isEditing = updateKey === supplier.supplierId;
+                        return (
+                            <tr key={supplier.supplierId}>
+                                {fields.map((f) => (
+                                    <td key={f.key} className={f.className}>
+                                        {f.key === "supplierId" ? (index + 1) : isEditing ? (
+                                            <input
+                                                type={["phone", "postalCode"].includes(f.key) ? "tel" : "text"}
+                                                value={editing[f.key] || ""}
+                                                onChange={(e) => handleChange(f.key, e.target.value)}
+                                                style={{ width: '100%' }}
+                                            />
+                                        ) : f.key === "phone" ? (
+                                            formatPhone(supplier[f.key])
+                                        ) : (
+                                            supplier[f.key]
+                                        )}
+                                    </td>
+                                ))}
+                                <td className="actions-col text-center">
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editing)}
+                                                title="Save"
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                                title="Cancel"
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleEdit(supplier)}
+                                                title="Update"
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(supplier.supplierId)}
+                                                title="Delete"
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

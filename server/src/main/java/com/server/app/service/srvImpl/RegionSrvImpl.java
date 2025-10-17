@@ -31,6 +31,10 @@ public class RegionSrvImpl implements RegionService {
     public GenericResponse add(RegionSaveRequest request) {
         Region region = mapper.saveEntityFromRequest(request);
 
+        Long maxId = repository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        region.setRegionId(newId);
+
         BusinessRules.validate(checkRegionForDescription(region));
 
         repository.save(region);
@@ -71,10 +75,6 @@ public class RegionSrvImpl implements RegionService {
         }
 
         repository.deleteRegionByRegionId(id);
-
-        if (repository.count() == 0) {
-            repository.resetRegionSequence();
-        }
 
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }

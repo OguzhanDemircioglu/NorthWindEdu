@@ -3,12 +3,17 @@ import { Table, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAdd, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
 import {getAllEmployeeTerritories, addEmployeeTerritory, updateEmployeeTerritory, deleteEmployeeTerritory} from "../services/EmployeeTerritoryService";
+import { getEmployees } from "../services/EmployeeService";
+import { getAllTerritories } from "../services/TerritoryService";
 
 export default function EmployeeTerritoryList() {
     const [territories, setTerritories] = useState([]);
+    const [allData, setAllData] = useState([]);
     const [editing, setEditing] = useState(null);
     const [searchText, setSearchText] = useState("");
-    const [allData, setAllData] = useState([]);
+
+    const [employees, setEmployees] = useState([]);
+    const [territoryOptions, setTerritoryOptions] = useState([]);
 
     const loadData = async () => {
         try {
@@ -20,8 +25,22 @@ export default function EmployeeTerritoryList() {
         }
     };
 
+    const loadLookups = async () => {
+        try {
+            const [employee, territory] = await Promise.all([
+                getEmployees(),
+                getAllTerritories(),
+            ]);
+            setEmployees(employee.data || []);
+            setTerritoryOptions(territory.data || []);
+        } catch (err) {
+            console.error("Error loading data:", err);
+        }
+    };
+
     useEffect(() => {
         loadData();
+        loadLookups();
     }, []);
 
     const handleAdd = () => {
@@ -78,101 +97,130 @@ export default function EmployeeTerritoryList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Employee Territories</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    EMPLOYEE TERRITORIES
+                </h3>
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
+                    <Form.Control
+                        type="text"
+                        placeholder={`Search`}
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "200px", marginRight: "10px" }}
+                    />
+                    <Button type="submit" variant="info" title="Search">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            setTerritories(allData);
+                        }}
+                        title="Reset"
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button variant="success" className="ms-2" onClick={handleAdd} title="Add">
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </Form>
+            </div>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "200px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        setTerritories(allData);
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
-
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
-
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>Employee ID</th>
-                    <th>Territory ID</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editing && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        <td>
-                            <input
-                                type="text"
-                                value={editing.employeeId}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, employeeId: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editing.territoryId}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, territoryId: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editing)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={() => setEditing(null)}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="id-col">-</th>
+                        <th>Employee</th>
+                        <th>Territory</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-                {territories.map((t, i) => (
-                    <tr key={i}>
-                        <td>{t.employeeId}</td>
-                        <td>{t.territoryId}</td>
-                        <td>
-                            <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() =>
-                                    handleDelete(t.employeeId, t.territoryId)
-                                }
-                            >
-                                <FontAwesomeIcon icon={faTrash} />
-                            </Button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                    {editing && (
+                        <tr>
+                            <td className="id-col">-</td>
+                            <td>
+                                <Form.Select
+                                    value={editing.employeeId || ""}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, employeeId: e.target.value })
+                                    }
+                                >
+                                    <option value="">Select...</option>
+                                    {employees.map((emp) => (
+                                        <option key={emp.employeeId} value={emp.employeeId}>
+                                            {emp.firstName} {emp.lastName}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </td>
+                            <td>
+                                <Form.Select
+                                    value={editing.territoryId || ""}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, territoryId: e.target.value })
+                                    }
+                                >
+                                    <option value="">Select...</option>
+                                    {territoryOptions.map((t) => (
+                                        <option key={t.territoryId} value={t.territoryId}>
+                                            {t.territoryDescription}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </td>
+                            <td>
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                    title="Save"
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={() => setEditing(null)}
+                                    title="Cancel"
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
+                            </td>
+                        </tr>
+                    )}
+                    {territories.map((t, index) => {
+                        const emp = employees.find((e) => e.employeeId === t.employeeId);
+                        const terr = territoryOptions.find((x) => x.territoryId === t.territoryId);
+
+                        return (
+                            <tr key={index}>
+                                <td className="id-col">{index + 1}</td>
+                                <td>{emp ? `${emp.firstName} ${emp.lastName}` : t.employeeId}</td>
+                                <td>{terr ? terr.territoryDescription : t.territoryId}</td>
+                                <td style={{ textAlign: 'center' }}>
+                                <Button
+                                        variant="danger"
+                                        size="sm"
+                                        className="btn-compact"
+                                        onClick={() => handleDelete(t.employeeId, t.territoryId)}
+                                        title="Delete"
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

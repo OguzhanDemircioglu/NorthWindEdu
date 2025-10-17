@@ -91,7 +91,7 @@ public class EmployeeTerritorySrvImpl implements EmployeeTerritoryService {
             return ResultMessages.ID_IS_NOT_DELIVERED;
         }
 
-        if(Strings.isNullOrEmpty(request.getEmployeeTerritoryId().getTerritoryId())) {
+        if(request.getEmployeeTerritoryId().getTerritoryId() == null) {
             return ResultMessages.EMPTY_TERRITORY_ID;
         }
         return null;

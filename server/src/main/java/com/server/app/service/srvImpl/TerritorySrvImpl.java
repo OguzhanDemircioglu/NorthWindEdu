@@ -30,6 +30,10 @@ public class TerritorySrvImpl implements TerritoryService {
     public GenericResponse add(TerritorySaveRequest request) {
         Territory territory = mapper.saveEntityFromRequest(request);
 
+        Long maxId = repository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        territory.setTerritoryId(newId);
+
         BusinessRules.validate(checkTerritoryForGeneralValidations(territory));
 
         repository.save(territory);
@@ -47,7 +51,7 @@ public class TerritorySrvImpl implements TerritoryService {
     }
 
     @Override
-    public DataGenericResponse<TerritoryDto> findTerritoryByTerritoryId(String id) {
+    public DataGenericResponse<TerritoryDto> findTerritoryByTerritoryId(Long id) {
         Optional<Territory> territory = repository.findTerritoryByTerritoryId(id);
         if (territory.isEmpty()) {
             throw new BusinessException(ResultMessages.TERRITORY_NOT_FOUND);
@@ -61,7 +65,7 @@ public class TerritorySrvImpl implements TerritoryService {
     }
 
     @Override
-    public GenericResponse deleteTerritoryByTerritoryId(String id) {
+    public GenericResponse deleteTerritoryByTerritoryId(Long id) {
         boolean isExist = repository.existsTerritoryByTerritoryId(id);
         if (!isExist) {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
@@ -84,13 +88,6 @@ public class TerritorySrvImpl implements TerritoryService {
     }
 
     private String checkTerritoryForGeneralValidations(Territory request) {
-        if(Strings.isNullOrEmpty(request.getTerritoryId())) {
-            return ResultMessages.ID_IS_NOT_DELIVERED;
-        }
-
-        if(request.getTerritoryId().length() > 20) {
-            return ResultMessages.TERRITORY_ID_OUT_OF_RANGE;
-        }
 
         if(Strings.isNullOrEmpty(request.getTerritoryDescription())) {
             return ResultMessages.EMPTY_T_DESCRIPTION;
@@ -98,7 +95,7 @@ public class TerritorySrvImpl implements TerritoryService {
         return null;
     }
 
-    public Territory getTerritory(String id) {
+    public Territory getTerritory(Long id) {
         return repository.getTerritoryByTerritoryId(id);
     }
 

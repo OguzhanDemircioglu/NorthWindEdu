@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 public class Territory {
 
     @Id
-    @Column(name = "territory_id", columnDefinition = "varchar",length = 20, nullable = false, unique = true, updatable = false)
-    private String territoryId;
+    @Column(name = "territory_id", nullable = false, unique = true, updatable = false)
+    private Long territoryId;
 
     @Column(name = "territory_description", columnDefinition = "bpchar", nullable = false)
     private String territoryDescription;

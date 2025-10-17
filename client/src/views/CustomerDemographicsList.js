@@ -14,8 +14,9 @@ export default function CustomerDemographicsList() {
     const loadData = async () => {
         try {
             const res = await getAllCustomerDemographics();
-            setDemographics(res.data || []);
-            setAllData(res.data || []);
+            const rawData = res.data || [];
+            setDemographics(rawData);
+            setAllData(rawData);
         } catch (e) {
             setDemographics([]);
         }
@@ -47,7 +48,6 @@ export default function CustomerDemographicsList() {
             setUpdateKey(null);
             loadData();
         } catch (e) {
-            console.error("Save failed", e);
             alert("Save failed: " + e.message);
         }
     };
@@ -82,163 +82,184 @@ export default function CustomerDemographicsList() {
         setDemographics(filtered);
     };
 
-
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Customer Demographics</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    CUSTOMER DEMOGRAPHICS
+                </h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        setDemographics(allData);
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Search"
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "200px", marginRight: "10px" }}
+                    />
+                    <Button type="submit" variant="info" title="Search">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            setDemographics(allData);
+                        }}
+                        title="Reset"
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button variant="success" className="ms-2" onClick={handleAdd} title="Add">
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </Form>
+            </div>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
-
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>Customer Type ID</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {demographics.map((d, i) => {
-                    const isEditing = updateKey === d.customerTypeId;
-                    return (
-                        <tr key={i}>
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
+                    <tr>
+                        <th className="id-col">-</th>
+                        <th>Description</th>
+                        <th className="actions-col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {editing && !updateKey && (
+                        <tr>
+                            <td>-</td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.customerTypeId}
-                                        disabled
-                                        onChange={(e) =>
-                                            setEditing({
-                                                ...editing,
-                                                customerTypeId: e.target.value,
-                                            })
-                                        }
-                                    />
-                                ) : (
-                                    d.customerTypeId
-                                )}
+                                <input
+                                    value={editing.customerTypeId}
+                                    onChange={(e) =>
+                                        setEditing({
+                                            ...editing,
+                                            customerTypeId: e.target.value
+                                        })
+                                    }
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.customerDesc}
-                                        onChange={(e) =>
-                                            setEditing({
-                                                ...editing,
-                                                customerDesc: e.target.value,
-                                            })
-                                        }
-                                    />
-                                ) : (
-                                    d.customerDesc
-                                )}
+                                <input
+                                    value={editing.customerDesc}
+                                    onChange={(e) =>
+                                        setEditing({
+                                            ...editing,
+                                            customerDesc: e.target.value
+                                        })
+                                    }
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button
-                                            variant="primary"
-                                            size="sm"
-                                            onClick={() => handleSave(editing)}
-                                        >
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            className="ms-2"
-                                            onClick={handleCancel}
-                                        >
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => handleEdit(d)}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(d.customerTypeId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                                <Button
+                                    variant="primary"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                    title="Save"
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                    title="Cancel"
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                {editing && !updateKey && (
-                    <tr>
-                        <td>
-                            <input
-                                value={editing.customerTypeId}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, customerTypeId: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editing.customerDesc}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, customerDesc: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editing)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
-                    </tr>
-                )}
-                </tbody>
-            </Table>
+                    )}
+
+                    {demographics.map((d, index) => {
+                        const isEditing = updateKey === d.customerTypeId;
+                        return (
+                            <tr key={d.customerTypeId}>
+                                <td className="id-col">{index + 1}</td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            value={editing.customerTypeId}
+                                            disabled
+                                            onChange={(e) =>
+                                                setEditing({
+                                                    ...editing,
+                                                    customerTypeId: e.target.value
+                                                })
+                                            }
+                                        />
+                                    ) : (
+                                        d.customerTypeId
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            value={editing.customerDesc}
+                                            onChange={(e) =>
+                                                setEditing({
+                                                    ...editing,
+                                                    customerDesc: e.target.value
+                                                })
+                                            }
+                                        />
+                                    ) : (
+                                        d.customerDesc
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editing)}
+                                                title="Save"
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                                title="Cancel"
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleEdit(d)}
+                                                title="Update"
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(d.customerTypeId)}
+                                                title="Delete"
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

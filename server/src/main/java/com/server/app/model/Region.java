@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class Region {
 
     @Id
-    @SequenceGenerator(name = "region_seq", sequenceName = "region_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "region_seq")
     @Column(name = "region_id", unique = true, nullable = false, updatable = false)
     private Long regionId;
 

@@ -31,6 +31,10 @@ public class ProductSrvImpl implements ProductService {
     public GenericResponse add(ProductSaveRequest request) {
         Product product = mapper.saveEntityFromRequest(request);
 
+        Long maxId = productRepository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        product.setProductId(newId);
+
         BusinessRules.validate(
                 checkProductForGeneralValidations(product),
                 checkNameValidation(product.getProductName()),
@@ -74,10 +78,6 @@ public class ProductSrvImpl implements ProductService {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
         productRepository.deleteProductByProductId(productId);
-
-        if (productRepository.count() == 0) {
-            productRepository.resetProductSequence();
-        }
 
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }

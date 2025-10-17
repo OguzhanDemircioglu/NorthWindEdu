@@ -22,7 +22,7 @@ const initialState = [];
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return action.payload;
+            return action.payload || [];
         default:
             return state;
     }
@@ -43,10 +43,6 @@ export default function EmployeeList() {
         "titleOfCourtesy",
         "birthDate",
         "hireDate",
-        "city",
-        "region",
-        "postalCode",
-        "country",
         "homePhone",
     ];
 
@@ -81,29 +77,12 @@ export default function EmployeeList() {
             const dd = String(value.getDate()).padStart(2, "0");
             return `${yyyy}-${mm}-${dd}`;
         }
-
         const strValue = value.toString().trim();
-
-        if (strValue.includes("-")) {
-            const parts = strValue.split("-");
-            if (parts.length === 3) {
-                const year = parts[0].padStart(4, "0");
-                const month = parts[1].padStart(2, "0");
-                const day = parts[2].padStart(2, "0");
-                return `${year}-${month}-${day}`;
-            }
+        const parts = strValue.split(/[-,]/);
+        if (parts.length === 3) {
+            const [y, m, d] = parts;
+            return `${y.padStart(4, "0")}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
         }
-
-        if (strValue.includes(",")) {
-            const parts = strValue.split(",");
-            if (parts.length === 3) {
-                const year = parts[0].trim().padStart(4, "0");
-                const month = parts[1].trim().padStart(2, "0");
-                const day = parts[2].trim().padStart(2, "0");
-                return `${year}-${month}-${day}`;
-            }
-        }
-
         const digits = strValue.replace(/\D/g, "").slice(0, 8);
         if (digits.length === 8) {
             const year = digits.slice(0, 4);
@@ -114,7 +93,6 @@ export default function EmployeeList() {
 
         return strValue;
     };
-
 
     const formatPhone = (value) => {
         if (!value) return "";
@@ -153,10 +131,6 @@ export default function EmployeeList() {
             titleOfCourtesy: "",
             birthDate: "",
             hireDate: "",
-            city: "",
-            region: "",
-            postalCode: "",
-            country: "",
             homePhone: "",
         });
         setUpdateId(null);
@@ -226,198 +200,208 @@ export default function EmployeeList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Employees</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    EMPLOYEES
+                </h3>
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
+                    <Form.Control
+                        type="text"
+                        placeholder={`Search`}
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "200px", marginRight: "10px" }}
+                    />
+                    <Button type="submit" variant="info" title="Search">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            dispatch({ type: "SET_ALL", payload: allEmployees });
+                        }}
+                        title="Reset"
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd} title="Add">
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </Form>
+            </div>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "200px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allEmployees });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
-
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
-
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Last Name</th>
-                    <th>First Name</th>
-                    <th>Title</th>
-                    <th>Courtesy</th>
-                    <th>Birth Date</th>
-                    <th>Hire Date</th>
-                    <th>City</th>
-                    <th>Region</th>
-                    <th>Postal Code</th>
-                    <th>Country</th>
-                    <th>Phone</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editingEmployee && !updateId && (
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
                     <tr>
-                        <td>{editingEmployee.employeeId || "-"}</td>
-
-                        {allowedFields
-                            .filter((field) => field !== "employeeId")
-                            .map((field) => (
-                                <td key={field}>
-                                    {field === "titleOfCourtesy" ? (
-                                        <Form.Select
-                                            value={editingEmployee[field] || ""}
-                                            onChange={(e) => handleChange(field, e.target.value)}
-                                        >
-                                            <option value="">Select</option>
-                                            <option value="Mr.">Mr.</option>
-                                            <option value="Mrs.">Mrs.</option>
-                                            <option value="Ms.">Ms.</option>
-                                            <option value="Dr.">Dr.</option>
-                                        </Form.Select>
-                                    ) : field === "birthDate" || field === "hireDate" ? (
-                                        <input
-                                            type="date"
-                                            value={editingEmployee[field] || ""}
-                                            onChange={(e) => handleChange(field, e.target.value)}
-                                        />
-                                    ) : (
-                                        <input
-                                            type={field === "homePhone" ? "tel" : "text"}
-                                            value={editingEmployee[field] || ""}
-                                            placeholder={field === "homePhone" ? "0xxx-xxx-xx-xx" : ""}
-                                            onChange={(e) => handleChange(field, e.target.value)}
-                                        />
-                                    )}
-                                </td>
-                            ))}
-
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editingEmployee)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="id-col">-</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Title</th>
+                        <th>Courtesy</th>
+                        <th>Birth Date</th>
+                        <th>Hire Date</th>
+                        <th>Phone</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-
-                {employees.map((employee) => {
-                    const isEditing = updateId === employee.employeeId;
-                    return (
-                        <tr key={employee.employeeId}>
-                            <td>{employee.employeeId}</td>
+                    </thead>
+                    <tbody>
+                    {editingEmployee && !updateId && (
+                        <tr>
+                            <td className="id-col">-</td>
 
                             {allowedFields
                                 .filter((field) => field !== "employeeId")
                                 .map((field) => (
                                     <td key={field}>
-                                        {isEditing ? (
-                                            field === "titleOfCourtesy" ? (
-                                                <Form.Select
-                                                    value={editingEmployee[field] || ""}
-                                                    onChange={(e) => handleChange(field, e.target.value)}
-                                                >
-                                                    <option value="">Select</option>
-                                                    <option value="Mr.">Mr.</option>
-                                                    <option value="Mrs.">Mrs.</option>
-                                                    <option value="Ms.">Ms.</option>
-                                                    <option value="Dr.">Dr.</option>
-                                                </Form.Select>
-                                            ) : field === "birthDate" || field === "hireDate" ? (
-                                                <input
-                                                    type="date"
-                                                    value={editingEmployee[field] || ""}
-                                                    onChange={(e) => handleChange(field, e.target.value)}
-                                                />
-                                            ) : (
-                                                <input
-                                                    type={field === "homePhone" ? "tel" : "text"}
-                                                    value={editingEmployee[field] || ""}
-                                                    placeholder={field === "homePhone" ? "0xxx-xxx-xx-xx" : ""}
-                                                    onChange={(e) => handleChange(field, e.target.value)}
-                                                />
-                                            )
+                                        {field === "titleOfCourtesy" ? (
+                                            <Form.Select
+                                                value={editingEmployee[field] || ""}
+                                                onChange={(e) => handleChange(field, e.target.value)}
+                                            >
+                                                <option value="">Select</option>
+                                                <option value="Mr.">Mr.</option>
+                                                <option value="Mrs.">Mrs.</option>
+                                                <option value="Ms.">Ms.</option>
+                                                <option value="Dr.">Dr.</option>
+                                            </Form.Select>
                                         ) : field === "birthDate" || field === "hireDate" ? (
-                                            formatDate(employee[field])
+                                            <input
+                                                type="date"
+                                                value={editingEmployee[field] || ""}
+                                                onChange={(e) => handleChange(field, e.target.value)}
+                                            />
                                         ) : (
-                                            employee[field]
+                                            <input
+                                                type={field === "homePhone" ? "tel" : "text"}
+                                                value={editingEmployee[field] || ""}
+                                                placeholder={field === "homePhone" ? "0xxx-xxx-xx-xx" : ""}
+                                                onChange={(e) => handleChange(field, e.target.value)}
+                                            />
                                         )}
                                     </td>
                                 ))}
 
                             <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button
-                                            variant="primary"
-                                            size="sm"
-                                            onClick={() => handleSave(editingEmployee)}
-                                        >
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            className="ms-2"
-                                            onClick={handleCancel}
-                                        >
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => handleUpdate(employee)}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(employee.employeeId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editingEmployee)}
+                                    title="Save"
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                    title="Cancel"
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </Table>
+                    )}
+
+                    {employees.map((employee, index) => {
+                        const isEditing = updateId === employee.employeeId;
+                        return (
+                            <tr key={employee.employeeId}>
+                                <td className="id-col">{index + 1}</td>
+
+                                {allowedFields
+                                    .filter((field) => field !== "employeeId")
+                                    .map((field) => (
+                                        <td key={field}>
+                                            {isEditing ? (
+                                                field === "titleOfCourtesy" ? (
+                                                    <Form.Select
+                                                        value={editingEmployee[field] || ""}
+                                                        onChange={(e) => handleChange(field, e.target.value)}
+                                                    >
+                                                        <option value="">Select</option>
+                                                        <option value="Mr.">Mr.</option>
+                                                        <option value="Mrs.">Mrs.</option>
+                                                        <option value="Ms.">Ms.</option>
+                                                        <option value="Dr.">Dr.
+                                                        </option>
+                                                    </Form.Select>
+                                                ) : field === "birthDate" || field === "hireDate" ? (
+                                                    <input
+                                                        type="date"
+                                                        value={editingEmployee[field] || ""}
+                                                        onChange={(e) => handleChange(field, e.target.value)}
+                                                    />
+                                                ) : (
+                                                    <input
+                                                        type={field === "homePhone" ? "tel" : "text"}
+                                                        value={editingEmployee[field] || ""}
+                                                        placeholder={field === "homePhone" ? "0xxx-xxx-xx-xx" : ""}
+                                                        onChange={(e) => handleChange(field, e.target.value)}
+                                                    />
+                                                )
+                                            ) : field === "birthDate" || field === "hireDate" ? (
+                                                formatDate(employee[field])
+                                            ) : (
+                                                employee[field]
+                                            )}
+                                        </td>
+                                    ))}
+                                <td>
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editingEmployee)}
+                                                title="Save"
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                                title="Cancel"
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleUpdate(employee)}
+                                                title="Update"
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(employee.employeeId)}
+                                                title="Delete"
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

@@ -32,14 +32,14 @@ public class TerritoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataGenericResponse<TerritoryDto>> get(@PathVariable String id) {
+    public ResponseEntity<DataGenericResponse<TerritoryDto>> get(@PathVariable Long id) {
         DataGenericResponse<TerritoryDto> result = territoryService.findTerritoryByTerritoryId(id);
         return ResponseEntity.ok(result);
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<GenericResponse> delete(@PathVariable String id) {
+    public ResponseEntity<GenericResponse> delete(@PathVariable Long id) {
         GenericResponse result = territoryService.deleteTerritoryByTerritoryId(id);
         return ResponseEntity.ok(result);
     }

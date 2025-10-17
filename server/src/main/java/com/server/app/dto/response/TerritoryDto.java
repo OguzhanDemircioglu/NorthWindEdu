@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class TerritoryDto {
-    private String territoryId;
+    private Long territoryId;
     private String territoryDescription;
     private Long regionId;
 }

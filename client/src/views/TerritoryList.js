@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight } from "@fortawesome/free-solid-svg-icons";
-import { getAllTerritories, addTerritory, updateTerritory, deleteTerritory } from "../services/TerritoryService";
+import {faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
+import {getAllTerritories, addTerritory, updateTerritory, deleteTerritory} from "../services/TerritoryService";
+import { getAllRegions } from "../services/RegionService";
+
 
 export default function TerritoryList() {
     const [territories, setTerritories] = useState([]);
+    const [regions, setRegions] = useState([]);
     const [editing, setEditing] = useState(null);
     const [updateKey, setUpdateKey] = useState(null);
     const [searchText, setSearchText] = useState("");
@@ -14,21 +17,34 @@ export default function TerritoryList() {
     const loadData = async () => {
         try {
             const res = await getAllTerritories();
-            setTerritories(res.data || []);
-            setAllData(res.data || []);
+            const rawData = res.data || [];
+
+            setTerritories(rawData);
+            setAllData(rawData);
         } catch (e) {
             setTerritories([]);
             setAllData([]);
         }
     };
 
+    const loadLookups = async () => {
+        try {
+            const region = await getAllRegions();
+            setRegions(region.data || []);
+        } catch (err) {
+            console.error("Error loading data:", err);
+            setRegions([]);
+        }
+    };
+
     useEffect(() => {
         loadData();
+        loadLookups();
     }, []);
 
     const handleAdd = () => {
         if (editing) return;
-        setEditing({ territoryId: "", territoryDescription: "", regionId: "" });
+        setEditing({ territoryId: null, territoryDescription: "", regionId: "" });
         setUpdateKey(null);
     };
 
@@ -82,167 +98,199 @@ export default function TerritoryList() {
         setTerritories(filtered);
     };
 
+    const getRegionName = (id) =>
+        regions.find((r) => r.regionId === id)?.regionDescription || "";
+
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Territories</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    TERRITORIES
+                </h3>
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Search"
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "200px", marginRight: "10px" }}
+                    />
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "250px", marginRight: "10px" }}
-                />
+                    <Button type="submit" variant="info" title="Search">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            setTerritories(allData);
+                        }}
+                        title="Reset"
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button variant="success" className="ms-2" onClick={handleAdd} title="Add">
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </Form>
+            </div>
 
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        setTerritories(allData);
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+            <div className="table-wrapper" style={{ display: "flex", justifyContent: "center" }}>
+                <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
+                    <thead>
+                    <tr>
+                        <th className="id-col">-</th>
+                        <th>Description</th>
+                        <th>Region</th>
+                        <th className="actions-col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {territories.map((d, index) => {
+                        const isEditing = updateKey === d.territoryId;
+                        return (
+                            <tr key={d.territoryId}>
+                                <td className="id-col text-center">
+                                    {index + 1}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input
+                                            value={editing.territoryDescription}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, territoryDescription: e.target.value })
+                                            }
+                                            style={{ width: '100%' }}
+                                        />
+                                    ) : (
+                                        d.territoryDescription
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <Form.Select
+                                            value={editing.regionId || ""}
+                                            onChange={(e) =>
+                                                setEditing({ ...editing, regionId: Number(e.target.value) })
+                                            }
+                                            style={{ width: '100%' }}
+                                        >
+                                            <option value="">Select region</option>
+                                            {regions.map((r) => (
+                                                <option key={r.regionId} value={r.regionId}>
+                                                    {r.regionDescription}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    ) : (
+                                        getRegionName(d.regionId)
+                                    )}
+                                </td>
+                                <td className="actions-col text-center">
+                                    {isEditing ? (
+                                        <>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleSave(editing)}
+                                                title="Save"
+                                            >
+                                                <FontAwesomeIcon icon={faSave} />
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={handleCancel}
+                                                title="Cancel"
+                                            >
+                                                <FontAwesomeIcon icon={faCancel} />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="btn-compact me-2"
+                                                onClick={() => handleEdit(d)}
+                                                title="Update"
+                                            >
+                                                <FontAwesomeIcon icon={faArrowsRotate} />
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                className="btn-compact"
+                                                onClick={() => handleDelete(d.territoryId)}
+                                                title="Delete"
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
-
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>Territory ID</th>
-                    <th>Description</th>
-                    <th>Region ID</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {territories.map((d, i) => {
-                    const isEditing = updateKey === d.territoryId;
-                    return (
-                        <tr key={i}>
-                            <td>
-                                {isEditing ? (
-                                    <input value={editing.territoryId} disabled />
-                                ) : (
-                                    d.territoryId
-                                )}
+                    {editing && !updateKey && (
+                        <tr>
+                            <td className="id-col text-center">
+                                -
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        value={editing.territoryDescription}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, territoryDescription: e.target.value })
-                                        }
-                                    />
-                                ) : (
-                                    d.territoryDescription
-                                )}
+                                <input
+                                    value={editing.territoryDescription}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, territoryDescription: e.target.value })
+                                    }
+                                    style={{ width: '100%' }}
+                                />
                             </td>
                             <td>
-                                {isEditing ? (
-                                    <input
-                                        type="number"
-                                        value={editing.regionId || ""}
-                                        onChange={(e) =>
-                                            setEditing({ ...editing, regionId: Number(e.target.value) })
-                                        }
-                                    />
-                                ) : (
-                                    d.regionId
-                                )}
+                                <Form.Select
+                                    value={editing.regionId || ""}
+                                    onChange={(e) =>
+                                        setEditing({ ...editing, regionId: Number(e.target.value) })
+                                    }
+                                    style={{ width: '100%' }}
+                                >
+                                    <option value="">Select...</option>
+                                    {regions.map((r) => (
+                                        <option key={r.regionId} value={r.regionId}>
+                                            {r.regionDescription}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                             </td>
-                            <td>
-                                {isEditing ? (
-                                    <>
-                                        <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                            <FontAwesomeIcon icon={faSave} />
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            className="ms-2"
-                                            onClick={handleCancel}
-                                        >
-                                            <FontAwesomeIcon icon={faCancel} />
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => handleEdit(d)}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowsRotate} />
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(d.territoryId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </>
-                                )}
+                            <td className="actions-col text-center">
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    className="btn-compact me-2"
+                                    onClick={() => handleSave(editing)}
+                                    title="Save"
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                    title="Cancel"
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
                             </td>
                         </tr>
-                    );
-                })}
-
-                {editing && !updateKey && (
-                    <tr>
-                        <td>
-                            <input
-                                value={editing.territoryId}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, territoryId: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editing.territoryDescription}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, territoryDescription: e.target.value })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <input
-                                type="number"
-                                value={editing.regionId || ""}
-                                onChange={(e) =>
-                                    setEditing({ ...editing, regionId: Number(e.target.value) })
-                                }
-                            />
-                        </td>
-                        <td>
-                            <Button variant="primary" size="sm" onClick={() => handleSave(editing)}>
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
-                    </tr>
-                )}
-                </tbody>
-            </Table>
+                    )}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }

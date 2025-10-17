@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TerritorySaveRequest {
-    private String territoryId;
     private String territoryDescription;
     private Long regionId;
 }

@@ -31,6 +31,10 @@ public class ShipperSrvImpl implements ShipperService {
     public GenericResponse add(ShipperSaveRequest request) {
         Shipper shipper = mapper.saveEntityFromRequest(request);
 
+        Long maxId = repository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        shipper.setShipperId(newId);
+
         BusinessRules.validate(
                 checkShipperForGeneralValidations(shipper),
                 checkCompanyNameValidation(shipper.getCompanyName())
@@ -74,10 +78,6 @@ public class ShipperSrvImpl implements ShipperService {
         }
 
         repository.deleteShipperByShipperId(id);
-
-        if (repository.count() == 0) {
-            repository.resetShipperSequence();
-        }
 
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }

@@ -30,6 +30,10 @@ public class UsStateSrvImpl implements UsStateService {
     public GenericResponse add(UsStateSaveRequest request) {
         UsState usState = mapper.saveEntityFromRequest(request);
 
+        Long maxId = repository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        usState.setStateId(newId);
+
         BusinessRules.validate(
                 checkNameValidation(usState.getStateName()),
                 checkAbbrValidation(usState.getStateAbbr()),
@@ -77,10 +81,6 @@ public class UsStateSrvImpl implements UsStateService {
         }
 
         repository.deleteStateByStateId(id);
-
-        if (repository.count() == 0) {
-            repository.resetStateSequence();
-        }
 
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }

@@ -5,11 +5,10 @@ import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTras
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialState = [];
-
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return action.payload;
+            return action.payload || [];
         default:
             return state;
     }
@@ -119,146 +118,160 @@ export default function CategoryList() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h3>Categories</h3>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <h3 style={{color: '#343a40', fontWeight: '600', paddingBottom: '5px', borderBottom: '3px solid #6c757d', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px'}}>
+                    CATEGORIES
+                </h3>
 
-            <Form className="d-flex mb-3" onSubmit={handleSearch}>
-                <Form.Control
-                    type="text"
-                    placeholder={`Search`}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ maxWidth: "200px", marginRight: "10px" }}
-                />
-                <Button type="submit" variant="info">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="ms-2"
-                    onClick={() => {
-                        setSearchText("");
-                        dispatch({ type: "SET_ALL", payload: allCategories });
-                    }}
-                >
-                    <FontAwesomeIcon icon={faRotateRight} />
-                </Button>
-            </Form>
+                <Form className="d-flex justify-content-center mt-3" onSubmit={handleSearch}>
+                    <Form.Control
+                        type="text"
+                        placeholder={`Search`}
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ maxWidth: "200px", marginRight: "10px" }}
+                    />
+                    <Button type="submit" variant="info" title="Search">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="ms-2"
+                        onClick={() => {
+                            setSearchText("");
+                            dispatch({ type: "SET_ALL", payload: allCategories });
+                        }}
+                        title="Reset"
+                    >
+                        <FontAwesomeIcon icon={faRotateRight} />
+                    </Button>
+                    <Button variant="success" className="ms-2" onClick={handleAdd} title="Add">
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                </Form>
+            </div>
 
-            <Button variant="success" className="mb-3" onClick={handleAdd}>
-                <FontAwesomeIcon icon={faAdd} />
-            </Button>
 
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {editingCategory && !updateId && (
+            <div className="table-wrapper">
+                <Table striped bordered hover className="table-compact">
+                    <thead>
                     <tr>
-                        <td>-</td>
-                        <td>
-                            <input
-                                value={editingCategory.categoryName}
-                                onChange={(e) => handleChange("categoryName", e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <input
-                                value={editingCategory.description}
-                                onChange={(e) => handleChange("description", e.target.value)}
-                            />
-                        </td>
-                        <td>
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleSave(editingCategory)}
-                            >
-                                <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                className="ms-2"
-                                onClick={handleCancel}
-                            >
-                                <FontAwesomeIcon icon={faCancel} />
-                            </Button>
-                        </td>
+                        <th className="id-col">-</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th className="actions-col">Actions</th>
                     </tr>
-                )}
-
-                {categories.map((category) => (
-                    <tr key={category.categoryId}>
-                        <td>{category.categoryId}</td>
-                        <td>
-                            {updateId === category.categoryId ? (
+                    </thead>
+                    <tbody>
+                    {editingCategory && !updateId && (
+                        <tr>
+                            <td>-</td>
+                            <td>
                                 <input
                                     value={editingCategory.categoryName}
                                     onChange={(e) => handleChange("categoryName", e.target.value)}
                                 />
-                            ) : (
-                                category.categoryName
-                            )}
-                        </td>
-                        <td>
-                            {updateId === category.categoryId ? (
+                            </td>
+                            <td>
                                 <input
                                     value={editingCategory.description}
                                     onChange={(e) => handleChange("description", e.target.value)}
                                 />
-                            ) : (
-                                category.description
-                            )}
-                        </td>
-                        <td>
-                            {updateId === category.categoryId ? (
-                                <>
-                                    <Button
-                                        variant="primary"
-                                        size="sm"
-                                        onClick={() => handleSave(editingCategory)}
-                                    >
-                                        <FontAwesomeIcon icon={faSave} />
-                                    </Button>
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        className="ms-2"
-                                        onClick={handleCancel}
-                                    >
-                                        <FontAwesomeIcon icon={faCancel} />
-                                    </Button>
-                                </>
-                            ) : (
-                                <>
-                                    <Button
-                                        variant="warning"
-                                        size="sm"
-                                        className="me-2"
-                                        onClick={() => handleUpdate(category)}
-                                    >
-                                        <FontAwesomeIcon icon={faArrowsRotate} />
-                                    </Button>
-                                    <Button
-                                        variant="danger"
-                                        size="sm"
-                                        onClick={() => handleDelete(category.categoryId)}
-                                    >
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </Button>
-                                </>
-                            )}
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
+                            </td>
+                            <td>
+                                <Button
+                                    variant="primary"
+                                    className="btn-compact"
+                                    onClick={() => handleSave(editingCategory)}
+                                    title="Save"
+                                >
+                                    <FontAwesomeIcon icon={faSave} />
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="btn-compact"
+                                    onClick={handleCancel}
+                                    title="Cancel"
+                                >
+                                    <FontAwesomeIcon icon={faCancel} />
+                                </Button>
+                            </td>
+                        </tr>
+                    )}
+
+                    {categories.map((category, index) => (
+                        <tr key={category.categoryId}>
+                            <td className="id-col">{index + 1}</td>
+                            <td>
+                                {updateId === category.categoryId ? (
+                                    <input
+                                        value={editingCategory.categoryName}
+                                        onChange={(e) => handleChange("categoryName", e.target.value)}
+                                    />
+                                ) : (
+                                    category.categoryName
+                                )}
+                            </td>
+                            <td>
+                                {updateId === category.categoryId ? (
+                                    <input
+                                        value={editingCategory.description}
+                                        onChange={(e) => handleChange("description", e.target.value)}
+                                    />
+                                ) : (
+                                    category.description
+                                )}
+                            </td>
+                            <td className="actions-col">
+                                {updateId === category.categoryId ? (
+                                    <>
+                                        <Button
+                                            variant="primary"
+                                            className="btn-compact me-2"
+                                            onClick={() => handleSave(editingCategory)}
+                                            title="Save"
+                                        >
+                                            <FontAwesomeIcon icon={faSave} />
+                                        </Button>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            className="btn-compact"
+                                            onClick={handleCancel}
+                                            title="Cancel"
+                                        >
+                                            <FontAwesomeIcon icon={faCancel} />
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button
+                                            variant="warning"
+                                            size="sm"
+                                            className="btn-compact me-2"
+                                            onClick={() => handleUpdate(category)}
+                                            title="Update"
+                                        >
+                                            <FontAwesomeIcon icon={faArrowsRotate} />
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            className="btn-compact"
+                                            onClick={() => handleDelete(category.categoryId)}
+                                            title="Delete"
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </Button>
+                                    </>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 }
