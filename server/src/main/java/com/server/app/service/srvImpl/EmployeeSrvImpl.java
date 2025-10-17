@@ -32,6 +32,10 @@ public class EmployeeSrvImpl implements EmployeeService {
     public GenericResponse add(EmployeeSaveRequest request) {
         Employee employee = mapper.saveEntityFromRequest(request);
 
+        Long maxId = repository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        employee.setEmployeeId(newId);
+
         BusinessRules.validate(
                 checkEmployeeForGeneralValidations(employee),
                 checkTitleValidation(employee.getTitle()),
@@ -80,9 +84,7 @@ public class EmployeeSrvImpl implements EmployeeService {
             throw new BusinessException(ResultMessages.EMPLOYEE_NOT_FOUND);
         }
         repository.deleteEmployeeByEmployeeId(employeeId);
-        if (repository.count() == 0) {
-            repository.resetEmployeeSequence();
-        }
+
         return GenericResponse.builder()
                 .message(ResultMessages.RECORD_DELETED)
                 .build();

@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class Shipper {
 
     @Id
-    @SequenceGenerator(name = "shipper_seq", sequenceName = "shipper_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "shipper_seq")
     @Column(name = "shipper_id", nullable = false)
     private Long shipperId;
 

@@ -2,6 +2,7 @@ package com.server.app.repository;
 
 import com.server.app.model.Territory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -16,4 +17,7 @@ public interface TerritoryRepository extends JpaRepository<Territory, Long> {
     Territory getTerritoryByTerritoryId(Long id);
 
     boolean existsTerritoryByTerritoryId(Long id);
+
+    @Query("SELECT MAX(t.territoryId) FROM Territory t")
+    Long findMaxId();
 }

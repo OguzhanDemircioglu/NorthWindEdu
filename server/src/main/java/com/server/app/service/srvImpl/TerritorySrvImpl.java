@@ -30,6 +30,10 @@ public class TerritorySrvImpl implements TerritoryService {
     public GenericResponse add(TerritorySaveRequest request) {
         Territory territory = mapper.saveEntityFromRequest(request);
 
+        Long maxId = repository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        territory.setTerritoryId(newId);
+
         BusinessRules.validate(checkTerritoryForGeneralValidations(territory));
 
         repository.save(territory);

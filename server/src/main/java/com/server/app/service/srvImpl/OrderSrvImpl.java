@@ -30,6 +30,10 @@ public class OrderSrvImpl implements OrderService {
     public GenericResponse add(OrderSaveRequest request) {
         Order order = mapper.saveEntityFromRequest(request);
 
+        Long maxId = orderRepository.findMaxId();
+        Long newId = (maxId == null) ? 1L : maxId + 1;
+        order.setOrderId(newId);
+
         BusinessRules.validate(
                 checkOrderForGeneralValidations(order)
         );
@@ -69,9 +73,7 @@ public class OrderSrvImpl implements OrderService {
             throw new BusinessException(ResultMessages.RECORD_NOT_FOUND);
         }
         orderRepository.deleteOrderByOrderId(orderId);
-        if (orderRepository.count() == 0) {
-            orderRepository.resetOrderSequence();
-        }
+
         return GenericResponse.builder().message(ResultMessages.RECORD_DELETED).build();
     }
 
