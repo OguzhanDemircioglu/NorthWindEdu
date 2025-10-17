@@ -39,7 +39,7 @@ export default function CustomerList() {
 
     const nonIdFields = allFields.filter(f => f !== "customerId");
 
-    const fieldHeaders = ["ID", "Company", "Contact", "Title", "Phone"];
+    const fieldHeaders = ["-", "ID", "Company", "Contact", "Title", "Phone"];
 
 
     const loadCustomers = async () => {
@@ -196,7 +196,7 @@ export default function CustomerList() {
                         {getTableHeaders().map((header) => (
                             <th
                                 key={header}
-                                className={header === "Actions" ? "actions-col" : ""}
+                                className={header === "-" ? "id-col" : header === "Actions" ? "actions-col" : ""}
                             >
                                 {header}
                             </th>
@@ -206,6 +206,7 @@ export default function CustomerList() {
                     <tbody>
                     {editingCustomer && !updateId && (
                         <tr>
+                            <td className="id-col">-</td>
                             <td key="customerId" style={{ width: '75px' }}>
                                 <input
                                     value={editingCustomer["customerId"] || ""}
@@ -247,11 +248,12 @@ export default function CustomerList() {
                         </tr>
                     )}
 
-                    {customers.map((customer) => {
+                    {customers.map((customer, index) => {
                         const isEditing = updateId === customer.customerId;
 
                         const rowCells = [];
 
+                        rowCells.push(<td key="row-index" className="id-col">{index + 1}</td>);
                         if (isEditing) {
                             rowCells.push(
                                 <td key="customerId" style={{ width: '75px' }}>
@@ -263,7 +265,7 @@ export default function CustomerList() {
                                 </td>
                             );
                         } else if (editingCustomer) {
-                            rowCells.push(<td key="empty-id-cell" style={{ width: '50px' }}></td>);
+                            rowCells.push(<td key="empty-id-cell" style={{ width: '75px' }}></td>);
                         }
 
                         nonIdFields.forEach((field) => {

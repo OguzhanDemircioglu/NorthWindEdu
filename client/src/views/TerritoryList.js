@@ -5,13 +5,6 @@ import {faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRigh
 import {getAllTerritories, addTerritory, updateTerritory, deleteTerritory} from "../services/TerritoryService";
 import { getAllRegions } from "../services/RegionService";
 
-const sortById = (data) => {
-    return data.slice().sort((a, b) => {
-        if (a.territoryId < b.territoryId) return -1;
-        if (a.territoryId > b.territoryId) return 1;
-        return 0;
-    });
-};
 
 export default function TerritoryList() {
     const [territories, setTerritories] = useState([]);
@@ -26,7 +19,7 @@ export default function TerritoryList() {
             const res = await getAllTerritories();
             const rawData = res.data || [];
 
-            setTerritories(sortById(rawData));
+            setTerritories(rawData);
             setAllData(rawData);
         } catch (e) {
             setTerritories([]);
@@ -94,7 +87,7 @@ export default function TerritoryList() {
     const handleSearch = (e) => {
         e.preventDefault();
         if (!searchText) {
-            setTerritories(sortById(allData));
+            setTerritories(allData);
             return;
         }
         const filtered = allData.filter((d) =>
@@ -102,7 +95,7 @@ export default function TerritoryList() {
                 value?.toString().toLowerCase().includes(searchText.toLowerCase())
             )
         );
-        setTerritories(sortById(filtered));
+        setTerritories(filtered);
     };
 
     const getRegionName = (id) =>
@@ -131,7 +124,7 @@ export default function TerritoryList() {
                         className="ms-2"
                         onClick={() => {
                             setSearchText("");
-                            setTerritories(sortById(allData));
+                            setTerritories(allData);
                         }}
                         title="Reset"
                     >
@@ -147,19 +140,19 @@ export default function TerritoryList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th className="id-col">ID</th>
+                        <th className="id-col">-</th>
                         <th>Description</th>
                         <th>Region</th>
                         <th className="actions-col">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {territories.map((d, i) => {
+                    {territories.map((d, index) => {
                         const isEditing = updateKey === d.territoryId;
                         return (
-                            <tr key={i}>
+                            <tr key={d.territoryId}>
                                 <td className="id-col text-center">
-                                    {d.territoryId}
+                                    {index + 1}
                                 </td>
                                 <td>
                                     {isEditing ? (

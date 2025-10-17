@@ -133,6 +133,7 @@ export default function EmployeeTerritoryList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
+                        <th className="id-col">-</th>
                         <th>Employee</th>
                         <th>Territory</th>
                         <th className="actions-col">Actions</th>
@@ -141,6 +142,7 @@ export default function EmployeeTerritoryList() {
                     <tbody>
                     {editing && (
                         <tr>
+                            <td className="id-col">-</td>
                             <td>
                                 <Form.Select
                                     value={editing.employeeId || ""}
@@ -193,12 +195,13 @@ export default function EmployeeTerritoryList() {
                             </td>
                         </tr>
                     )}
-                    {territories.map((t, i) => {
+                    {territories.map((t, index) => {
                         const emp = employees.find((e) => e.employeeId === t.employeeId);
                         const terr = territoryOptions.find((x) => x.territoryId === t.territoryId);
 
                         return (
-                            <tr key={i}>
+                            <tr key={index}>
+                                <td className="id-col">{index + 1}</td>
                                 <td>{emp ? `${emp.firstName} ${emp.lastName}` : t.employeeId}</td>
                                 <td>{terr ? terr.territoryDescription : t.territoryId}</td>
                                 <td style={{ textAlign: 'center' }}>

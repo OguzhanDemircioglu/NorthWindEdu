@@ -19,14 +19,11 @@ import {
 
 const initialState = [];
 
-const sortById = (data) => {
-    return data.sort((a, b) => a.supplierId - b.supplierId);
-};
 
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return sortById(action.payload || []);
+            return action.payload || [];
         default:
             return state;
     }
@@ -146,7 +143,7 @@ export default function SupplierList() {
     };
 
     const fields = [
-        { label: "ID", key: "supplierId", className: "id-col text-center" },
+        { label: "-", key: "supplierId", className: "id-col text-center" },
         { label: "Company", key: "companyName" },
         { label: "Contact", key: "contactName" },
         { label: "Title", key: "contactTitle" },
@@ -246,13 +243,13 @@ export default function SupplierList() {
                         </tr>
                     )}
 
-                    {suppliers.map((supplier) => {
+                    {suppliers.map((supplier, index) => {
                         const isEditing = updateKey === supplier.supplierId;
                         return (
                             <tr key={supplier.supplierId}>
                                 {fields.map((f) => (
                                     <td key={f.key} className={f.className}>
-                                        {isEditing && f.key !== "supplierId" ? (
+                                        {f.key === "supplierId" ? (index + 1) : isEditing ? (
                                             <input
                                                 type={["phone", "postalCode"].includes(f.key) ? "tel" : "text"}
                                                 value={editing[f.key] || ""}

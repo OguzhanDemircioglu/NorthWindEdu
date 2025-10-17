@@ -4,14 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight} from "@fortawesome/free-solid-svg-icons";
 import {getAllCustomerDemographics, addCustomerDemographics, updateCustomerDemographics, deleteCustomerDemographics} from "../services/CustomerDemographicsService";
 
-const sortById = (data) => {
-    return data.slice().sort((a, b) => {
-        if (a.customerTypeId < b.customerTypeId) return -1;
-        if (a.customerTypeId > b.customerTypeId) return 1;
-        return 0;
-    });
-};
-
 export default function CustomerDemographicsList() {
     const [demographics, setDemographics] = useState([]);
     const [editing, setEditing] = useState(null);
@@ -23,10 +15,7 @@ export default function CustomerDemographicsList() {
         try {
             const res = await getAllCustomerDemographics();
             const rawData = res.data || [];
-
-            const sortedData = sortById(rawData);
-
-            setDemographics(sortedData);
+            setDemographics(rawData);
             setAllData(rawData);
         } catch (e) {
             setDemographics([]);
@@ -82,7 +71,7 @@ export default function CustomerDemographicsList() {
     const handleSearch = (e) => {
         e.preventDefault();
         if (!searchText) {
-            setDemographics(sortById(allData));
+            setDemographics(allData);
             return;
         }
         const filtered = allData.filter((d) =>
@@ -90,7 +79,7 @@ export default function CustomerDemographicsList() {
                 value?.toString().toLowerCase().includes(searchText.toLowerCase())
             )
         );
-        setDemographics(sortById(filtered));
+        setDemographics(filtered);
     };
 
     return (
@@ -116,7 +105,7 @@ export default function CustomerDemographicsList() {
                         className="ms-2"
                         onClick={() => {
                             setSearchText("");
-                            setDemographics(sortById(allData));
+                            setDemographics(allData);
                         }}
                         title="Reset"
                     >
@@ -132,7 +121,7 @@ export default function CustomerDemographicsList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th className="id-col">ID</th>
+                        <th className="id-col">-</th>
                         <th>Description</th>
                         <th className="actions-col">Actions</th>
                     </tr>
@@ -140,6 +129,7 @@ export default function CustomerDemographicsList() {
                     <tbody>
                     {editing && !updateKey && (
                         <tr>
+                            <td>-</td>
                             <td>
                                 <input
                                     value={editing.customerTypeId}
@@ -184,10 +174,11 @@ export default function CustomerDemographicsList() {
                         </tr>
                     )}
 
-                    {demographics.map((d, i) => {
+                    {demographics.map((d, index) => {
                         const isEditing = updateKey === d.customerTypeId;
                         return (
-                            <tr key={i}>
+                            <tr key={d.customerTypeId}>
+                                <td className="id-col">{index + 1}</td>
                                 <td>
                                     {isEditing ? (
                                         <input

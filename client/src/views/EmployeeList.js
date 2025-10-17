@@ -19,14 +19,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialState = [];
 
-const sortById = (data) => {
-    return data.sort((a, b) => a.employeeId - b.employeeId);
-};
-
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return sortById(action.payload || []);
+            return action.payload || [];
         default:
             return state;
     }
@@ -230,9 +226,9 @@ export default function EmployeeList() {
                     >
                         <FontAwesomeIcon icon={faRotateRight} />
                     </Button>
-                <Button variant="success" className="ms-3" onClick={handleAdd} title="Add">
-                    <FontAwesomeIcon icon={faAdd} />
-                </Button>
+                    <Button variant="success" className="ms-3" onClick={handleAdd} title="Add">
+                        <FontAwesomeIcon icon={faAdd} />
+                    </Button>
                 </Form>
             </div>
 
@@ -240,7 +236,7 @@ export default function EmployeeList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th className="id-col">ID</th>
+                        <th className="id-col">-</th>
                         <th>Last Name</th>
                         <th>First Name</th>
                         <th>Title</th>
@@ -254,7 +250,7 @@ export default function EmployeeList() {
                     <tbody>
                     {editingEmployee && !updateId && (
                         <tr>
-                            <td>{editingEmployee.employeeId || "-"}</td>
+                            <td className="id-col">-</td>
 
                             {allowedFields
                                 .filter((field) => field !== "employeeId")
@@ -311,11 +307,11 @@ export default function EmployeeList() {
                         </tr>
                     )}
 
-                    {employees.map((employee) => {
+                    {employees.map((employee, index) => {
                         const isEditing = updateId === employee.employeeId;
                         return (
                             <tr key={employee.employeeId}>
-                                <td>{employee.employeeId}</td>
+                                <td className="id-col">{index + 1}</td>
 
                                 {allowedFields
                                     .filter((field) => field !== "employeeId")

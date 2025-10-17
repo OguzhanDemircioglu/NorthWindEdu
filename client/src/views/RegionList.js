@@ -1,19 +1,16 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faSave, faTrash, faCancel, faSearch, faRotateRight, faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faArrowsRotate, faSave, faTrash, faCancel, faSearch, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { getAllRegions, addRegion, updateRegion, deleteRegion } from "../services/RegionService";
 
 const initialState = [];
 
-const sortById = (data) => {
-    return data.sort((a, b) => a.regionId - b.regionId);
-};
 
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return sortById(action.payload || []);
+            return action.payload || [];
         default:
             return state;
     }
@@ -132,7 +129,7 @@ export default function RegionList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th className="id-col">ID</th>
+                        <th className="id-col">-</th>
                         <th>Description</th>
                         <th className="actions-col">Actions</th>
                     </tr>
@@ -140,7 +137,7 @@ export default function RegionList() {
                     <tbody>
                     {editing && !updateKey && (
                         <tr>
-                            <td className="text-center">{"-"}</td>
+                            <td className="text-center id-col">{"-"}</td>
                             <td>
                                 <input
                                     value={editing.regionDescription}
@@ -171,11 +168,11 @@ export default function RegionList() {
                         </tr>
                     )}
 
-                    {regions.map((r, i) => {
+                    {regions.map((r, index) => {
                         const isEditing = updateKey === r.regionId;
                         return (
-                            <tr key={i}>
-                                <td className="text-center">{r.regionId}</td>
+                            <tr key={r.regionId}>
+                                <td className="text-center id-col">{index + 1}</td>
                                 <td>
                                     {isEditing ? (
                                         <input

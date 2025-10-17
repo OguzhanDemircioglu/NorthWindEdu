@@ -174,6 +174,7 @@ export default function OrderDetailList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
+                        <th className="id-col">-</th>
                         <th style={{ minWidth: '350px' }}>Order</th>
                         <th>Product</th>
                         <th>Unit Price</th>
@@ -185,10 +186,12 @@ export default function OrderDetailList() {
                     <tbody>
                     {editingDetail && (
                         <tr>
+                            <td className="id-col">-</td>
                             <td>
                                 <Form.Select
                                     value={editingDetail.orderId || ""}
                                     onChange={(e) => handleChange("orderId", e.target.value)}
+                                    disabled={!!updateKey}
                                 >
                                     <option value="">Select...</option>
                                     {orders.map((o) => {
@@ -214,6 +217,7 @@ export default function OrderDetailList() {
                                 <Form.Select
                                     value={editingDetail.productId || ""}
                                     onChange={(e) => handleChange("productId", e.target.value)}
+                                    disabled={!!updateKey}
                                 >
                                     <option value="">Select...</option>
                                     {products.map((p) => (
@@ -271,7 +275,7 @@ export default function OrderDetailList() {
                         </tr>
                     )}
 
-                    {details.map((detail, i) => {
+                    {details.map((detail, index) => {
                         const isEditing =
                             updateKey &&
                             updateKey.orderId === detail.orderId &&
@@ -292,10 +296,13 @@ export default function OrderDetailList() {
                             (p) => p.productId === detail.productId
                         );
 
+                        const rowKey = `${detail.orderId}-${detail.productId}`;
+
                         return (
-                            <tr key={i}>
+                            <tr key={rowKey}>
+                                <td className="id-col">{index + 1}</td>
                                 <td>
-                                    {order?.orderId} - {customer?.contactName || "Unknown"}, {employee?.firstName || "Unknown"} {employee?.lastName || "Unknown"}, {shipper?.companyName || "Unknown"}
+                                    {customer?.contactName || "Unknown"}, {employee?.firstName || "Unknown"} {employee?.lastName || "Unknown"}, {shipper?.companyName || "Unknown"}
                                 </td>
                                 <td>{product?.productName || detail.productId}</td>
                                 <td>{detail.unitPrice}</td>

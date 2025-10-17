@@ -151,6 +151,7 @@ export default function CustomerDemoList() {
                 >
                     <thead>
                     <tr>
+                        <th className="id-col">-</th>
                         <th>Customer</th>
                         <th>Customer Type</th>
                         <th className="actions-col">Actions</th>
@@ -159,6 +160,7 @@ export default function CustomerDemoList() {
                     <tbody>
                     {editing && (
                         <tr>
+                            <td className="id-col">-</td>
                             <td>
                                 <Form.Select
                                     value={editing.customerId || ""}
@@ -208,14 +210,17 @@ export default function CustomerDemoList() {
                         </tr>
                     )}
 
-                    {demos.map((demo, i) => {
+                    {demos.map((demo, index) => {
                         const customer = customers.find((c) => c.customerId === demo.customerId);
                         const demographic = demographics.find(
                             (d) => d.customerTypeId === demo.customerTypeId
                         );
 
+                        const rowKey = `${demo.customerId}-${demo.customerTypeId}`;
+
                         return (
-                            <tr key={i}>
+                            <tr key={rowKey}>
+                                <td className="id-col">{index + 1}</td>
                                 <td>{customer?.contactName || demo.customerId}</td>
                                 <td>{demographic?.customerDesc || demo.customerTypeId}</td>
                                 <td>

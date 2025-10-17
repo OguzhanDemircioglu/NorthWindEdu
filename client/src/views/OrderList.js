@@ -10,14 +10,11 @@ import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTras
 
 const initialState = [];
 
-const sortById = (data) => {
-    return data.sort((a, b) => a.orderId - b.orderId);
-};
 
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return sortById(action.payload || []);
+            return action.payload || [];
         default:
             return state;
     }
@@ -188,7 +185,7 @@ export default function OrderList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th className="id-col">ID</th>
+                        <th className="id-col">-</th>
                         <th>Customer</th>
                         <th>Employee</th>
                         <th>Shipper</th>
@@ -204,7 +201,7 @@ export default function OrderList() {
                     <tbody>
                     {editingOrder && (
                         <tr>
-                            <td>{editingOrder.orderId || "-"}</td>
+                            <td className="id-col">{editingOrder.orderId || "-"}</td>
                             {[
                                 "customerId",
                                 "employeeId",
@@ -295,13 +292,13 @@ export default function OrderList() {
                         </tr>
                     )}
 
-                    {orders.map((order) => {
+                    {orders.map((order, index) => {
                         const isEditing = updateId === order.orderId;
                         if (isEditing) return null;
 
                         return (
                             <tr key={order.orderId}>
-                                <td>{order.orderId}</td>
+                                <td className="id-col">{index + 1}</td>
                                 <td>
                                     {customers.find(
                                         (c) => c.customerId === order.customerId

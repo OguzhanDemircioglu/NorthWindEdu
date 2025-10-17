@@ -5,15 +5,10 @@ import {faAdd, faArrowsRotate, faCancel, faRotateRight, faSave, faSearch, faTras
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const initialState = [];
-
-const sortById = (data) => {
-    return data.sort((a, b) => a.categoryId - b.categoryId);
-};
-
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return sortById(action.payload || []);
+            return action.payload || [];
         default:
             return state;
     }
@@ -161,7 +156,7 @@ export default function CategoryList() {
                 <Table striped bordered hover className="table-compact">
                     <thead>
                     <tr>
-                        <th className="id-col">ID</th>
+                        <th className="id-col">-</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th className="actions-col">Actions</th>
@@ -205,9 +200,9 @@ export default function CategoryList() {
                         </tr>
                     )}
 
-                    {categories.map((category) => (
+                    {categories.map((category, index) => (
                         <tr key={category.categoryId}>
-                            <td className="id-col">{category.categoryId}</td>
+                            <td className="id-col">{index + 1}</td>
                             <td>
                                 {updateId === category.categoryId ? (
                                     <input

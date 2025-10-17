@@ -8,14 +8,11 @@ import { getCategories } from "../services/CategoryService";
 
 const initialState = [];
 
-const sortById = (data) => {
-    return data.sort((a, b) => a.productId - b.productId);
-};
 
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return sortById(action.payload || []);
+            return action.payload || [];
         default:
             return state;
     }
@@ -173,7 +170,7 @@ export default function ProductList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th className="id-col">ID</th>
+                        <th className="id-col">-</th>
                         <th>Name</th>
                         <th>Supplier</th>
                         <th>Category</th>
@@ -189,7 +186,7 @@ export default function ProductList() {
                     <tbody>
                     {editing && !updateKey && (
                         <tr>
-                            <td>-</td>
+                            <td className="id-col">-</td>
                             <td>
                                 <input
                                     value={editing.productName}
@@ -314,11 +311,11 @@ export default function ProductList() {
                         </tr>
                     )}
 
-                    {products.map((d, i) => {
+                    {products.map((d, index) => {
                         const isEditing = updateKey === d.productId;
                         return (
-                            <tr key={i}>
-                                <td>{d.productId}</td>
+                            <tr key={d.productId}>
+                                <td className="id-col">{index + 1}</td>
                                 <td>
                                     {isEditing ? (
                                         <input

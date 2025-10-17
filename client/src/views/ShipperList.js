@@ -6,14 +6,11 @@ import {getAllShippers, addShipper, updateShipper, deleteShipper} from "../servi
 
 const initialState = [];
 
-const sortById = (data) => {
-    return data.sort((a, b) => a.shipViaId - b.shipViaId);
-};
 
 function reducer(state, action) {
     switch (action.type) {
         case "SET_ALL":
-            return sortById(action.payload || []);
+            return action.payload || [];
         default:
             return state;
     }
@@ -167,7 +164,7 @@ export default function ShipperList() {
                 <Table striped bordered hover className="table-compact" style={{ maxWidth: "700px" }}>
                     <thead>
                     <tr>
-                        <th className="id-col">ID</th>
+                        <th className="id-col">-</th>
                         <th>Company Name</th>
                         <th>Phone</th>
                         <th className="actions-col">Actions</th>
@@ -218,11 +215,11 @@ export default function ShipperList() {
                         </tr>
                     )}
 
-                    {shippers.map((shipper) => {
+                    {shippers.map((shipper, index) => {
                         const isEditing = updateKey === shipper.shipperId;
                         return (
                             <tr key={shipper.shipperId}>
-                                <td className="id-col text-center">{shipper.shipperId}</td>
+                                <td className="id-col text-center">{index + 1}</td>
                                 <td>
                                     {isEditing ? (
                                         <input
